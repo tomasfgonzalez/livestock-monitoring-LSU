@@ -1,2 +1,4 @@
 # Proyecto-ECA
-This project develops portable devices with temperature, heart rate, and GPS sensors to monitor livestock well-being and location in real-time. Data is sent via LoRa to a central node, processed, and uploaded to the cloud. It offers a cost-effective solution to enhance livestock security and comply with animal welfare standards.
+This project designs a system of portable devices that integrates temperature sensors, heart rate monitors, and a GPS module to monitor the well-being and location of livestock in real-time. The collected data is transmitted via LoRa communication to a central node, where it is processed and sent to the cloud for analysis and management.
+
+The proposed solution is cost-effective and aims to enhance livestock security while complying with animal welfare regulations. The objective is to reduce the impact of criminal activity in the sector by providing farmers with an advanced technological tool to protect and manage their assets.
