@@ -29,10 +29,15 @@ extern "C" {
 #include "main.h"
 #include "stm32l0xx_hal.h"
 
+/**
+ * @brief Initializes the GPIO pins.
+ *
+ * This function configures the GPIO pins for the application, including input
+ * and output configurations. It must be called before using any GPIO pins.
+ */
+void GPIO_Init(void);
 
-void MX_GPIO_Init(void);
-
-
+/* Pin definitions -----------------------------------------------------------*/
 #define VCP_TX_Pin GPIO_PIN_2
 #define VCP_TX_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
@@ -43,6 +48,7 @@ void MX_GPIO_Init(void);
 #define VCP_RX_GPIO_Port GPIOA
 #define LD3_Pin GPIO_PIN_3
 #define LD3_GPIO_Port GPIOB
+
 
 #ifdef __cplusplus
 }

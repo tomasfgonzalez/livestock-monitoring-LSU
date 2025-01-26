@@ -1,3 +1,4 @@
+"./Core/Src/adc.o"
 "./Core/Src/fsm_mode.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"
@@ -9,6 +10,8 @@
 "./Core/Src/system_stm32l0xx.o"
 "./Core/Startup/startup_stm32l031k6tx.o"
 "./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal.o"
+"./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal_adc.o"
+"./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal_adc_ex.o"
 "./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal_cortex.o"
 "./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal_dma.o"
 "./Drivers/STM32L0xx_HAL_Driver/Src/stm32l0xx_hal_exti.o"

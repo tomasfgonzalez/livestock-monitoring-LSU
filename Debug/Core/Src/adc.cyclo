@@ -1,0 +1,3 @@
+../Core/Src/adc.c:36:6:ADC_Init	4
+../Core/Src/adc.c:90:6:Get_ADC_Val	4
+../Core/Src/adc.c:113:6:HAL_ADC_ErrorCallback	2

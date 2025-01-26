@@ -29,4 +29,10 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D/STM32CubeIDE/workspace_1.17.0/ADC_LowPower</value>
+		</variable>
+	</variableList>
 </projectDescription>

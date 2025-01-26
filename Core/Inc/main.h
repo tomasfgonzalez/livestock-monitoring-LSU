@@ -28,6 +28,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
 #include "gpio.h"
+#include "adc.h"
 #include "sysClock.h"
 #include "fsm_mode.h"
 

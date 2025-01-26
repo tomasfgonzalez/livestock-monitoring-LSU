@@ -27,15 +27,17 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l0xx_hal.h"
+#include "stm32l0xx_hal.h"   /* Ensure HAL is only included once */
+#include "adc.h"              /* Include the ADC header for ADC operations */
 
-
-
-
+/**
+ * @brief FSM (Finite State Machine) mode function.
+ *
+ * This function implements the logic for the FSM mode. It handles the transitions
+ * and actions within the finite state machine. The exact behavior should be defined
+ * in the corresponding .c file.
+ */
 void fsm_mode(void);
-
-
-
 
 #ifdef __cplusplus
 }

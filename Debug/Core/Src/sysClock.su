@@ -1,2 +1,2 @@
-../Core/Src/sysClock.c:36:6:SystemClock_Config	88	static
-../Core/Src/sysClock.c:80:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/sysClock.c:36:6:SystemClock_Config	112	static
+../Core/Src/sysClock.c:87:6:Error_Handler	8	static,ignoring_inline_asm

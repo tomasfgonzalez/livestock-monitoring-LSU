@@ -1,1 +1,1 @@
-../Core/Src/gpio.c:29:6:MX_GPIO_Init	48	static
+../Core/Src/gpio.c:29:6:GPIO_Init	48	static

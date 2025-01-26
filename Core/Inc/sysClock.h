@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    sysclock.h
@@ -27,9 +26,25 @@ extern "C" {
 #include "main.h"
 
 
+/**
+ * @brief Configures the system clock.
+ *
+ * This function sets up the system clock to the desired frequency and
+ * configures the clock sources accordingly.
+ */
 void SystemClock_Config(void);
+
+/**
+ * @brief Handles errors during initialization.
+ *
+ * This function is called when an error occurs during the system clock
+ * configuration. It typically enters an infinite loop or logs the error.
+ */
 void Error_Handler(void);
 
+#ifdef __cplusplus
+}
+#endif
 
 
 #ifdef __cplusplus
