@@ -1,9 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file    sysclock.h
+  * @brief   This file contains all the function prototypes for Sysclock
   ******************************************************************************
   * @attention
   *
@@ -17,26 +16,24 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __SYSCLOCK_H__
+#define __SYSCLOCK_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32l0xx_hal.h"
-#include "gpio.h"
-#include "sysClock.h"
-#include "fsm_mode.h"
+
+#include "main.h"
 
 
+void SystemClock_Config(void);
+void Error_Handler(void);
 
 
 
 #ifdef __cplusplus
 }
 #endif
+#endif /*__ GPIO_H__ */
 
-#endif /* __MAIN_H */

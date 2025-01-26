@@ -60,8 +60,8 @@ all: main-build
 main-build: livestock-monitoring-LSU.elf secondary-outputs
 
 # Tool invocations
-livestock-monitoring-LSU.elf livestock-monitoring-LSU.map: $(OBJS) $(USER_OBJS) C:\Users\tomas\STM32CubeIDE\workspace_1.17.0\livestock-monitoring-LSU\STM32L031K6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "livestock-monitoring-LSU.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\tomas\STM32CubeIDE\workspace_1.17.0\livestock-monitoring-LSU\STM32L031K6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="livestock-monitoring-LSU.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+livestock-monitoring-LSU.elf livestock-monitoring-LSU.map: $(OBJS) $(USER_OBJS) C:\Users\GAby\Desktop\FinalProyect\GitHub\livestock-monitoring-LSU\STM32L031K6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "livestock-monitoring-LSU.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\GAby\Desktop\FinalProyect\GitHub\livestock-monitoring-LSU\STM32L031K6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="livestock-monitoring-LSU.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
