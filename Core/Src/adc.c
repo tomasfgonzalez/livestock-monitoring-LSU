@@ -96,12 +96,12 @@ void Get_ADC_Val(uint16_t* adc_values) {
     // Iniciar la conversión para el primer canal (Channel 4)
     HAL_ADC_Start(&hadc);
     if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK) {
-        adc_values[0] = HAL_ADC_GetValue(&hadc);  // Obtener el valor de Channel 0
+        adc_values[0] = HAL_ADC_GetValue(&hadc);  // Obtener el valor de Channel 4
     }
 
     // Iniciar la conversión para el segundo canal (Channel 5)
     if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK) {
-        adc_values[1] = HAL_ADC_GetValue(&hadc);  // Obtener el valor de Channel 1
+        adc_values[1] = HAL_ADC_GetValue(&hadc);  // Obtener el valor de Channel 5
     }
 
     // Detener la conversión
