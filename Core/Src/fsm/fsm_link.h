@@ -4,8 +4,7 @@
 #include <stdint.h>
 
 typedef enum {
-    IDLE,
-    // Add more states as needed
+    LINK_IDLE,
 } FSM_Link_State;
 
 void FSM_Link_init(void);

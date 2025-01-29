@@ -9,8 +9,6 @@
 #ifndef FSM_MAIN_H
 #define FSM_MAIN_H
 
-#include <stdbool.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,7 +24,7 @@ typedef enum {
 } FSM_Main_State;
 
 // Public function declarations
-void FSM_Main_handle(uint8_t button_B4_pressed, uint8_t button_B5_pressed);
+void FSM_Main_handle(void);
 
 #ifdef __cplusplus
 }

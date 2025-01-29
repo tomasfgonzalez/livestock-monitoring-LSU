@@ -1,14 +1,14 @@
 #include "fsm_transmit.h"
 
-static FSM_Transmit_State current_state = IDLE;
+static FSM_Transmit_State current_state = TRANSMIT_IDLE;
 
 void FSM_Transmit_init(void) {
-  current_state = IDLE;
+  current_state = TRANSMIT_IDLE;
 }
 
 void FSM_Transmit_handle(void) {
   switch (current_state) {
-    case IDLE:
+    case TRANSMIT_IDLE:
       // Add state handling logic here
       break;
 

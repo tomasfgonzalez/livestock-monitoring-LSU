@@ -2,7 +2,7 @@
 #define FSM_TRANSMIT_H
 
 typedef enum {
-    IDLE,
+    TRANSMIT_IDLE,
 } FSM_Transmit_State;
 
 void FSM_Transmit_init(void);

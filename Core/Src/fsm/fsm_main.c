@@ -6,13 +6,14 @@
   ******************************************************************************
   */
 
-#include <stdbool.h>
-#include "stm32l0xx_hal.h"
+#include "fsm_main.h"
 
-#include "fsm/fsm_main.h"
-#include "fsm/fsm_link.h"
-#include "fsm/fsm_transmit.h"
-#include "fsm/fsm_transmit_backup.h"
+#include <stdbool.h>
+#include <stm32l0xx_hal.h>
+
+#include "fsm_link.h"
+#include "fsm_transmit.h"
+#include "fsm_transmit_backup.h"
 
 static FSM_Main_State currentState = INIT;
 
@@ -48,6 +49,11 @@ static bool isLinkErrorResolved(void) {
 
 static bool hasMainChannelFailed(void) {
   // TODO: Implement backup condition check
+  return false;
+}
+
+static bool hasBackupChannelFailed(void) {
+  // TODO: Implement backup channel failure check
   return false;
 }
 

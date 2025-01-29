@@ -1,14 +1,14 @@
 #include "fsm_transmit_backup.h"
 
-static FSM_TransmitBackup_State current_state = IDLE;
+static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_IDLE;
 
-void FSM_Transmit_Backup_init(void) {
-  current_state = IDLE;
+void FSM_TransmitBackup_init(void) {
+  current_state = TRANSMIT_BACKUP_IDLE;
 }
 
-void FSM_Transmit_Backup_handle(void) {
+void FSM_TransmitBackup_handle(void) {
   switch (current_state) {
-    case IDLE:
+    case TRANSMIT_BACKUP_IDLE:
       // Add state handling logic here
       break;
 

@@ -2,7 +2,7 @@
 #define FSM_TRANSMIT_BACKUP_H
 
 typedef enum {
-    IDLE,
+    TRANSMIT_BACKUP_IDLE,
 } FSM_TransmitBackup_State;
 
 void FSM_TransmitBackup_init(void);
