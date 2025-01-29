@@ -18,7 +18,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "fsm/fsm_main.h"
+/* USER CODE END Includes */
 
 
 
@@ -40,19 +43,11 @@ int main(void)
 
 
 
-
-
-
   /* Infinite loop */
-  while (1)
-  {
-	fsm_mode();
+  while (1) {
+	  FSM_Main_handle();
   }
 }
-
-
-
-
 
 
 
