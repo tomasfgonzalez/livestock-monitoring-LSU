@@ -1,5 +1,6 @@
 #ifndef LORA_COMM_H
 #define LORA_COMM_H
+#include "stm32l0xx_hal.h"
 
 typedef enum {
     LORA_OK = 0,
