@@ -19,8 +19,7 @@ static FSM_Main_State currentState = INIT;
 
 // Transitions
 static bool isInitError(void) {
-  // TODO: Implement error check
-  return false;
+  return sensor_temperature_has_error() || sensor_heartrate_has_error() || sensor_gps_has_error();
 }
 
 static void performShutdown(void) {
@@ -28,8 +27,7 @@ static void performShutdown(void) {
 }
 
 static bool isInitSuccess(void) {
-  // TODO: Implement link establishment check
-  return false;
+  return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
 }
 
 static bool isLinkEstablished(void) {
