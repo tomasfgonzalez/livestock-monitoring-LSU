@@ -130,3 +130,4 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
     Error_Handler();
   }
 }
+

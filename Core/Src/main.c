@@ -15,39 +15,100 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-#include "fsm/fsm_main.h"
-/* USER CODE END Includes */
+#include "dma.h"
+#include "usart.h"
+#include "gpio.h"
 
 
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
+#include "adc.h"
+#include "gps_parser.h"
+
+//TODO Mover esta implementacion a otra parte del codigo, es solo de prueba
+
+#define UBX_Rx_Size 2*sizeof(NAV_STATUS)+2*sizeof(NAV_POSLLH)
+uint8_t UBX_Rx_Data[UBX_Rx_Size];
+
+
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart){
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+
+
+    if (huart == &huart2) {  // Verifica que la interrupción proviene de USART2
+
+    	int32_t Lat, Lon;
+        // Procesa los datos en el buffer UBX_Rx_Data
+        processUBXData(&UBX_Rx_Data, UBX_Rx_Size);
+
+        // Obtener latitud y longitud
+        get_UBX_LatLon(&Lat, &Lon);
+
+        // GPS FIX STATUS: 0 NO FIX, 1 DEAD RECKONING ONLY, 2 2D FIX, 3 3D FIX, 4 GPS + DEAD RECKONING COMBINED 5 TIME ONLY FIX
+        uint8_t fixStatus = get_UBX_GpsFixStatus();
+
+        // Reinicia la recepción DMA
+        HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+    }
+}
+
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart){
+ while(1){
+	 huart->ErrorCode;
+ }
+}
+
+
+
+
+uint16_t adc_values[2];
+
+
+
+
+
 int main(void)
 {
 
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
   HAL_Init();
-  /* Configure the system clock */
+
   SystemClock_Config();
-  /* Initialize all configured peripherals */
+
   GPIO_Init();
+
   ADC_Init();
 
 
+  MX_DMA_Init();
+  MX_USART2_UART_Init();
 
-  /* Infinite loop */
+  //Lanza una Conv. DMA
+  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Data);
+
+
   while (1) {
-	  FSM_Main_handle();
+
+
+
+	  //TODO TEST PARA EL ADC Si llega una transferencia DMA se pijean los datos
+
+	  Get_ADC_Val(adc_values);
+	   uint16_t channel_4_value = adc_values[0];  //A3 - PA_4
+	   uint16_t channel_5_value = adc_values[1];  //A4 - PA_5
+
+	 // FSM_Main_handle();
   }
 }
+
+
 
 
 

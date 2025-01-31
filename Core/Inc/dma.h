@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    adc.h
+  * @file    dma.h
   * @brief   This file contains all the function prototypes for
-  *          the adc.c file
+  *          the dma.c file
   ******************************************************************************
   * @attention
   *
@@ -16,41 +16,37 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_H
-#define __ADC_H
+#ifndef __DMA_H__
+#define __DMA_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+/* DMA memory to memory transfer handles -------------------------------------*/
 
+/* USER CODE BEGIN Includes */
 
-/* Function prototypes -------------------------------------------------------*/
-/**
- * @brief Initializes the ADC peripheral.
- */
-void MX_ADC_Init(void);
+/* USER CODE END Includes */
 
-/**
- * @brief Retrieves the ADC value and stores it in the provided pointer.
- *
- * @param adc_val Pointer to a 16-bit variable where the ADC value will be stored.
- */
-void Get_ADC_Val(uint16_t *adc_val);
+/* USER CODE BEGIN Private defines */
 
-/**
- * @brief Computes the voltage corresponding to the given ADC value.
- *
- * @param ADC_DATA ADC data value to be converted to voltage.
- * @return The computed voltage.
- */
-uint16_t ADC_ComputeVoltage(const uint16_t ADC_DATA);  /* const for parameter safety */
+/* USER CODE END Private defines */
 
+void MX_DMA_Init(void);
 
+/* USER CODE BEGIN Prototypes */
 
+/* USER CODE END Prototypes */
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* __ADC_H */
-
+#endif /* __DMA_H__ */
 
