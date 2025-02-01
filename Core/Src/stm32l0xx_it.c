@@ -56,6 +56,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_usart2_rx;
+extern ADC_HandleTypeDef hadc;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -155,5 +156,14 @@ void DMA1_Channel4_5_6_7_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void ADC1_COMP_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC1_COMP_IRQn 0 */
 
+  /* USER CODE END ADC1_COMP_IRQn 0 */
+  HAL_ADC_IRQHandler(&hadc);
+  /* USER CODE BEGIN ADC1_COMP_IRQn 1 */
+
+  /* USER CODE END ADC1_COMP_IRQn 1 */
+}
 /* USER CODE END 1 */

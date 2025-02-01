@@ -37,23 +37,26 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart){
 
 }
 
+
+int32_t Lat, Lon;
+uint8_t fixStatus;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 
     if (huart == &huart2) {  // Verifica que la interrupción proviene de USART2
 
-    	int32_t Lat, Lon;
+
         // Procesa los datos en el buffer UBX_Rx_Data
         processUBXData(&UBX_Rx_Data, UBX_Rx_Size);
 
         // Obtener latitud y longitud
-        get_UBX_LatLon(&Lat, &Lon);
-
+        Lat = get_UBX_Lat();
+        Lon = get_UBX_Lon();
         // GPS FIX STATUS: 0 NO FIX, 1 DEAD RECKONING ONLY, 2 2D FIX, 3 3D FIX, 4 GPS + DEAD RECKONING COMBINED 5 TIME ONLY FIX
-        uint8_t fixStatus = get_UBX_GpsFixStatus();
+        fixStatus = get_UBX_GpsFixStatus();
 
-        // Reinicia la recepción DMA
-        HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+        //
+        // HAL_UART_DMAStop(&huart2);
     }
 }
 
@@ -84,14 +87,23 @@ int main(void)
 
   GPIO_Init();
 
-  ADC_Init();
+  MX_ADC_Init();
 
 
   MX_DMA_Init();
   MX_USART2_UART_Init();
 
-  //Lanza una Conv. DMA
-  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Data);
+  //TODO ADC TEST
+  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+  HAL_Delay(5000);
+
+
+  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+  HAL_Delay(5000);
+
+
+
+  adc_test();
 
 
   while (1) {
@@ -100,16 +112,26 @@ int main(void)
 
 	  //TODO TEST PARA EL ADC Si llega una transferencia DMA se pijean los datos
 
-	  Get_ADC_Val(adc_values);
-	   uint16_t channel_4_value = adc_values[0];  //A3 - PA_4
-	   uint16_t channel_5_value = adc_values[1];  //A4 - PA_5
 
 	 // FSM_Main_handle();
   }
 }
 
+uint16_t Voltage_val[2];
+
+void adc_test(void){
+
+	 Start_ADC_IRQ();
+	 HAL_Delay(3000);
+	 get_ADC_values(&Voltage_val);
 
 
+
+	 Start_ADC_IRQ();
+	 HAL_Delay(3000);
+	 get_ADC_values(&Voltage_val);
+
+}
 
 
 #ifdef  USE_FULL_ASSERT

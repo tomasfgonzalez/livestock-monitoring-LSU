@@ -30,14 +30,14 @@
 /**
  * @brief Initializes the ADC peripheral.
  */
-void MX_ADC_Init(void);
+void ADC_Init(void);
 
 /**
  * @brief Retrieves the ADC value and stores it in the provided pointer.
  *
  * @param adc_val Pointer to a 16-bit variable where the ADC value will be stored.
  */
-void Get_ADC_Val(uint16_t *adc_val);
+extern ADC_HandleTypeDef hadc;
 
 /**
  * @brief Computes the voltage corresponding to the given ADC value.
@@ -45,11 +45,12 @@ void Get_ADC_Val(uint16_t *adc_val);
  * @param ADC_DATA ADC data value to be converted to voltage.
  * @return The computed voltage.
  */
-uint16_t ADC_ComputeVoltage(const uint16_t ADC_DATA);  /* const for parameter safety */
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
+void get_ADC_values(uint16_t* val);
 
-
-
+void Start_ADC_IRQ(void);
 
 #endif /* __ADC_H */
 

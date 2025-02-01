@@ -48,9 +48,12 @@ void processUBXData(uint8_t* data, uint16_t size) {
 
 }
 
-void get_UBX_LatLon(int32_t* UBX_Lat, int32_t* UBX_Lon) {
-	  *UBX_Lat = navPosllhData.lat;
-	  *UBX_Lon = navPosllhData.lon;
+int32_t get_UBX_Lat(void) {
+	  return navPosllhData.lat;
+}
+
+int32_t get_UBX_Lon(void) {
+	  return navPosllhData.lon;
 }
 
 uint8_t get_UBX_GpsFixStatus(void) {

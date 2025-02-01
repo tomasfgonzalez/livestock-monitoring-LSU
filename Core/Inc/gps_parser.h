@@ -53,5 +53,6 @@ bool compareMsgHeader(const uint8_t* msgHeader);
 ubxMsgType processGPS(uint8_t c);
 void processUBXData(uint8_t* data, uint16_t size);
 uint8_t get_UBX_GpsFixStatus(void);
-void get_UBX_LatLon(int32_t* UBX_Lat, int32_t* UBX_Lon);
+int32_t get_UBX_Lon(void);
+int32_t get_UBX_Lat(void);
 #endif // GPS_PARSER_H
