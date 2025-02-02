@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "stm32l0xx_hal.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -35,11 +35,19 @@ extern "C" {
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
+void GPIO_Init(void);
 
-void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
+#define VCP_TX_GPIO_Port GPIOA
+#define VCP_RX_GPIO_Port GPIOA
+#define TMS_Pin GPIO_PIN_13
+#define TMS_GPIO_Port GPIOA
+#define TCK_Pin GPIO_PIN_14
+#define TCK_GPIO_Port GPIOA
+#define LD3_Pin GPIO_PIN_3
+#define LD3_GPIO_Port GPIOB
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

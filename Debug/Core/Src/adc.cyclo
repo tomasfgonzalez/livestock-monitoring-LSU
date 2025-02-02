@@ -1,4 +1,4 @@
-../Core/Src/adc.c:30:6:MX_ADC_Init	4
+../Core/Src/adc.c:30:6:ADC_Init	4
 ../Core/Src/adc.c:96:6:HAL_ADC_MspInit	2
 ../Core/Src/adc.c:127:6:HAL_ADC_MspDeInit	2
 ../Core/Src/adc.c:155:6:Start_ADC_IRQ	1

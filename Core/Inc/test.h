@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    dma.h
+  * @file    usart.h
   * @brief   This file contains all the function prototypes for
-  *          the dma.c file
+  *          the usart.c file
   ******************************************************************************
   * @attention
   *
@@ -18,35 +18,22 @@
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DMA_H__
-#define __DMA_H__
+#ifndef __TEST_H__
+#define __TEST_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+void gps_test(void);
+void adc_test(void);
 
-/* DMA memory to memory transfer handles -------------------------------------*/
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-void DMA_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __DMA_H__ */
+#endif /* __USART_H__ */
 

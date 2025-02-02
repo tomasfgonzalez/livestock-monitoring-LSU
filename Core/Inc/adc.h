@@ -46,9 +46,9 @@ extern ADC_HandleTypeDef hadc;
  * @return The computed voltage.
  */
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
-void get_ADC_values(uint16_t* val);
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* );
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
+void get_ADC_values(uint16_t* );
 
 void Start_ADC_IRQ(void);
 

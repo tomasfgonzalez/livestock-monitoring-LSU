@@ -36,7 +36,7 @@
 /**
   * Enable DMA controller clock
   */
-void MX_DMA_Init(void)
+void DMA_Init(void)
 {
 
   /* DMA controller clock enable */
@@ -48,6 +48,9 @@ void MX_DMA_Init(void)
   HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
 }
+
+
+
 
 /* USER CODE BEGIN 2 */
 

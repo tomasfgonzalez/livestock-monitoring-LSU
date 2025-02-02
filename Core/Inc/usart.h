@@ -38,10 +38,15 @@ extern UART_HandleTypeDef huart2;
 
 /* USER CODE END Private defines */
 
-void MX_USART2_UART_Init(void);
+void USART2_Init(void);
 
+
+void Start_DMA_UART2(void);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 /* USER CODE BEGIN Prototypes */
-
+#define VCP_TX_Pin GPIO_PIN_9
+#define VCP_RX_Pin GPIO_PIN_10
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

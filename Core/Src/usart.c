@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-
+#include "SysClock.h"
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -29,7 +29,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USART2 init function */
 
-void MX_USART2_UART_Init(void)
+void USART2_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
@@ -132,6 +132,44 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   /* USER CODE END USART2_MspDeInit 1 */
   }
 }
+
+
+
+//TODO Este buffer no se si corresponderia que este aqui, pero en gps no me parecia adecuado.
+
+#include "gps_parser.h"
+
+
+#define UBX_Rx_Size (2 * sizeof(NAV_STATUS) + 2 * sizeof(NAV_POSLLH))
+
+uint8_t UBX_Rx_Data[UBX_Rx_Size];
+
+void Start_DMA_UART2(void){
+HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+}
+
+
+// Callback para recepción completa por DMA
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart2) {  // Verifica que la interrupción proviene de USART2
+        // Procesa los datos en el buffer UBX_Rx_Data
+        processUBXData(UBX_Rx_Data, UBX_Rx_Size);
+        // Opcional: Detener la transferencia DMA
+        // HAL_UART_DMAStop(&huart2);
+    }
+}
+
+// Callback para manejo de errores UART
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+    while (1) {
+        (void)huart->ErrorCode; // Captura y maneja el código de error si es necesario
+    }
+}
+
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
+    // Implementación futura (si es necesario)
+}
+
 
 /* USER CODE BEGIN 1 */
 

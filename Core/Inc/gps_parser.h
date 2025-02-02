@@ -48,10 +48,10 @@ typedef union {
 
 extern UBXMessage ubxMessage;
 
-void calcChecksum(uint8_t* CK, int msgSize);
-bool compareMsgHeader(const uint8_t* msgHeader);
-ubxMsgType processGPS(uint8_t c);
-void processUBXData(uint8_t* data, uint16_t size);
+void calcChecksum(uint8_t*, int);
+bool compareMsgHeader(const uint8_t*);
+ubxMsgType processGPS(uint8_t );
+void processUBXData(uint8_t* data, uint16_t);
 uint8_t get_UBX_GpsFixStatus(void);
 int32_t get_UBX_Lon(void);
 int32_t get_UBX_Lat(void);

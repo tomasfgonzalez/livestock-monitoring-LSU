@@ -27,7 +27,7 @@
 ADC_HandleTypeDef hadc;
 
 /* ADC init function */
-void MX_ADC_Init(void)
+void ADC_Init(void)
 {
 
   /* USER CODE BEGIN ADC_Init 0 */

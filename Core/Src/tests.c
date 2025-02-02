@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    dma.h
-  * @brief   This file contains all the function prototypes for
-  *          the dma.c file
+  * @file    gpio.c
+  * @brief   This file provides code for the configuration
+  *          of all used GPIO pins.
   ******************************************************************************
   * @attention
   *
@@ -17,36 +17,46 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DMA_H__
-#define __DMA_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "stm32l0xx_hal.h"
+#include "test.h"
+#include "usart.h"
+#include "gps_parser.h"
+#include "adc.h"
 
-/* DMA memory to memory transfer handles -------------------------------------*/
+int32_t Lat, Lon;
+uint8_t fixStatus;
+uint16_t Voltage_val[2];
 
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
 
-/* USER CODE BEGIN Private defines */
+void adc_test(void) {
 
-/* USER CODE END Private defines */
+    Start_ADC_IRQ();
 
-void DMA_Init(void);
+    HAL_Delay(2000);
 
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
-
-#ifdef __cplusplus
+    get_ADC_values(Voltage_val);
 }
-#endif
 
-#endif /* __DMA_H__ */
+
+void gps_test(void) {
+
+	Start_DMA_UART2();
+	// Obtener latitud y longitud
+	Lat = get_UBX_Lat();
+	Lon = get_UBX_Lon();
+
+	HAL_Delay(2000);
+
+
+	// GPS FIX STATUS: 0 NO FIX, 1 DEAD RECKONING ONLY, 2 2D FIX, 3 3D FIX,
+	// 4 GPS + DEAD RECKONING COMBINED, 5 TIME ONLY FIX
+	fixStatus = get_UBX_GpsFixStatus();
+
+
+}
+
+
 
