@@ -25,6 +25,8 @@ typedef enum {
 
 // Public function declarations
 void FSM_Main_handle(void);
+void FSM_Main_init(void);
+void FSM_Main_tick_1s(void);
 
 #ifdef __cplusplus
 }
