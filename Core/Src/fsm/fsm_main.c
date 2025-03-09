@@ -7,6 +7,7 @@
   */
 
 #include "fsm_main.h"
+#include "stm32l0xx.h"
 
 #include <stdbool.h>
 #include <stm32l0xx_hal.h>
@@ -15,15 +16,19 @@
 #include "fsm_transmit.h"
 #include "fsm_transmit_backup.h"
 
+#define INIT_TIMEOUT 50
+
 static FSM_Main_State currentState = INIT;
+static uint32_t initTimer = 0;
 
 // Transitions
 static bool isInitError(void) {
   return sensor_temperature_has_error() || sensor_heartrate_has_error() || sensor_gps_has_error();
 }
 
-static void performShutdown(void) {
-  // TODO: Implement shutdown procedure
+static void performRestart(void) {
+  __disable_irq();
+  NVIC_SystemReset();
 }
 
 static bool isInitSuccess(void) {
@@ -60,6 +65,15 @@ static bool isBackupTransmissionComplete(void) {
   return false;
 }
 
+void FSM_Main_init(void) {
+  currentState = INIT;
+  sensor_temperature_init();
+  sensor_heartrate_init();
+  sensor_gps_init();
+
+  initTimer = INIT_TIMEOUT;
+}
+
 void FSM_Main_handle(void) {
   switch (currentState) {
     case INIT:
@@ -71,7 +85,7 @@ void FSM_Main_handle(void) {
       break;
 
     case INIT_ERROR:
-      performShutdown();
+      performRestart();
       break;
 
     case LINK:
@@ -109,5 +123,14 @@ void FSM_Main_handle(void) {
     default:
       currentState = INIT;
       break;
+  }
+}
+
+void FSM_Main_tick_1s(void) {
+  if (currentState == INIT) {
+    initTimer--;
+    if (initTimer <= 0) {
+      currentState = INIT_ERROR;
+    }
   }
 }

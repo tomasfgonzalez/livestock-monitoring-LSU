@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -15,7 +14,6 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -24,32 +22,54 @@
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
+#include "tim2.h"
 
 #include "test.h"
 
+#include "fsm/fsm_main.h"
+
+TIM_HandleTypeDef htim2;
+
+uint32_t mockTimer = 5;
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
+    // Peripherals initialization
     GPIO_Init();
     ADC_Init();
-
     DMA_Init();
     USART2_Init();
 
+    // Clock initialization
+    TIM2_Init();
 
+    // Run tests
     adc_test();
+     gps_test();
+     adc_test();
+     gps_test();
 
-    gps_test();
-
-    adc_test();
-
-    gps_test();
-
+    // System start
+    FSM_Main_init();
+    HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
-
-        // FSM_Main_handle();
+    	FSM_Main_handle();
     }
 }
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+  if (htim->Instance == TIM2) {
+    FSM_Main_tick_1s();
+    mockTimer--;
+    if (mockTimer <= 0) {
+      mockTimer = 5;
+      HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
+    }
+  }
+}
+
 
