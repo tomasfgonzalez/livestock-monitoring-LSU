@@ -1,8 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32l0xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : stm32l0xx_it.h
+  * @brief          : Header for interrupt handlers file
   ******************************************************************************
   * @attention
   *
@@ -15,7 +15,6 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32L0xx_IT_H

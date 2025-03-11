@@ -23,8 +23,10 @@
 #include "usart.h"
 #include "gpio.h"
 #include "tim2.h"
+#include "time_config.h"
 
 #include "test.h"
+// #include "testing_leds.h"
 
 #include "fsm/fsm_main.h"
 
@@ -52,17 +54,21 @@ int main(void) {
      gps_test();
      adc_test();
      gps_test();
+    //  testing_leds_init();
 
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
+//    testing_led1_on();
+//    testing_led2_on();
     while (1) {
-    	FSM_Main_handle();
+    	 FSM_Main_handle();
     }
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim->Instance == TIM2) {
+    time_config_tick_1s();
     FSM_Main_tick_1s();
     mockTimer--;
     if (mockTimer <= 0) {

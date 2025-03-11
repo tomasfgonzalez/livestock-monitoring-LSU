@@ -1,5 +1,12 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : lora_comm.c
+  * @brief          : Source file for LoRa communication, serves as interface for communication
+  *                   protocols to send and receive messages
+  ******************************************************************************
+  */
 #include "lora_comm.h"
-
 /* Private variables */
 static uint8_t lora_initialized = 0;
 

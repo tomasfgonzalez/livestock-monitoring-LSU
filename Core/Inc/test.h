@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    usart.h
-  * @brief   This file contains all the function prototypes for
-  *          the usart.c file
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : test.h
+  * @brief          : Header for test file
   ******************************************************************************
   * @attention
   *
@@ -16,7 +15,7 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __TEST_H__
 #define __TEST_H__

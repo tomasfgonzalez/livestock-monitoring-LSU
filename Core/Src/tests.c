@@ -1,22 +1,13 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    gpio.c
-  * @brief   This file provides code for the configuration
-  *          of all used GPIO pins.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : tests.c
+  * @brief          : Source file for tests, holds functions to test the device
   ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"

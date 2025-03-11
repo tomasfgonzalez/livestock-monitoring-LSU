@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    adc.c
-  * @brief   This file provides code for the configuration
-  *          of the ADC instances.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : adc.c
+  * @brief          : Source file for ADC configuration
   ******************************************************************************
   * @attention
   *
@@ -16,29 +15,16 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc;
 
 /* ADC init function */
 void ADC_Init(void)
 {
-
-  /* USER CODE BEGIN ADC_Init 0 */
-
-  /* USER CODE END ADC_Init 0 */
-
   ADC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN ADC_Init 1 */
-
-  /* USER CODE END ADC_Init 1 */
 
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
@@ -99,9 +85,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(adcHandle->Instance==ADC1)
   {
-  /* USER CODE BEGIN ADC1_MspInit 0 */
-
-  /* USER CODE END ADC1_MspInit 0 */
     /* ADC1 clock enable */
     __HAL_RCC_ADC1_CLK_ENABLE();
 
@@ -118,9 +101,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     /* ADC1 interrupt Init */
     HAL_NVIC_SetPriority(ADC1_COMP_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(ADC1_COMP_IRQn);
-  /* USER CODE BEGIN ADC1_MspInit 1 */
-
-  /* USER CODE END ADC1_MspInit 1 */
   }
 }
 
@@ -129,9 +109,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
   if(adcHandle->Instance==ADC1)
   {
-  /* USER CODE BEGIN ADC1_MspDeInit 0 */
-
-  /* USER CODE END ADC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_ADC1_CLK_DISABLE();
 
@@ -143,9 +120,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
     /* ADC1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(ADC1_COMP_IRQn);
-  /* USER CODE BEGIN ADC1_MspDeInit 1 */
-
-  /* USER CODE END ADC1_MspDeInit 1 */
   }
 }
 
@@ -153,7 +127,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 static uint16_t adc_values[2];
 
 void Start_ADC_IRQ(void){
-HAL_ADC_Start_IT(&hadc);
+	HAL_ADC_Start_IT(&hadc);
 }
 
 

@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    adc.h
-  * @brief   This file contains all the function prototypes for
-  *          the adc.c file
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : adc.h
+  * @brief          : Header for ADC file
   ******************************************************************************
   * @attention
   *
@@ -16,7 +15,7 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
+ 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __ADC_H
 #define __ADC_H
@@ -47,7 +46,6 @@ extern ADC_HandleTypeDef hadc;
  */
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* );
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 void get_ADC_values(uint16_t* );
 
 void Start_ADC_IRQ(void);

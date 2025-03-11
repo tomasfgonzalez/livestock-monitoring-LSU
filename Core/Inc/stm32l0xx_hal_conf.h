@@ -1,11 +1,10 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32l0xx_hal_conf.h
-  * @author  MCD Application Team
-  * @brief   HAL configuration template file.
-  *          This file should be copied to the application folder and renamed
-  *          to stm32l0xx_hal_conf.h.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : stm32l0xx_hal_conf.h
+  * @brief          : HAL configuration template file.
+  *                   This file should be copied to the application folder and renamed
+  *                   to stm32l0xx_hal_conf.h.
   ******************************************************************************
   * @attention
   *
@@ -18,7 +17,6 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32L0xx_HAL_CONF_H

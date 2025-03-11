@@ -1,6 +1,0 @@
-../Core/Src/adc.c:30:6:ADC_Init	4
-../Core/Src/adc.c:96:6:HAL_ADC_MspInit	2
-../Core/Src/adc.c:127:6:HAL_ADC_MspDeInit	2
-../Core/Src/adc.c:155:6:Start_ADC_IRQ	1
-../Core/Src/adc.c:160:6:HAL_ADC_ConvCpltCallback	1
-../Core/Src/adc.c:167:6:get_ADC_values	1

@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    dma.c
-  * @brief   This file provides code for the configuration
-  *          of all the requested memory to memory DMA transfers.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : dma.c
+  * @brief          : Source file for DMA configuration
   ******************************************************************************
   * @attention
   *
@@ -16,22 +15,13 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 #include "dma.h"
 
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
 /*----------------------------------------------------------------------------*/
 /* Configure DMA                                                              */
 /*----------------------------------------------------------------------------*/
-
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
 
 /**
   * Enable DMA controller clock
@@ -48,11 +38,3 @@ void DMA_Init(void)
   HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
 }
-
-
-
-
-/* USER CODE BEGIN 2 */
-
-/* USER CODE END 2 */
-

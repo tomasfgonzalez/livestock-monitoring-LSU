@@ -1,3 +1,11 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : sensor_temperature.c
+  * @brief          : Source file for temperature sensor, serves as interface for
+  *                   temperature sensor measurements and readings
+  ******************************************************************************
+  */
 #include "sensor_temperature.h"
 
 /** 
@@ -21,7 +29,8 @@ bool sensor_temperature_has_error(void) {
  * Sensor management
  */
 void sensor_temperature_init(void) {
-    // TODO: Implement sensor initialization
+    ADC_Init();
+    // TODO: Need to initialize power supply for the sensor
     sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 
@@ -38,11 +47,12 @@ void sensor_temperature_stop(void) {
 /**
  * Sensor reading
  */
-float sensor_temperature_read(void) {
+bool sensor_temperature_read(uint16_t* target) {
     if (sensor_status != SENSOR_TEMPERATURE_MEASUREMENT_READY) {
-        return -1; // Error value
+        return false;
     }
-    // TODO: Implement temperature reading
+    
+    get_ADC_values(target);
     sensor_status = SENSOR_TEMPERATURE_IDLE;
-    return 24.0f;
+    return true;
 }

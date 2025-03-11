@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    dma.h
-  * @brief   This file contains all the function prototypes for
-  *          the dma.c file
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : dma.h
+  * @brief          : Header for DMA file
   ******************************************************************************
   * @attention
   *
@@ -16,7 +15,7 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __DMA_H__
 #define __DMA_H__

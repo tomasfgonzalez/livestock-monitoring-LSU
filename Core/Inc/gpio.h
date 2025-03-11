@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    gpio.h
-  * @brief   This file contains all the function prototypes for
-  *          the gpio.c file
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : gpio.h
+  * @brief          : Header for GPIO file
   ******************************************************************************
   * @attention
   *
@@ -16,7 +15,7 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __GPIO_H__
 #define __GPIO_H__
@@ -28,18 +27,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
 void GPIO_Init(void);
-
-
-/* USER CODE BEGIN Prototypes */
-
 #define VCP_TX_GPIO_Port GPIOA
 #define VCP_RX_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
@@ -48,10 +36,8 @@ void GPIO_Init(void);
 #define TCK_GPIO_Port GPIOA
 #define LD3_Pin GPIO_PIN_3
 #define LD3_GPIO_Port GPIOB
-/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
 #endif
 #endif /*__ GPIO_H__ */
-

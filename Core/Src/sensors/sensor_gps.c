@@ -1,5 +1,12 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : sensor_gps.c
+  * @brief          : Source file for GPS sensor, serves as interface for GPS
+  *                   sensor measurements and readings
+  ******************************************************************************
+  */
 #include "sensor_gps.h"
-
 /** 
  * Sensor status
  * */

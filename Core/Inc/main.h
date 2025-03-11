@@ -1,6 +1,6 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
   * @file           : main.h
   * @brief          : Header for main.c file.
   *                   This file contains the common defines of the application.
@@ -16,7 +16,6 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
@@ -31,38 +30,15 @@ extern "C" {
 
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
 /* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
-
 /* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
 int main(void);
-/* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 
-
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
-
 /* Private defines -----------------------------------------------------------*/
-
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }

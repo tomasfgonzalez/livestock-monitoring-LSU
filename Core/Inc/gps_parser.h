@@ -1,3 +1,10 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : gps_parser.h
+  * @brief          : Header for GPS parser file
+  ******************************************************************************
+  */
 #ifndef GPS_PARSER_H
 #define GPS_PARSER_H
 

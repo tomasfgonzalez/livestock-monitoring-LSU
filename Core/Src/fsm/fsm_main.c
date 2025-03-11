@@ -2,7 +2,7 @@
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
   * @file           : fsm_main.c
-  * @brief          : Main FSM file
+  * @brief          : Main FSM file, handles the main state machine of the device
   ******************************************************************************
   */
 
@@ -32,11 +32,13 @@ static void performRestart(void) {
 }
 
 static bool isInitSuccess(void) {
+  return true;
   return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
 }
 
 static bool isLinkEstablished(void) {
   // TODO: Implement link establishment check
+  return true;
   return false;
 }
 
@@ -50,20 +52,14 @@ static bool isLinkErrorResolved(void) {
   return true;
 }
 
-static bool hasMainChannelFailed(void) {
-  // TODO: Implement backup condition check
-  return false;
-}
-
-static bool hasBackupChannelFailed(void) {
-  // TODO: Implement backup channel failure check
-  return false;
-}
-
 static bool isBackupTransmissionComplete(void) {
   // TODO: Implement backup completion check
   return false;
 }
+
+// Flags from internal FSMs
+static bool hasMainChannelFailed = false;
+static bool hasBackupChannelFailed = false;  
 
 void FSM_Main_init(void) {
   currentState = INIT;
@@ -95,6 +91,7 @@ void FSM_Main_handle(void) {
         currentState = LINK_ERROR;
       } else if (isLinkEstablished()) {
         currentState = TRANSMIT;
+        FSM_Transmit_init();
       }
       break;
 
@@ -105,15 +102,15 @@ void FSM_Main_handle(void) {
       break;
 
     case TRANSMIT:
-      FSM_Transmit_handle();
-      if (hasMainChannelFailed()) {
+      FSM_Transmit_handle(&hasMainChannelFailed);
+      if (hasMainChannelFailed) {
         currentState = TRANSMIT_BACKUP;
       }
       break;
 
     case TRANSMIT_BACKUP:
       FSM_TransmitBackup_handle();
-      if (hasBackupChannelFailed()) {
+      if (hasBackupChannelFailed) {
         currentState = LINK_ERROR;
       } else if (isBackupTransmissionComplete()) {
         currentState = TRANSMIT;
@@ -131,6 +128,10 @@ void FSM_Main_tick_1s(void) {
     initTimer--;
     if (initTimer <= 0) {
       currentState = INIT_ERROR;
+    }
+
+    if (currentState == TRANSMIT) {
+      FSM_Transmit_tick_1s();
     }
   }
 }

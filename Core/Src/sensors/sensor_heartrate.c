@@ -1,5 +1,12 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : sensor_heartrate.c
+  * @brief          : Source file for heart rate sensor, serves as interface for
+  *                   heart rate sensor measurements and readings
+  ******************************************************************************
+  */
 #include "sensor_heartrate.h"
-
 /** 
  * Sensor status
  * */

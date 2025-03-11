@@ -1,3 +1,11 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : gps_parser.c
+  * @brief          : Source file for GPS parser, holds function to parse messages
+  *                   received from GPS module
+  ******************************************************************************
+  */
 #include "gps_parser.h"
 #include <string.h>
 

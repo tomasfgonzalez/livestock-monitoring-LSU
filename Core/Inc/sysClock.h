@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * @file    sysclock.h
-  * @brief   This file contains all the function prototypes for Sysclock
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : sysclock.h
+  * @brief          : Header for Sysclock file
   ******************************************************************************
   * @attention
   *
