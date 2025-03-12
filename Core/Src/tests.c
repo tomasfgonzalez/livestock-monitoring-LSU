@@ -15,6 +15,10 @@
 #include "usart.h"
 #include "gps_parser.h"
 #include "adc.h"
+#include "process_HR.h"
+#include "max30102_for_stm32_hal.h"
+
+
 
 int32_t Lat, Lon;
 uint8_t fixStatus;
@@ -47,6 +51,18 @@ void gps_test(void) {
 	fixStatus = get_UBX_GpsFixStatus();
 
 
+}
+
+
+
+void hr_test(void){
+
+	max30102_init_conf();
+	reset_bpm();
+	while(!get_bpm()){
+	max30102_irq_check();
+	}
+	max30102_set_shutdown();
 }
 
 

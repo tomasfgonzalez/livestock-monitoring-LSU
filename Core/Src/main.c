@@ -24,8 +24,8 @@
 #include "gpio.h"
 #include "tim2.h"
 #include "time_config.h"
-
 #include "test.h"
+#include "i2c.h"
 // #include "testing_leds.h"
 
 #include "fsm/fsm_main.h"
@@ -45,7 +45,7 @@ int main(void) {
     ADC_Init();
     DMA_Init();
     USART2_Init();
-
+    MX_I2C1_Init();
     // Clock initialization
     TIM2_Init();
 
@@ -54,7 +54,10 @@ int main(void) {
      gps_test();
      adc_test();
      gps_test();
-    //  testing_leds_init();
+
+     hr_test();
+
+    //testing_leds_init();
 
     // System start
     FSM_Main_init();
