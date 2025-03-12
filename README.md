@@ -5,4 +5,4 @@ The proposed solution is cost-effective and aims to enhance livestock security w
 
 ## Quick start
 ### Minimal setup
-![Setup of the LSU orotoype](./examples/img/test_scheme.bmp)
+![Setup of the LSU orotoype](./img/test_scheme.png)
