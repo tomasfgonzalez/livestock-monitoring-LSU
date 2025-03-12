@@ -5,7 +5,7 @@ The proposed solution is cost-effective and aims to enhance livestock security w
 
 ## Quick start
 ### Minimal setup
-![Setup of the LSU protoype](./img/test_scheme.png)
+![Setup of the LSU protoype](./img/test.png)
 
 ### Connections:
 * MAX30102 module: **SDA** to **PB_7**, **SCL** to **PB_6**, **INT** to **PA_8**, **V_IN** to **3.3V**, and **GND** to **GND**.
