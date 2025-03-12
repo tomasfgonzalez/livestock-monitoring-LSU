@@ -18,6 +18,9 @@ bool sensor_temperature_has_started(void) {
 }
 
 bool sensor_temperature_is_measurement_ready(void) {
+    if (ADC_areConversionsFinished()) {
+        sensor_status = SENSOR_TEMPERATURE_MEASUREMENT_READY;
+    }
     return sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
 }
 
@@ -30,18 +33,20 @@ bool sensor_temperature_has_error(void) {
  */
 void sensor_temperature_init(void) {
     ADC_Init();
-    // TODO: Need to initialize power supply for the sensor
+    if (ADC_hasError()) {
+        sensor_status = SENSOR_TEMPERATURE_ERROR;
+    }
     sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 
 void sensor_temperature_start(void) {
-    // TODO: Implement sensor start procedure (a.k.a: start measurement)
-    sensor_status = SENSOR_TEMPERATURE_MEASUREMENT_READY;
+    ADC_Enable();
+    sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 
 void sensor_temperature_stop(void) {
-    // TODO: Implement sensor stop procedure (a.k.a: stop the sensor)
-    sensor_status = SENSOR_TEMPERATURE_IDLE;
+    ADC_Disable();
+    sensor_status = SENSOR_TEMPERATURE_STARTING;
 }
 
 /**
@@ -52,7 +57,7 @@ bool sensor_temperature_read(uint16_t* target) {
         return false;
     }
     
-    get_ADC_values(target);
+    ADC_GetValues(target);
     sensor_status = SENSOR_TEMPERATURE_IDLE;
     return true;
 }
