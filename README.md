@@ -6,3 +6,9 @@ The proposed solution is cost-effective and aims to enhance livestock security w
 ## Quick start
 ### Minimal setup
 ![Setup of the LSU orotoype](./img/test_scheme.png)
+
+### Connections:
+* MAX30102 module: **SDA** to **PB_7**, **SCL** to **PB_6**, **INT** to **PA_8**, **V_IN** to **3.3V**, and **GND** to **GND**.
+* NEO6M module: **RX** to **PA_9**, **TX** to **PA_10**, **V_IN** to **5V** (it operates with >3V, but the board’s 3.3V output may sometimes drop below this value), and **GND** to **GND**.
+* RYLR998 module: **RX** to **PA_3**, **TX** to **PA_2**, **VDD** to **3.3V**, and **GND** to **GND**.
+* MCP9700 sensor: one **Vout** to **PA_4**, the other to **PA_5**, **VDD** to **3.3V**, and **GND** to **GND**.
