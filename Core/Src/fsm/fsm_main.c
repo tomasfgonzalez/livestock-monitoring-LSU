@@ -98,6 +98,7 @@ void FSM_Main_handle(void) {
     case LINK_ERROR:
       if (isLinkErrorResolved()) {
         currentState = LINK;
+        FSM_Link_init();
       }
       break;
 
@@ -105,6 +106,7 @@ void FSM_Main_handle(void) {
       FSM_Transmit_handle(&hasMainChannelFailed);
       if (hasMainChannelFailed) {
         currentState = TRANSMIT_BACKUP;
+        FSM_TransmitBackup_init();
       }
       break;
 
@@ -114,6 +116,7 @@ void FSM_Main_handle(void) {
         currentState = LINK_ERROR;
       } else if (isBackupTransmissionComplete()) {
         currentState = TRANSMIT;
+        FSM_Transmit_init();
       }
       break;
 

@@ -28,11 +28,11 @@ uint16_t Voltage_val[2];
 
 void adc_test(void) {
 
-    Start_ADC_IRQ();
+    ADC_Enable();
 
     HAL_Delay(2000);
 
-    get_ADC_values(Voltage_val);
+    ADC_GetValues(Voltage_val);
 }
 
 
