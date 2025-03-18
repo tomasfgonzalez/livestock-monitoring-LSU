@@ -33,6 +33,7 @@ bool sensor_temperature_has_error(void) {
  */
 void sensor_temperature_init(void) {
     ADC_Init();
+    GPIO_temperature_power_init();
     if (ADC_hasError()) {
         sensor_status = SENSOR_TEMPERATURE_ERROR;
     }
@@ -41,11 +42,13 @@ void sensor_temperature_init(void) {
 
 void sensor_temperature_start(void) {
     ADC_Enable();
+    GPIO_temperature_power_start();
     sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 
 void sensor_temperature_stop(void) {
     ADC_Disable();
+    GPIO_temperature_power_stop();
     sensor_status = SENSOR_TEMPERATURE_STARTING;
 }
 

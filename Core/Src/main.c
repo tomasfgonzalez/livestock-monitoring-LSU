@@ -44,7 +44,7 @@ int main(void) {
 
     // Peripherals initialization
     GPIO_Init();
-    gpio_temperature_power_init();
+    GPIO_temperature_power_init();
     ADC_Init();
     DMA_Init();
     USART2_Init();
@@ -67,7 +67,7 @@ int main(void) {
     HAL_TIM_Base_Start_IT(&htim2);
 //    testing_led1_on();
 //    testing_led2_on();
-    gpio_temperature_power_start();
+    // gpio_temperature_power_start();
     while (1) {
     	 FSM_Main_handle();
     }
