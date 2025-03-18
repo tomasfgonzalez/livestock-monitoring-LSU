@@ -55,5 +55,3 @@ bool ADC_hasError(void);
 bool ADC_areConversionsFinished(void);
 
 #endif /* __ADC_H */
-
-

@@ -1,8 +1,26 @@
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : adc.c
+  * @brief          : Source file for ADC configuration
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+
+/* Includes ------------------------------------------------------------------*/
 #include "adc.h"
 
 ADC_HandleTypeDef hadc;
 
-// Track whether ADC is currently enabled
 static bool adcIsEnabled = false;
 static bool initError = false;
 

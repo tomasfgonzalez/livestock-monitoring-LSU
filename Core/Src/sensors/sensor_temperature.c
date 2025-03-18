@@ -52,12 +52,32 @@ void sensor_temperature_stop(void) {
 /**
  * Sensor reading
  */
-bool sensor_temperature_read(uint16_t* target) {
+
+void sensor_temperature_parse(uint16_t *raw, uint8_t *target) {
+	uint16_t value = *raw;
+    float voltage = (value * 3.3f) / 4095.0f;
+    float temp = (voltage - 0.5f) * 100.0f;
+    
+    // Round and clamp temperature to valid range
+    if (temp < 0.0f) temp = 0.0f;
+    if (temp > 100.0f) temp = 100.0f;
+    *target = (uint8_t) temp;
+}
+
+void sensor_temperature_parse_all(uint16_t* raw, uint8_t* target) {
+    sensor_temperature_parse(&raw[0], &target[0]);
+    sensor_temperature_parse(&raw[1], &target[1]);
+}
+
+bool sensor_temperature_read(uint8_t* target) {
     if (sensor_status != SENSOR_TEMPERATURE_MEASUREMENT_READY) {
         return false;
     }
-    
-    ADC_GetValues(target);
+
+    uint16_t raw[2];
+    ADC_GetValues(raw);
+    sensor_temperature_parse_all(raw, target);
+
     sensor_status = SENSOR_TEMPERATURE_IDLE;
     return true;
 }

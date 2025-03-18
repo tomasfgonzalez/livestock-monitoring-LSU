@@ -46,8 +46,8 @@ static void startAckTimer(void) {
 }
 
 static void createPayload(void) {
-  uint16_t temperature[2];
-  bool temperatureReadSuccess = sensor_temperature_read(&temperature);
+  uint8_t temperature[2];
+  bool temperatureReadSuccess = sensor_temperature_read(temperature);
   isPayloadReady = true;
 }
 
