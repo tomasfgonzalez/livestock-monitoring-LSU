@@ -21,13 +21,16 @@
 
 ADC_HandleTypeDef hadc;
 
-/* ADC init function */
+static bool adcIsEnabled = false;
+static bool initError = false;
+
+static uint8_t conversionsFinished = 0;
+static uint16_t adc_values[2];
+
 void ADC_Init(void)
 {
   ADC_ChannelConfTypeDef sConfig = {0};
 
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
   hadc.Instance = ADC1;
   hadc.Init.OversamplingMode = DISABLE;
   hadc.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
@@ -42,57 +45,57 @@ void ADC_Init(void)
   hadc.Init.DMAContinuousRequests = DISABLE;
   hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
+
+  // These LowPower settings cause the ADC to auto-power off after each conversion
   hadc.Init.LowPowerAutoWait = ENABLE;
   hadc.Init.LowPowerFrequencyMode = ENABLE;
   hadc.Init.LowPowerAutoPowerOff = ENABLE;
-  if (HAL_ADC_Init(&hadc) != HAL_OK)
-  {
+
+  if (HAL_ADC_Init(&hadc) != HAL_OK) {
+    initError = true;
     Error_Handler();
   }
 
-
-
-
-  /** Configure for the selected ADC regular channel to be converted.
-  */
+  /* Configure ADC channel 4 to be converted. */
   sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;
-  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
-  {
+  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
+    initError = true;
     Error_Handler();
   }
 
-  /** Configure for the selected ADC regular channel to be converted.
-  */
+  /* Configure ADC channel 5 to be converted. */
   sConfig.Channel = ADC_CHANNEL_5;
-  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
-  {
+  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
+    initError = true;
     Error_Handler();
   }
-  /* USER CODE BEGIN ADC_Init 2 */
-  // Enable ADC interrupt
+
+  /* Enable ADC interrupt */
   HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0); // Set priority for ADC interrupt
   HAL_NVIC_EnableIRQ(ADC1_IRQn);        // Enable ADC interrupt in NVIC
 
-  // Enable ADC end-of-conversion interrupt
+  /* Enable ADC end-of-conversion interrupt */
   __HAL_ADC_ENABLE_IT(&hadc, ADC_IT_EOC);
-
 }
 
-void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
-{
+/**
+ * ADC MSP Initialization and De-Initialization functions
+ * - Enable/Disable clock for ADC
+ * - Configure/Unconfigure ADC GPIO pins
+ * - Configure/Unconfigure ADC interrupt
+ * 
+ * ADC Conversion Complete callback as well
+ */
 
+void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(adcHandle->Instance==ADC1)
-  {
+  if(adcHandle->Instance == ADC1) {
     /* ADC1 clock enable */
     __HAL_RCC_ADC1_CLK_ENABLE();
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**ADC GPIO Configuration
-    PA4     ------> ADC_IN4
-    PA5     ------> ADC_IN5
-    */
+    /* ADC GPIO Configuration */
     GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -104,18 +107,12 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   }
 }
 
-void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
-{
-
-  if(adcHandle->Instance==ADC1)
-  {
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle) {
+  if(adcHandle->Instance == ADC1) {
     /* Peripheral clock disable */
     __HAL_RCC_ADC1_CLK_DISABLE();
 
-    /**ADC GPIO Configuration
-    PA4     ------> ADC_IN4
-    PA5     ------> ADC_IN5
-    */
+    /* ADC GPIO Configuration */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5);
 
     /* ADC1 interrupt Deinit */
@@ -123,24 +120,46 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
   }
 }
 
-/* USER CODE BEGIN 1 */
-static uint16_t adc_values[2];
-
-void Start_ADC_IRQ(void){
-	HAL_ADC_Start_IT(&hadc);
-}
-
-
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-    static uint8_t current_channel = 0;
+  static uint8_t current_channel = 0;
+  if (hadc->Instance == ADC1) {
     adc_values[current_channel] = HAL_ADC_GetValue(hadc);
     current_channel ^= 1;  // Toggle between channel 0 and 1
-
+    conversionsFinished++;
+  }
 }
 
-void get_ADC_values(uint16_t* val) {
-	        val[0] = adc_values[0];
-	        val[1] = adc_values[1];
+
+/**
+ * ADC management functions
+ */
+void ADC_Enable(void) {
+  if (!adcIsEnabled) {
+    ADC_Init();
+    HAL_ADC_Start_IT(&hadc);
+
+    adcIsEnabled = true;
+  }
 }
 
-/* USER CODE END 1 */
+void ADC_Disable(void) {
+  if (adcIsEnabled) {
+    HAL_ADC_Stop_IT(&hadc);
+    HAL_ADC_DeInit(&hadc);
+
+    adcIsEnabled = false;
+  }
+}
+
+bool ADC_hasError(void) {
+  return initError;
+}
+
+void ADC_GetValues(uint16_t* val) {
+  val[0] = adc_values[0];
+  val[1] = adc_values[1];
+}
+
+bool ADC_areConversionsFinished(void) {
+  return conversionsFinished >= 2;
+}

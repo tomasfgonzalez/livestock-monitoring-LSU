@@ -22,8 +22,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
-
+#include "stdbool.h"
+#include "stm32l0xx_hal.h"
 
 /* Function prototypes -------------------------------------------------------*/
 /**
@@ -46,10 +46,12 @@ extern ADC_HandleTypeDef hadc;
  */
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* );
-void get_ADC_values(uint16_t* );
 
-void Start_ADC_IRQ(void);
+void ADC_GetValues(uint16_t* );
+
+void ADC_Enable(void);
+void ADC_Disable(void);
+bool ADC_hasError(void);
+bool ADC_areConversionsFinished(void);
 
 #endif /* __ADC_H */
-
-

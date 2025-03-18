@@ -27,6 +27,6 @@ bool sensor_temperature_has_started(void);
 bool sensor_temperature_is_measurement_ready(void);
 bool sensor_temperature_has_error(void);
 
-bool sensor_temperature_read(uint16_t* target);
+bool sensor_temperature_read(uint8_t* target);
 
 #endif /* SENSOR_TEMPERATURE_H */
