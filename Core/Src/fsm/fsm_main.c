@@ -32,8 +32,9 @@ static void performRestart(void) {
 }
 
 static bool isInitSuccess(void) {
-  return true;
-  return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
+  return sensor_temperature_has_started();
+  // TODO: Implement other sensors check
+  // return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
 }
 
 static bool isLinkEstablished(void) {
@@ -63,9 +64,15 @@ static bool hasBackupChannelFailed = false;
 
 void FSM_Main_init(void) {
   currentState = INIT;
+  // Initialize sensors
   sensor_temperature_init();
   sensor_heartrate_init();
   sensor_gps_init();
+
+  // But stop such sensors until they are needed
+  sensor_temperature_stop();
+  sensor_heartrate_stop();
+  sensor_gps_stop();
 
   initTimer = INIT_TIMEOUT;
 }
@@ -137,4 +144,5 @@ void FSM_Main_tick_1s(void) {
       FSM_Transmit_tick_1s();
     }
   }
+  sensor_temperature_tick_1s();
 }

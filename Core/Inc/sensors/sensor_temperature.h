@@ -22,6 +22,7 @@ typedef enum {
 void sensor_temperature_init(void);
 void sensor_temperature_start(void);
 void sensor_temperature_stop(void);
+void sensor_temperature_tick_1s(void);
 
 bool sensor_temperature_has_started(void);
 bool sensor_temperature_is_measurement_ready(void);
