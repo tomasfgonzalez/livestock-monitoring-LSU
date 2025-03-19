@@ -13,6 +13,11 @@
  * */
 static SensorTemperatureStatus sensor_status = SENSOR_TEMPERATURE_STARTING;
 
+/** 
+ * Timer counter for initialization delay between MCP and ADC
+ */
+static uint8_t timer_count = 0;
+
 bool sensor_temperature_has_started(void) {
     return sensor_status == SENSOR_TEMPERATURE_IDLE || sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
 }
@@ -32,24 +37,49 @@ bool sensor_temperature_has_error(void) {
  * Sensor management
  */
 void sensor_temperature_init(void) {
-    ADC_Init();
     GPIO_temperature_power_init();
-    if (ADC_hasError()) {
-        sensor_status = SENSOR_TEMPERATURE_ERROR;
-    }
+    timer_count = 2;
+    sensor_status = SENSOR_TEMPERATURE_STARTING;
+}
+
+void sensor_temperature_init_adc(void) {
+  ADC_Init();
+  if (ADC_hasError()) {
+    sensor_status = SENSOR_TEMPERATURE_ERROR;
+  } else {
     sensor_status = SENSOR_TEMPERATURE_IDLE;
+  }
 }
 
 void sensor_temperature_start(void) {
-    ADC_Enable();
     GPIO_temperature_power_start();
-    sensor_status = SENSOR_TEMPERATURE_IDLE;
+    timer_count = 2;
+}
+
+void sensor_temperature_start_adc(void) {
+  ADC_Enable();
+  sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 
 void sensor_temperature_stop(void) {
     ADC_Disable();
     GPIO_temperature_power_stop();
     sensor_status = SENSOR_TEMPERATURE_STARTING;
+}
+
+void sensor_temperature_tick_1s(void) {
+  if (sensor_status == SENSOR_TEMPERATURE_STARTING) {
+    timer_count--;
+    if (timer_count == 0) {
+      sensor_temperature_init_adc();
+    }
+  }
+  if (sensor_status == SENSOR_TEMPERATURE_IDLE) {
+    timer_count--;
+    if (timer_count == 0) {
+      sensor_temperature_start_adc();
+    }
+  }
 }
 
 /**

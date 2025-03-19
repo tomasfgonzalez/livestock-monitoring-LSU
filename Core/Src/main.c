@@ -44,8 +44,6 @@ int main(void) {
 
     // Peripherals initialization
     GPIO_Init();
-    GPIO_temperature_power_init();
-    ADC_Init();
     DMA_Init();
     USART2_Init();
     MX_I2C1_Init();
@@ -54,20 +52,16 @@ int main(void) {
 
     // Run tests
     adc_test();
-     gps_test();
-     adc_test();
-     gps_test();
-
-     hr_test();
+    gps_test();
+    adc_test();
+    gps_test();
+    hr_test();
 
     //testing_leds_init();
 
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
-//    testing_led1_on();
-//    testing_led2_on();
-    // gpio_temperature_power_start();
     while (1) {
     	 FSM_Main_handle();
     }
