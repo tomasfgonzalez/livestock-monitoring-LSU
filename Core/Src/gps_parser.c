@@ -7,7 +7,6 @@
   ******************************************************************************
   */
 #include "gps_parser.h"
-#include <string.h>
 
 // Variables globales para almacenar los datos de las tramas
 NAV_POSLLH navPosllhData;
@@ -17,12 +16,9 @@ NAV_STATUS navStatusData;
 bool isNavPosllhReceived = false;
 bool isNavStatusReceived = false;
 
-
 const uint8_t UBX_HEADER[] = { 0xB5, 0x62 };
 const uint8_t NAV_POSLLH_HEADER[] = { 0x01, 0x02 };
 const uint8_t NAV_STATUS_HEADER[] = { 0x01, 0x03 };
-
-
 
 UBXMessage ubxMessage;
 
@@ -41,18 +37,18 @@ bool compareMsgHeader(const uint8_t* msgHeader) {
 
 
 void processUBXData(uint8_t* data, uint16_t size) {
-    for (int i = 0; i < size; i++) {
-        ubxMsgType msgType = processGPS(data[i]);  // Procesa byte por byte
+  for (int i = 0; i < size; i++) {
+    ubxMsgType msgType = processGPS(data[i]);  // Process byte per byte
 
-        // Verificar si se han recibido ambas tramas
-        if (isNavPosllhReceived && isNavStatusReceived) {
-            // Ambas tramas han sido recibidas, procesar los datos
-            // Reiniciar los indicadores
-            isNavPosllhReceived = false;
-            isNavStatusReceived = false;
-        i=size; // break
-        }
+    // Verificar si se han recibido ambas tramas
+    if (isNavPosllhReceived && isNavStatusReceived) {
+      // Ambas tramas han sido recibidas, procesar los datos
+      // Reiniciar los indicadores
+      isNavPosllhReceived = false;
+      isNavStatusReceived = false;
+      break;
     }
+  }
 
 }
 

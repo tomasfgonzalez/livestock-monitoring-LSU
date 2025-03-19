@@ -39,6 +39,7 @@ void adc_test(void) {
 void gps_test(void) {
 
 	Start_DMA_UART2();
+	DMA_Start();
 	// Obtener latitud y longitud
 	Lat = get_UBX_Lat();
 	Lon = get_UBX_Lon();
@@ -49,8 +50,6 @@ void gps_test(void) {
 	// GPS FIX STATUS: 0 NO FIX, 1 DEAD RECKONING ONLY, 2 2D FIX, 3 3D FIX,
 	// 4 GPS + DEAD RECKONING COMBINED, 5 TIME ONLY FIX
 	fixStatus = get_UBX_GpsFixStatus();
-
-
 }
 
 

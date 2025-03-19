@@ -1,9 +1,9 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    usart.c
-  * @brief   This file provides code for the configuration
-  *          of the USART instances.
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : usart.c
+  * @brief          : This file provides code for the configuration
+  *                   of the USART instances.
   ******************************************************************************
   * @attention
   *
@@ -16,29 +16,18 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-#include "SysClock.h"
-/* USER CODE BEGIN 0 */
 
-/* USER CODE END 0 */
+static bool initError = false;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USART2 init function */
 
-void USART2_Init(void)
-{
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
+void USART2_Init(void) {
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -50,25 +39,16 @@ void USART2_Init(void)
   huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_RXOVERRUNDISABLE_INIT;
   huart2.AdvancedInit.OverrunDisable = UART_ADVFEATURE_OVERRUN_DISABLE;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
+  if (HAL_UART_Init(&huart2) != HAL_OK) {
+    initError = true;
     Error_Handler();
   }
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
-
 }
 
-void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
-{
-
+void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(uartHandle->Instance==USART2)
-  {
-  /* USER CODE BEGIN USART2_MspInit 0 */
 
-  /* USER CODE END USART2_MspInit 0 */
+  if (uartHandle->Instance == USART2) {
     /* USART2 clock enable */
     __HAL_RCC_USART2_CLK_ENABLE();
 
@@ -95,27 +75,19 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_usart2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
     hdma_usart2_rx.Init.Mode = DMA_NORMAL;
     hdma_usart2_rx.Init.Priority = DMA_PRIORITY_LOW;
-    if (HAL_DMA_Init(&hdma_usart2_rx) != HAL_OK)
-    {
+    if (HAL_DMA_Init(&hdma_usart2_rx) != HAL_OK) {
+      initError = true;
       Error_Handler();
     }
 
     __HAL_LINKDMA(uartHandle,hdmarx,hdma_usart2_rx);
-
-  /* USER CODE BEGIN USART2_MspInit 1 */
-
-  /* USER CODE END USART2_MspInit 1 */
   }
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 {
 
-  if(uartHandle->Instance==USART2)
-  {
-  /* USER CODE BEGIN USART2_MspDeInit 0 */
-
-  /* USER CODE END USART2_MspDeInit 0 */
+  if (uartHandle->Instance == USART2) {
     /* Peripheral clock disable */
     __HAL_RCC_USART2_CLK_DISABLE();
 
@@ -127,13 +99,12 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
     /* USART2 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);
-  /* USER CODE BEGIN USART2_MspDeInit 1 */
-
-  /* USER CODE END USART2_MspDeInit 1 */
   }
 }
 
-
+bool USART2_hasError(void) {
+  return initError;
+}
 
 //TODO Este buffer no se si corresponderia que este aqui, pero en gps no me parecia adecuado.
 
@@ -145,32 +116,25 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 uint8_t UBX_Rx_Data[UBX_Rx_Size];
 
 void Start_DMA_UART2(void){
-HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
 }
-
 
 // Callback para recepción completa por DMA
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart2) {  // Verifica que la interrupción proviene de USART2
-        // Procesa los datos en el buffer UBX_Rx_Data
-        processUBXData(UBX_Rx_Data, UBX_Rx_Size);
-        // Opcional: Detener la transferencia DMA
-        // HAL_UART_DMAStop(&huart2);
-    }
+  if (huart == &huart2) {
+    processUBXData(UBX_Rx_Data, UBX_Rx_Size);
+    // Opcional: Detener la transferencia DMA
+    // HAL_UART_DMAStop(&huart2);
+  }
 }
 
 // Callback para manejo de errores UART
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
-    while (1) {
-        (void)huart->ErrorCode; // Captura y maneja el código de error si es necesario
-    }
+  while (1) {
+    (void) huart->ErrorCode; // Captura y maneja el código de error si es necesario
+  }
 }
 
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
     // Implementación futura (si es necesario)
 }
-
-
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */

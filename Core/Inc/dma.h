@@ -28,20 +28,11 @@ extern "C" {
 #include "main.h"
 
 /* DMA memory to memory transfer handles -------------------------------------*/
-
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
 void DMA_Init(void);
 
-/* USER CODE BEGIN Prototypes */
+void DMA_Start(void);
 
-/* USER CODE END Prototypes */
+void DMA_Stop(void);
 
 #ifdef __cplusplus
 }

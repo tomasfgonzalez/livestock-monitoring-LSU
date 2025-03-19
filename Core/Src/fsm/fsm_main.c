@@ -71,8 +71,8 @@ void FSM_Main_init(void) {
 
   // But stop such sensors until they are needed
   sensor_temperature_stop();
-  sensor_heartrate_stop();
-  sensor_gps_stop();
+  // sensor_heartrate_stop();
+  // sensor_gps_stop();
 
   initTimer = INIT_TIMEOUT;
 }
