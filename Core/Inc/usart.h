@@ -25,11 +25,13 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include <stdbool.h>
+#include "SysClock.h"
 
 extern UART_HandleTypeDef huart2;
 
 void USART2_Init(void);
+bool USART2_hasError(void);
 
 void Start_DMA_UART2(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);

@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "dma.h"
+#include "usart.h"
 
 typedef enum {
     SENSOR_GPS_STARTING,
