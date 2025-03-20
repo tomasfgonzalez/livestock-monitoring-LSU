@@ -23,9 +23,8 @@
 extern "C" {
 #endif
 
-
-#include "main.h"
-
+/* Includes ------------------------------------------------------------------*/
+#include "stm32l0xx_hal.h"
 
 /**
  * @brief Configures the system clock.
@@ -52,4 +51,3 @@ void Error_Handler(void);
 }
 #endif
 #endif /*__ GPIO_H__ */
-

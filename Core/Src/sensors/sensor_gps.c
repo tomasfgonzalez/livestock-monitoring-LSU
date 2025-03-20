@@ -13,11 +13,36 @@
  * */
 static SensorGPSStatus sensor_status = SENSOR_GPS_STARTING;
 
+/**
+ * Helper functions
+ * */
+static bool processAndValidate(void) {
+  processUBXData(USART2_getData(), USART2_getDataLength());
+
+  uint8_t isFixed = get_UBX_GpsFixStatus();
+  uint8_t latitude = get_UBX_GpsLatitude();
+  uint8_t longitude = get_UBX_GpsLongitude();
+
+  return true;
+}
+
 bool sensor_gps_has_started(void) {
   return sensor_status == SENSOR_GPS_IDLE || sensor_status == SENSOR_GPS_MEASUREMENT_READY;
 }
 
 bool sensor_gps_is_measurement_ready(void) {
+  if (sensor_status == SENSOR_GPS_MEASUREMENT_READY) {
+    return true;
+  }
+
+  if (USART2_isDataReady()) {
+    bool isValidData = processAndValidate();
+    if (isValidData) {
+      sensor_status = SENSOR_GPS_MEASUREMENT_READY;
+    } else {
+      USART2_Start(); // Restart measurement
+    }
+  }
   return sensor_status == SENSOR_GPS_MEASUREMENT_READY;
 }
 
@@ -39,13 +64,11 @@ void sensor_gps_init(void) {
 }
 
 void sensor_gps_start(void) {
-  // TODO: Implement sensor start procedure (a.k.a: start measurement)
   DMA_Start();
-  sensor_status = SENSOR_GPS_MEASUREMENT_READY;
+  USART2_Start();
 }
 
 void sensor_gps_stop(void) {
-  // TODO: Implement sensor stop procedure (a.k.a: stop the sensor)
   DMA_Stop();
   sensor_status = SENSOR_GPS_IDLE;
 }
@@ -53,21 +76,9 @@ void sensor_gps_stop(void) {
 /**
  * Sensor reading
  */
-GPSData sensor_gps_read(void) {
-  GPSData data = {0};
+void sensor_gps_read(GPSData *data) {
+  data->latitude = get_UBX_GpsLatitude();
+  data->longitude = get_UBX_GpsLongitude();
 
-  if (sensor_status != SENSOR_GPS_MEASUREMENT_READY) {
-    data.fix_valid = false;
-    return data; // Return invalid data
-  }
-
-  // TODO: Implement GPS reading
   sensor_status = SENSOR_GPS_IDLE;
-
-  // Return test values
-  data.latitude = 45.5017;
-  data.longitude = -73.5673;
-  data.fix_valid = true;
-
-  return data;
 }

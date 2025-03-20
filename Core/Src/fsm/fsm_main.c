@@ -7,14 +7,6 @@
   */
 
 #include "fsm_main.h"
-#include "stm32l0xx.h"
-
-#include <stdbool.h>
-#include <stm32l0xx_hal.h>
-
-#include "fsm_link.h"
-#include "fsm_transmit.h"
-#include "fsm_transmit_backup.h"
 
 #define INIT_TIMEOUT 50
 
@@ -71,8 +63,8 @@ void FSM_Main_init(void) {
 
   // But stop such sensors until they are needed
   sensor_temperature_stop();
-  // sensor_heartrate_stop();
-  // sensor_gps_stop();
+  sensor_heartrate_stop();
+  sensor_gps_stop();
 
   initTimer = INIT_TIMEOUT;
 }

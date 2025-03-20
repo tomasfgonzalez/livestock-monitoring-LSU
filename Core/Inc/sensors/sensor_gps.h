@@ -10,21 +10,21 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "dma.h"
 #include "usart.h"
+#include "gps_parser.h"
 
 typedef enum {
-    SENSOR_GPS_STARTING,
-    SENSOR_GPS_IDLE,
-    SENSOR_GPS_MEASUREMENT_READY,
-    SENSOR_GPS_ERROR
+  SENSOR_GPS_STARTING,
+  SENSOR_GPS_IDLE,
+  SENSOR_GPS_MEASUREMENT_READY,
+  SENSOR_GPS_ERROR
 } SensorGPSStatus;
 
 typedef struct {
-    // TODO: Add necessary fields
-    float latitude;
-    float longitude;
-    bool fix_valid;
+  float latitude;
+  float longitude;
 } GPSData;
 
 void sensor_gps_init(void);
@@ -35,6 +35,6 @@ bool sensor_gps_has_started(void);
 bool sensor_gps_is_measurement_ready(void);
 bool sensor_gps_has_error(void);
 
-GPSData sensor_gps_read(void);
+void sensor_gps_read(GPSData *data);
 
 #endif /* SENSOR_GPS_H */

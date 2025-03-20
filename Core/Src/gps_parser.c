@@ -8,11 +8,11 @@
   */
 #include "gps_parser.h"
 
-// Variables globales para almacenar los datos de las tramas
+/* Global variables to store frame data -------------------------------------- */
 NAV_POSLLH navPosllhData;
 NAV_STATUS navStatusData;
 
-// Indicadores para saber si las tramas han sido recibidas
+/* Indicators to know if the frames have been received ----------------------- */
 bool isNavPosllhReceived = false;
 bool isNavStatusReceived = false;
 
@@ -35,7 +35,6 @@ bool compareMsgHeader(const uint8_t* msgHeader) {
   return ptr[0] == msgHeader[0] && ptr[1] == msgHeader[1];
 }
 
-
 void processUBXData(uint8_t* data, uint16_t size) {
   for (int i = 0; i < size; i++) {
     ubxMsgType msgType = processGPS(data[i]);  // Process byte per byte
@@ -52,19 +51,17 @@ void processUBXData(uint8_t* data, uint16_t size) {
 
 }
 
-int32_t get_UBX_Lat(void) {
+int32_t get_UBX_GpsLatitude(void) {
 	  return navPosllhData.lat;
 }
 
-int32_t get_UBX_Lon(void) {
+int32_t get_UBX_GpsLongitude(void) {
 	  return navPosllhData.lon;
 }
 
 uint8_t get_UBX_GpsFixStatus(void) {
     return navStatusData.gpsFix;
 }
-
-
 
 ubxMsgType processGPS(uint8_t c) {
   static int fpos = 0;

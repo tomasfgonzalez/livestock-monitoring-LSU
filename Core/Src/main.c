@@ -38,32 +38,33 @@ uint32_t mockTimer = 5;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
+void run_tests(void) {
+  adc_test();
+  gps_test();
+  adc_test();
+  gps_test();
+  hr_test();
+}
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
     // Peripherals initialization
     GPIO_Init();
-    DMA_Init();
-    USART2_Init();
     MX_I2C1_Init();
+
     // Clock initialization
     TIM2_Init();
 
-    // Run tests
-    adc_test();
-    gps_test();
-    adc_test();
-    gps_test();
-    hr_test();
-
-    //testing_leds_init();
+    // run_tests();
+    // testing_leds_init();
 
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
-    	 FSM_Main_handle();
+      FSM_Main_handle();
     }
 }
 
