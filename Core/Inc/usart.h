@@ -26,14 +26,18 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
-#include "SysClock.h"
+#include "stm32l0xx_hal.h"
+#include "gps_structures.h"
 
 extern UART_HandleTypeDef huart2;
 
 void USART2_Init(void);
+void USART2_Start(void);
+bool USART2_isDataReady(void);
+uint8_t* USART2_getData(void);
+uint16_t USART2_getDataLength(void);
 bool USART2_hasError(void);
 
-void Start_DMA_UART2(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 
@@ -45,4 +49,3 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 #endif
 
 #endif /* __USART_H__ */
-

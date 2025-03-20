@@ -160,6 +160,6 @@ void ADC_GetValues(uint16_t* val) {
   val[1] = adc_values[1];
 }
 
-bool ADC_areConversionsFinished(void) {
+bool ADC_isDataReady(void) {
   return conversionsFinished >= 2;
 }

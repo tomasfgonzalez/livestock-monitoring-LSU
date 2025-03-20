@@ -19,27 +19,27 @@ static SensorTemperatureStatus sensor_status = SENSOR_TEMPERATURE_STARTING;
 static uint8_t timer_count = 0;
 
 bool sensor_temperature_has_started(void) {
-    return sensor_status == SENSOR_TEMPERATURE_IDLE || sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
+  return sensor_status == SENSOR_TEMPERATURE_IDLE || sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
 }
 
 bool sensor_temperature_is_measurement_ready(void) {
-    if (ADC_areConversionsFinished()) {
-        sensor_status = SENSOR_TEMPERATURE_MEASUREMENT_READY;
-    }
-    return sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
+  if (ADC_isDataReady()) {
+    sensor_status = SENSOR_TEMPERATURE_MEASUREMENT_READY;
+  }
+  return sensor_status == SENSOR_TEMPERATURE_MEASUREMENT_READY;
 }
 
 bool sensor_temperature_has_error(void) {
-    return sensor_status == SENSOR_TEMPERATURE_ERROR;
+  return sensor_status == SENSOR_TEMPERATURE_ERROR;
 }
 
 /**
  * Sensor management
  */
 void sensor_temperature_init(void) {
-    GPIO_temperature_power_init();
-    timer_count = 2;
-    sensor_status = SENSOR_TEMPERATURE_STARTING;
+  GPIO_temperature_power_init();
+  timer_count = 2;
+  sensor_status = SENSOR_TEMPERATURE_STARTING;
 }
 
 void sensor_temperature_init_adc(void) {

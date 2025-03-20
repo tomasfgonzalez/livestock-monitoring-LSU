@@ -27,7 +27,7 @@ uint16_t Voltage_val[2];
 
 
 void adc_test(void) {
-
+	ADC_Init();
     ADC_Enable();
 
     HAL_Delay(2000);
@@ -37,9 +37,11 @@ void adc_test(void) {
 
 
 void gps_test(void) {
-
-	Start_DMA_UART2();
+	DMA_Init();
+	USART2_Init();
 	DMA_Start();
+	USART2_Start();
+
 	// Obtener latitud y longitud
 	Lat = get_UBX_Lat();
 	Lon = get_UBX_Lon();

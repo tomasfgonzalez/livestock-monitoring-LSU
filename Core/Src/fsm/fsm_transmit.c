@@ -28,14 +28,14 @@ static void startSensingTimer(void) {
 }
 
 static void startSensing(void) {
-    // sensor_gps_start();
+    sensor_gps_start();
     // sensor_heartrate_start();
     sensor_temperature_start();
     startSensingTimer();
 }
 
 static void stopSensing(void) {
-    // sensor_gps_stop();
+    sensor_gps_stop();
     // sensor_heartrate_stop();
     sensor_temperature_stop();
     sensingTimer = 0;
@@ -47,7 +47,11 @@ static void startAckTimer(void) {
 
 static void createPayload(void) {
   uint8_t temperature[2];
-  bool temperatureReadSuccess = sensor_temperature_read(temperature);
+  GPSData gps;
+
+  sensor_temperature_read(temperature);
+  sensor_gps_read(&gps);
+
   isPayloadReady = true;
 }
 
@@ -57,20 +61,17 @@ static void sendPayload(void) {
 }
 
 // ---------- FSM functions -----------
-void FSM_Transmit_init(void)
-{
+void FSM_Transmit_init(void) {
     currentState = TRANSMIT_IDLE;
 
     // Clear flags or timers
-    ackReceived       = false;
+    ackReceived = false;
 
     sensingTimer = 0;
     ackTimer     = 0;
 }
 
-void FSM_Transmit_handle(bool *mainChannelFail)
-
-{
+void FSM_Transmit_handle(bool *mainChannelFail) {
     bool onSensingWindow = time_config_on_sensing_window();
     bool onTransmitWindow = time_config_on_transmit_window();
 
@@ -93,9 +94,9 @@ void FSM_Transmit_handle(bool *mainChannelFail)
 
     case TRANSMIT_SENSE:
         bool temperatureReady = sensor_temperature_is_measurement_ready();
-        // const gpsReady = sensor_gps_is_ready();
-        // const heartrateReady = sensor_heartrate_is_ready();
-        bool allSensorsReady = temperatureReady;
+        bool gpsReady = sensor_gps_is_measurement_ready();
+//         const heartrateReady = sensor_heartrate_is_ready();
+        bool allSensorsReady = temperatureReady && gpsReady;
 
         if (allSensorsReady || (sensingTimer <= 0)) {
             // testing_led1_off();

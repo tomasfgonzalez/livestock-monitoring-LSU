@@ -20,12 +20,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
 
-static bool initError = false;
-
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
 
-/* USART2 init function */
+#define UBX_Rx_Size (2 * sizeof(NAV_STATUS) + 2 * sizeof(NAV_POSLLH))
+
+static bool initError = false;
+static bool dataReady = false;
+static uint8_t UBX_Rx_Data[UBX_Rx_Size];
 
 void USART2_Init(void) {
   huart2.Instance = USART2;
@@ -45,6 +47,14 @@ void USART2_Init(void) {
   }
 }
 
+/**
+ * USART MSP Initialization and De-Initialization functions
+ * - Enable/Disable clock for USART
+ * - Configure/Unconfigure USART GPIO pins
+ * - Configure/Unconfigure USART DMA
+ * 
+ * USART Receive Complete callbacks as well
+ */
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
@@ -102,33 +112,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   }
 }
 
-bool USART2_hasError(void) {
-  return initError;
-}
-
-//TODO Este buffer no se si corresponderia que este aqui, pero en gps no me parecia adecuado.
-
-#include "gps_parser.h"
-
-
-#define UBX_Rx_Size (2 * sizeof(NAV_STATUS) + 2 * sizeof(NAV_POSLLH))
-
-uint8_t UBX_Rx_Data[UBX_Rx_Size];
-
-void Start_DMA_UART2(void){
-  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
-}
-
-// Callback para recepción completa por DMA
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
   if (huart == &huart2) {
-    processUBXData(UBX_Rx_Data, UBX_Rx_Size);
+    dataReady = true;
     // Opcional: Detener la transferencia DMA
     // HAL_UART_DMAStop(&huart2);
   }
 }
 
-// Callback para manejo de errores UART
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
   while (1) {
     (void) huart->ErrorCode; // Captura y maneja el código de error si es necesario
@@ -136,5 +127,29 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
 }
 
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
-    // Implementación futura (si es necesario)
+  // Implementación futura (si es necesario)
+}
+
+/**
+ * USART management functions
+ */
+void USART2_Start(void) {
+  dataReady = false;
+  HAL_UART_Receive_DMA(&huart2, UBX_Rx_Data, UBX_Rx_Size);
+}
+
+bool USART2_hasError(void) {
+  return initError;
+}
+
+bool USART2_isDataReady(void) {
+  return dataReady;
+}
+
+uint8_t* USART2_getData(void) {
+  return UBX_Rx_Data;
+}
+
+uint16_t USART2_getDataLength(void) {
+  return UBX_Rx_Size;
 }

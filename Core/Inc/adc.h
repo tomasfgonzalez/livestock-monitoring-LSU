@@ -52,6 +52,6 @@ void ADC_GetValues(uint16_t* );
 void ADC_Enable(void);
 void ADC_Disable(void);
 bool ADC_hasError(void);
-bool ADC_areConversionsFinished(void);
+bool ADC_isDataReady(void);
 
 #endif /* __ADC_H */
