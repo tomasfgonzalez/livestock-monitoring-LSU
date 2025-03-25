@@ -60,11 +60,11 @@ int main(void) {
     run_tests();
     // testing_leds_init();
     //Start RX IRQ
-    	INIT_RX_UART2();
+    INIT_RX_UART2();
 
 
     	//Configuration parameters
-    	rylr998_setChannel(1,3);
+    rylr998_setChannel(1,3);
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
@@ -81,10 +81,12 @@ int main(void) {
     	  //------------------------------
     	  // 		 EXAMPLE RECIVE
     	  //------------------------------
+    		while(1){
     		if(rylr998_GetInterruptFlag()){
     						if(rylr998_prase_reciver(rx_buff,RX_BUFF)==RYLR_RCV_ACK){
 
     						}
+    		}
     		}
      FSM_Main_handle();
     }
