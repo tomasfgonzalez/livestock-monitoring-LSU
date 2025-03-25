@@ -59,6 +59,10 @@ int32_t get_UBX_GpsLongitude(void) {
 	  return navPosllhData.lon;
 }
 
+uint32_t get_UBX_TimeOfTheWeekUTC_ms(void){
+	return navPosllhData.iTOW;      //domingo a las 00:00:00 UTC-> 000000.000 [s]
+}
+
 uint8_t get_UBX_GpsFixStatus(void) {
     return navStatusData.gpsFix;
 }

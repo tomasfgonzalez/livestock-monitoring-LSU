@@ -30,6 +30,7 @@ void processUBXData(uint8_t* data, uint16_t);
 uint8_t get_UBX_GpsFixStatus(void);
 int32_t get_UBX_GpsLongitude(void);
 int32_t get_UBX_GpsLatitude(void);
+uint32_t get_UBX_TimeOfTheWeekUTC_ms(void);
 
 #ifdef __cplusplus
 }
