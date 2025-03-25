@@ -8,6 +8,11 @@
 #ifndef SENSOR_GPS_H
 #define SENSOR_GPS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -15,6 +20,7 @@
 #include "usart.h"
 #include "gps_parser.h"
 
+/* Typedefs ------------------------------------------------------------------*/
 typedef enum {
   SENSOR_GPS_STARTING,
   SENSOR_GPS_IDLE,
@@ -22,6 +28,7 @@ typedef enum {
   SENSOR_GPS_ERROR
 } SensorGPSStatus;
 
+/* Typedefs ------------------------------------------------------------------*/
 typedef struct {
   float latitude;
   float longitude;
@@ -36,5 +43,9 @@ bool sensor_gps_is_measurement_ready(void);
 bool sensor_gps_has_error(void);
 
 void sensor_gps_read(GPSData *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SENSOR_GPS_H */

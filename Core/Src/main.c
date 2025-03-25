@@ -26,7 +26,7 @@
 #include "time_config.h"
 #include "gpio_temperature_power.h"
 
-#include "test.h"
+#include "tests.h"
 #include "i2c.h"
 // #include "testing_leds.h"
 

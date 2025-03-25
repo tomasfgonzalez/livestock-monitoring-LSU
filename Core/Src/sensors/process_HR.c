@@ -1,6 +1,11 @@
-/* process_HR.c */
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : process_HR.c
+  * @brief          : Source file for process HR
+  ******************************************************************************
+  */
 #include "process_HR.h"
-#include "max30102_for_stm32_hal.h"
 
 uint16_t max30102_buffer[MAX30102_BUFFER_SIZE];
 uint16_t resample_buffer[MAX30102_BUFFER_SIZE / DOWNSAMPLE_FACTOR];

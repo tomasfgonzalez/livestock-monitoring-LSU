@@ -17,14 +17,23 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TEST_H__
-#define __TEST_H__
+#ifndef __TESTS_H__
+#define __TESTS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32l0xx_hal.h"
+#include "tests.h"
+#include "usart.h"
+#include "gps_parser.h"
+#include "adc.h"
+#include "process_HR.h"
+#include "max30102_for_stm32_hal.h"
+
+/* Function prototypes -------------------------------------------------------*/
 void gps_test(void);
 void adc_test(void);
 void hr_test(void);
@@ -34,5 +43,5 @@ void hr_test(void);
 }
 #endif
 
-#endif /* __USART_H__ */
+#endif /* __TESTS_H__ */
 

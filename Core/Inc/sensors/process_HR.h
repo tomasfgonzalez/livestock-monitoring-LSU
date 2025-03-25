@@ -1,10 +1,35 @@
-/* process_HR.h */
+/**
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : process_HR.h
+  * @brief          : Header for process HR file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef PROCESS_HR_H
 #define PROCESS_HR_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdio.h>
+#include "max30102_for_stm32_hal.h"
 
+/* Defines -------------------------------------------------------------------*/
 #define MAX30102_BUFFER_SIZE 2000 // Buffer size if change go check bpm
 #define MAX30102_UNUSED_DATA 64    // Skip first 64 samples
 #define ALPHA 0.05                 // Smoothing factor for low-pass filter
@@ -31,5 +56,9 @@ void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size);
 void process_buffer(void);
 uint16_t get_bpm(void);
 void reset_bpm(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PROCESS_HR_H */
