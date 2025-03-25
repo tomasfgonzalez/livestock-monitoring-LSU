@@ -10,20 +10,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l0xx_hal.h"
-#include "test.h"
-#include "usart.h"
-#include "gps_parser.h"
-#include "adc.h"
-#include "process_HR.h"
-#include "max30102_for_stm32_hal.h"
-
-
+#include "tests.h"
 
 int32_t Lat, Lon;
 uint8_t fixStatus;
 uint16_t Voltage_val[2];
-
 
 
 void adc_test(void) {
@@ -57,11 +48,10 @@ void gps_test(void) {
 
 
 void hr_test(void){
-
 	max30102_init_conf();
 	reset_bpm();
 	while(!get_bpm()){
-	max30102_irq_check();
+		max30102_irq_check();
 	}
 	max30102_set_shutdown();
 }

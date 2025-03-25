@@ -1,10 +1,16 @@
 #ifndef MAX30102_FOR_STM32_HAL_H
 #define MAX30102_FOR_STM32_HAL_H
 
-#include "max30102_for_stm32_hal.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <i2c.h>
+#include <process_HR.h>
 
+/* Defines -------------------------------------------------------------------*/
 #define MAX30102_I2C_ADDR 0x57
 #define MAX30102_I2C_TIMEOUT 1000
 
@@ -157,4 +163,8 @@ void max30102_clear_fifo(max30102_t *obj);
 void max30102_read_fifo(max30102_t *obj);
 
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* MAX30102_FOR_STM32_HAL_H */
