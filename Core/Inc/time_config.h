@@ -8,6 +8,10 @@
 #ifndef TIME_CONFIG_H
 #define TIME_CONFIG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -30,4 +34,7 @@ uint32_t time_config_get_transmit_duration(void);
 bool time_config_on_sensing_window();
 bool time_config_on_transmit_window();
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* TIME_CONFIG_H */

@@ -8,8 +8,6 @@
 #ifndef FSM_LINK_H
 #define FSM_LINK_H
 
-#include <stdint.h>
-
 typedef enum {
     LINK_IDLE,
 } FSM_Link_State;

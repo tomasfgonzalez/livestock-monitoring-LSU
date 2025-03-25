@@ -6,8 +6,9 @@
   *                   the time events of the device
   ******************************************************************************
   */
-#include <stdbool.h>
-#include <stdint.h>
+
+/* Includes ------------------------------------------------------------------*/
+#include "time_config.h"
 
 // Default values
 static uint32_t timeInSeconds = 0;

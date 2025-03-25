@@ -14,9 +14,6 @@
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
-
 /* GPS message types --------------------------------------------------------*/
 extern const uint8_t UBX_HEADER[];
 extern const uint8_t NAV_POSLLH_HEADER[];

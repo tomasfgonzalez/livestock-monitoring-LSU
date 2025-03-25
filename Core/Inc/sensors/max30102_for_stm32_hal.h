@@ -3,9 +3,6 @@
 
 #include "max30102_for_stm32_hal.h"
 #include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
-#include <string.h>
 #include <i2c.h>
 
 #define MAX30102_I2C_ADDR 0x57

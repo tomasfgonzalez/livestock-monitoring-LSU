@@ -22,9 +22,9 @@ const uint8_t NAV_STATUS_HEADER[] = { 0x01, 0x03 };
 
 UBXMessage ubxMessage;
 
-void calcChecksum(uint8_t* CK, int msgSize) {
+void calcChecksum(uint8_t* CK, uint16_t msgSize) {
   memset(CK, 0, 2);
-  for (int i = 0; i < msgSize; i++) {
+  for (uint16_t i = 0; i < msgSize; i++) {
     CK[0] += ((uint8_t*)(&ubxMessage))[i];
     CK[1] += CK[0];
   }
@@ -36,7 +36,7 @@ bool compareMsgHeader(const uint8_t* msgHeader) {
 }
 
 void processUBXData(uint8_t* data, uint16_t size) {
-  for (int i = 0; i < size; i++) {
+  for (uint16_t i = 0; i < size; i++) {
     ubxMsgType msgType = processGPS(data[i]);  // Process byte per byte
 
     // Verificar si se han recibido ambas tramas
@@ -64,10 +64,10 @@ uint8_t get_UBX_GpsFixStatus(void) {
 }
 
 ubxMsgType processGPS(uint8_t c) {
-  static int fpos = 0;
+  static uint16_t fpos = 0;
   static uint8_t checksum[2];
   static ubxMsgType currentMsgType = MT_NONE;
-  static int payloadSize = sizeof(UBXMessage);
+  static uint16_t payloadSize = sizeof(UBXMessage);
 
   if (fpos < 2) {
     // Buscamos el header UBX (0xB5, 0x62)

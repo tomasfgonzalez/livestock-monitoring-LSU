@@ -21,7 +21,6 @@
 #define __ADC_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "stdbool.h"
 #include "stm32l0xx_hal.h"
 
