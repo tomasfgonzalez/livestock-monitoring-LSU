@@ -30,7 +30,14 @@ extern "C" {
 #include "gps_structures.h"
 
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef hlpuart1;
+#define RX_BUFF 64
+extern uint8_t rx_buff[RX_BUFF];  // Reception buffer
 
+void INIT_RX_UART2(void);
+/* USER CODE END Private defines */
+
+void MX_LPUART1_UART_Init(void);
 void USART2_Init(void);
 void USART2_Start(void);
 bool USART2_isDataReady(void);

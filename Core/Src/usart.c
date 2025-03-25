@@ -21,6 +21,9 @@
 #include "usart.h"
 
 UART_HandleTypeDef huart2;
+UART_HandleTypeDef hlpuart1;
+DMA_HandleTypeDef hdma_lpuart1_rx;
+DMA_HandleTypeDef hdma_lpuart1_tx;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 #define UBX_Rx_Size (2 * sizeof(NAV_STATUS) + 2 * sizeof(NAV_POSLLH))
@@ -28,6 +31,35 @@ DMA_HandleTypeDef hdma_usart2_rx;
 static bool initError = false;
 static bool dataReady = false;
 static uint8_t UBX_Rx_Data[UBX_Rx_Size];
+
+void MX_LPUART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN LPUART1_Init 0 */
+
+  /* USER CODE END LPUART1_Init 0 */
+
+  /* USER CODE BEGIN LPUART1_Init 1 */
+
+  /* USER CODE END LPUART1_Init 1 */
+  hlpuart1.Instance = LPUART1;
+  hlpuart1.Init.BaudRate = 115200;
+  hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
+  hlpuart1.Init.StopBits = UART_STOPBITS_1;
+  hlpuart1.Init.Parity = UART_PARITY_NONE;
+  hlpuart1.Init.Mode = UART_MODE_TX_RX;
+  hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&hlpuart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN LPUART1_Init 2 */
+
+  /* USER CODE END LPUART1_Init 2 */
+
+}
 
 void USART2_Init(void) {
   huart2.Instance = USART2;
@@ -153,3 +185,26 @@ uint8_t* USART2_getData(void) {
 uint16_t USART2_getDataLength(void) {
   return UBX_Rx_Size;
 }
+uint8_t rx_buff[RX_BUFF];
+
+
+
+void INIT_RX_UART2(void){
+HAL_UARTEx_ReceiveToIdle_DMA(&hlpuart1, rx_buff, RX_BUFF);
+}
+
+
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+    // Check if the event is an idle line event
+
+	if((huart == &hlpuart1)){
+		//if (HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_IDLE ||HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_HT) {
+		//For some reason, the RXevent IDLE tends to not work right
+			if (rx_buff[Size-1]=='\n'){
+
+			rylr998_SetInterruptFlag(1);
+			}
+ 			HAL_UARTEx_ReceiveToIdle_DMA(huart, rx_buff, RX_BUFF);
+	}
+ }

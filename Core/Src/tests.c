@@ -34,8 +34,8 @@ void gps_test(void) {
 	USART2_Start();
 
 	// Obtener latitud y longitud
-	Lat = get_UBX_Lat();
-	Lon = get_UBX_Lon();
+	//Lat = get_UBX_Lat();
+	//Lon = get_UBX_Lon();
 
 	HAL_Delay(2000);
 

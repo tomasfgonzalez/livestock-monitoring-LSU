@@ -58,11 +58,11 @@ void max30102_put_Buffer(uint32_t red_sample) {
  * @param buffer Pointer to data buffer.
  * @param size Size of the buffer.
  */
-void print_buffer(uint16_t *buffer, uint16_t size) {
+/*void print_buffer(uint16_t *buffer, uint16_t size) {
     for (int i = 0; i < size; i++) {
         printf("%d %d\n", buffer[i], elapsed_time_ms * i / size);
     }
-}
+}*/
 
 /**
  * @brief Apply low-pass IIR filter for noise reduction.

@@ -25,7 +25,7 @@
 #include "tim2.h"
 #include "time_config.h"
 #include "gpio_temperature_power.h"
-
+#include "rylr998.h"
 #include "tests.h"
 #include "i2c.h"
 // #include "testing_leds.h"
@@ -39,11 +39,11 @@ uint32_t mockTimer = 5;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 void run_tests(void) {
-  adc_test();
-  gps_test();
-  adc_test();
-  gps_test();
-  hr_test();
+ adc_test();
+ gps_test();
+ adc_test();
+ gps_test();
+ hr_test();
 }
 
 int main(void) {
@@ -57,14 +57,36 @@ int main(void) {
     // Clock initialization
     TIM2_Init();
 
-    // run_tests();
+    run_tests();
     // testing_leds_init();
+    //Start RX IRQ
+    	INIT_RX_UART2();
 
+
+    	//Configuration parameters
+    	rylr998_setChannel(1,3);
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
-      FSM_Main_handle();
+
+    	  //------------------------------
+    	  // 		EXAMPLE SEND
+    	  //------------------------------
+    	    LSU_sendParameters(0,-214748364, 2147483647, 655, 65535, 10);
+    	    LSU_sendSyncRequest(0);
+
+
+    		HAL_Delay(100);
+    	  //------------------------------
+    	  // 		 EXAMPLE RECIVE
+    	  //------------------------------
+    		if(rylr998_GetInterruptFlag()){
+    						if(rylr998_prase_reciver(rx_buff,RX_BUFF)==RYLR_RCV_ACK){
+
+    						}
+    		}
+     FSM_Main_handle();
     }
 }
 
