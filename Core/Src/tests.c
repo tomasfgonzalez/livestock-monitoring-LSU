@@ -50,10 +50,8 @@ void gps_test(void) {
 void hr_test(void){
 	max30102_init_conf();
 	reset_bpm();
-	while(!get_bpm()){
-		max30102_irq_check();
-	}
-	max30102_set_shutdown();
+	while(!get_bpm());
+	max30102_stop();
 }
 
 

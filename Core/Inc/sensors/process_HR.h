@@ -34,7 +34,7 @@ extern "C" {
 #define MAX30102_UNUSED_DATA 64    // Skip first 64 samples
 #define ALPHA 0.05                 // Smoothing factor for low-pass filter
 #define ALPHA_DC 0.01              // Smoothing factor for DC removal
-#define THRESHOLD_LOWER 30000      // Lower threshold for valid data
+#define THRESHOLD_LOWER 28000      // Lower threshold for valid data
 #define THRESHOLD_UPPER 45000      // Upper threshold for valid data
 #define DOWNSAMPLE_FACTOR 20       // Downsampling factor
 #define PEAK_WINDOW_SIZE 10        // Window used to detect peaks
