@@ -1,5 +1,5 @@
-#ifndef MAX30102_FOR_STM32_HAL_H
-#define MAX30102_FOR_STM32_HAL_H
+#ifndef MAX30102_H
+#define MAX30102_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -131,4 +131,4 @@ void max30102_read_fifo(max30102_t *obj);
 }
 #endif
 
-#endif /* MAX30102_FOR_STM32_HAL_H */
+#endif /* MAX30102_H */

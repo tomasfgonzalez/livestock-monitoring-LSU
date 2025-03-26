@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
   * @authors        : Unknown
-  * @file           : max30102_for_stm32_hal.c
-  * @brief          : Source file for max30102 for stm32 hal
+  * @file           : max30102.c
+  * @brief          : Source file for max30102
   ******************************************************************************
   */
-#include "max30102_for_stm32_hal.h"
+#include "max30102.h"
 
 /**
  * @brief Write buffer of buflen bytes to a register of the MAX30102.

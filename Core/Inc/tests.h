@@ -31,7 +31,7 @@ extern "C" {
 #include "gps_parser.h"
 #include "adc.h"
 #include "process_HR.h"
-#include "max30102_for_stm32_hal.h"
+#include "max30102.h"
 
 /* Function prototypes -------------------------------------------------------*/
 void gps_test(void);
