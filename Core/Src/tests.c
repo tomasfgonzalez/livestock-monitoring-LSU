@@ -48,9 +48,16 @@ void gps_test(void) {
 
 
 void hr_test(void){
+	HRBuffer_init();
 	max30102_init_conf();
-	reset_bpm();
-	while(!get_bpm());
+	max30102_start();
+
+	while (!HRBuffer_isReady());
+
+	uint16_t* buffer = HRBuffer_getBuffer();
+	uint16_t elapsed_time_ms = HRBuffer_getElapsedTime();
+	uint16_t bpm = process_buffer(buffer, elapsed_time_ms);
+
 	max30102_stop();
 }
 

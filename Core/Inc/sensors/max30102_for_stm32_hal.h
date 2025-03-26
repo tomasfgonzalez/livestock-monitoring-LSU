@@ -8,7 +8,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <i2c.h>
-#include <process_HR.h>
+#include "HR_Buffer.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define MAX30102_I2C_ADDR 0x57
