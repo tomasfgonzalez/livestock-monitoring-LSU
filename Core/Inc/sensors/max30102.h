@@ -1,5 +1,5 @@
-#ifndef MAX30102_FOR_STM32_HAL_H
-#define MAX30102_FOR_STM32_HAL_H
+#ifndef MAX30102_H
+#define MAX30102_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -8,7 +8,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <i2c.h>
-#include <process_HR.h>
+#include "HR_Buffer.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define MAX30102_I2C_ADDR 0x57
@@ -131,4 +131,4 @@ void max30102_read_fifo(max30102_t *obj);
 }
 #endif
 
-#endif /* MAX30102_FOR_STM32_HAL_H */
+#endif /* MAX30102_H */

@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
   * @authors        : Unknown
-  * @file           : max30102_for_stm32_hal.c
-  * @brief          : Source file for max30102 for stm32 hal
+  * @file           : max30102.c
+  * @brief          : Source file for max30102
   ******************************************************************************
   */
-#include "max30102_for_stm32_hal.h"
+#include "max30102.h"
 
 /**
  * @brief Write buffer of buflen bytes to a register of the MAX30102.
@@ -120,7 +120,7 @@ void max30102_read_fifo(max30102_t* obj) {
       max30102_read(obj, MAX30102_FIFO_DATA, sample, 6);
       red_sample_16 = (int16_t)(((uint32_t)(sample[3]) << 16 | (uint32_t)(sample[4]) << 8 | sample[5]) >> 2) & 0xFFFF;
 
-      max30102_put_Buffer(red_sample_16);
+      HRBuffer_put(red_sample_16);
     }
   }
 }
@@ -183,7 +183,6 @@ void max30102_interrupt_handler() {
   if ((reg[0] >> MAX30102_INTERRUPT_A_FULL) & 0x01) {
     // FIFO almost full
     max30102_read_fifo(&max30102);
-    process_buffer();
   }
 }
 
