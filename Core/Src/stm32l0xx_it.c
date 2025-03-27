@@ -21,9 +21,7 @@
 #include "main.h"
 #include "stm32l0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-/* USER CODE END Includes */
-#include "max30102_for_stm32_hal.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -58,7 +56,6 @@
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern ADC_HandleTypeDef hadc;
 extern TIM_HandleTypeDef htim2;
-extern max30102_t max30102;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -146,51 +143,22 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles TIM2 global interrupt.
   */
-void TIM2_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM2_IRQn 0 */
-
-  /* USER CODE END TIM2_IRQn 0 */
+void TIM2_IRQHandler(void) {
   HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-
-  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /**
   * @brief This function handles DMA1 channel 4, channel 5, channel 6 and channel 7 interrupts.
   */
-void DMA1_Channel4_5_6_7_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 0 */
+void DMA1_Channel4_5_6_7_IRQHandler(void) {
   HAL_DMA_IRQHandler(&hdma_usart2_rx);
-  /* USER CODE BEGIN DMA1_Channel4_5_6_7_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel4_5_6_7_IRQn 1 */
 }
 
-/* USER CODE BEGIN 1 */
-void ADC1_COMP_IRQHandler(void)
-{
-  /* USER CODE BEGIN ADC1_COMP_IRQn 0 */
-
-  /* USER CODE END ADC1_COMP_IRQn 0 */
+void ADC1_COMP_IRQHandler(void) {
   HAL_ADC_IRQHandler(&hadc);
-  /* USER CODE BEGIN ADC1_COMP_IRQn 1 */
-
-  /* USER CODE END ADC1_COMP_IRQn 1 */
 }
-/* USER CODE END 1 */
 
-void EXTI4_15_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_15_IRQn 0 */
-  max30102_on_interrupt(&max30102);
-  /* USER CODE END EXTI4_15_IRQn 0 */
+
+void EXTI4_15_IRQHandler(void) {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
-  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
-
-  /* USER CODE END EXTI4_15_IRQn 1 */
 }

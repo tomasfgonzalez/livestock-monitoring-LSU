@@ -22,7 +22,6 @@
 
 /* Includes */
 #include <sys/stat.h>
-#include <stdlib.h>
 #include <errno.h>
 #include <signal.h>
 #include <time.h>
