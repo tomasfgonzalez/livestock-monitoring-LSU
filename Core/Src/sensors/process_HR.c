@@ -10,29 +10,6 @@
 uint16_t resample_buffer[RESAMPLE_BUFFER_SIZE];
 int peak_count = 0, peak_diff = 0;
 
-/**
- * @brief Print buffer contents with timestamps.
- * @param buffer Pointer to data buffer.
- * @param size Size of the buffer.
- */
-void print_buffer(uint16_t* buffer, uint16_t size, uint16_t elapsed_time_ms) {
-  for (int i = 0; i < size; i++) {
-    printf("%d %d\n", buffer[i], elapsed_time_ms * i / size);
-  }
-}
-
-/**
- * @brief Apply low-pass IIR filter for noise reduction.
- * @param buffer Pointer to data buffer.
- * @param size Size of the buffer.
- */
-void low_pass_filter_IIR(int16_t* buffer, uint16_t size) {
-  if (size == 0) return;
-  for (uint16_t i = 1; i < size; i++) {
-    buffer[i] = (int16_t)(ALPHA * buffer[i] + (1 - ALPHA) * buffer[i - 1]);
-  }
-}
-
 
 
 /**
@@ -107,8 +84,6 @@ uint16_t process_buffer(uint16_t* buffer, uint16_t elapsed_time_ms) {
     find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
     elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
     bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
-    
-    // print_buffer(resample_buffer, downsampled_size, elapsed_time_ms);
     HRBuffer_reset();
   }
   if (50 < bpm && bpm < 140) {

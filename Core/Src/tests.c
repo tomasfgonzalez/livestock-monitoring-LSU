@@ -55,8 +55,7 @@ void hr_test(void){
 	while (!HRBuffer_isReady());
 
 	uint16_t* buffer = HRBuffer_getBuffer();
-	uint16_t elapsed_time_ms = HRBuffer_getElapsedTime();
-	volatile uint16_t bpm = process_buffer(buffer, 7500);
+	uint16_t bpm = process_buffer(buffer, 7500);
 
 	max30102_stop();
 }

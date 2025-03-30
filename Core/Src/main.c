@@ -44,6 +44,8 @@ void run_tests(void) {
   //adc_test();
   gps_test();
   hr_test();
+  gps_test();
+  hr_test();
 }
 
 int main(void) {

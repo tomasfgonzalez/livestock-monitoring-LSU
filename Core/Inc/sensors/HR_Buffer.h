@@ -19,7 +19,7 @@ extern "C" {
 
 /* Defines -------------------------------------------------------------------*/
 #define MAX30102_BUFFER_SIZE 2000 // Buffer size if change go check bpm
-#define MAX30102_UNUSED_DATA 128    // Skip first 64 samples
+#define MAX30102_UNUSED_DATA 128    // Skip first 128 samples
 
 
 /* Functions -----------------------------------------------------------------*/
