@@ -34,8 +34,8 @@ void gps_test(void) {
 	USART2_Start();
 
 	// Obtener latitud y longitud
-	Lat = get_UBX_Lat();
-	Lon = get_UBX_Lon();
+	Lat = get_UBX_GpsLatitude();
+	Lon = get_UBX_GpsLongitude();
 
 	HAL_Delay(2000);
 
@@ -56,7 +56,7 @@ void hr_test(void){
 
 	uint16_t* buffer = HRBuffer_getBuffer();
 	uint16_t elapsed_time_ms = HRBuffer_getElapsedTime();
-	uint16_t bpm = process_buffer(buffer, elapsed_time_ms);
+	volatile uint16_t bpm = process_buffer(buffer, 7500);
 
 	max30102_stop();
 }

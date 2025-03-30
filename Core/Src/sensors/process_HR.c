@@ -7,7 +7,7 @@
   */
 #include "process_HR.h"
 
-uint16_t resample_buffer[MAX30102_BUFFER_SIZE / DOWNSAMPLE_FACTOR];
+uint16_t resample_buffer[RESAMPLE_BUFFER_SIZE];
 int peak_count = 0, peak_diff = 0;
 
 /**
@@ -33,19 +33,7 @@ void low_pass_filter_IIR(int16_t* buffer, uint16_t size) {
   }
 }
 
-/**
- * @brief Remove DC component using exponential moving average.
- * @param buffer Pointer to data buffer.
- * @param size Size of the buffer.
- */
-void remove_dynamic_dc_component(uint16_t* buffer, uint16_t size) {
-  static uint16_t dc_offset = 0;
-  if (size == 0) return;
-  for (uint16_t i = 0; i < size; i++) {
-    dc_offset = (uint16_t)(ALPHA_DC * buffer[i] + (1 - ALPHA_DC) * dc_offset);
-    buffer[i] = (buffer[i] >= dc_offset) ? buffer[i] - dc_offset : 0;
-  }
-}
+
 
 /**
  * @brief Check if buffer contains valid data within threshold range.
@@ -69,12 +57,12 @@ uint8_t is_data_clear(uint16_t* buffer, uint16_t size) {
  * @param input_size Size of input buffer.
  * @param output_size Pointer to store output buffer size.
  */
-void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size, uint16_t* output_size) {
+void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size) {
   uint16_t j = 0;
   for (uint16_t i = 0; i < input_size; i += DOWNSAMPLE_FACTOR) {
     output[j++] = input[i];
   }
-  *output_size = j;
+
 }
 
 /**
@@ -115,13 +103,9 @@ uint16_t process_buffer(uint16_t* buffer, uint16_t elapsed_time_ms) {
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
-    low_pass_filter_IIR((int16_t*)buffer, MAX30102_BUFFER_SIZE);
-    remove_dynamic_dc_component(buffer, MAX30102_BUFFER_SIZE);
-
-    uint16_t downsampled_size;
-    downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE, &downsampled_size);
-    find_peaks(resample_buffer, downsampled_size, PEAK_WINDOW_SIZE);
-    elapsed_time_ms = elapsed_time_ms * peak_diff / downsampled_size;
+	downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
+    find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
+    elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
     bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
     
     // print_buffer(resample_buffer, downsampled_size, elapsed_time_ms);

@@ -19,7 +19,8 @@ extern "C" {
 
 /* Defines -------------------------------------------------------------------*/
 #define MAX30102_BUFFER_SIZE 2000 // Buffer size if change go check bpm
-#define MAX30102_UNUSED_DATA 64    // Skip first 64 samples
+#define MAX30102_UNUSED_DATA 128    // Skip first 64 samples
+
 
 /* Functions -----------------------------------------------------------------*/
 void HRBuffer_init(void);
@@ -28,7 +29,7 @@ void HRBuffer_put(uint32_t red_sample);
 uint8_t HRBuffer_isReady(void);
 
 uint16_t* HRBuffer_getBuffer(void);
-uint16_t HRBuffer_getElapsedTime(void);
+volatile uint16_t HRBuffer_getElapsedTime(void);
 
 #ifdef __cplusplus
 }

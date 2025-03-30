@@ -10,7 +10,7 @@
 
 uint16_t buffer[MAX30102_BUFFER_SIZE];
 uint16_t buffer_index = 0;
-uint16_t elapsed_time_ms;
+volatile uint16_t elapsed_time_ms;
 uint8_t is_buffer_full = 0;
 uint8_t is_buffer_ready = 0;
 
@@ -53,7 +53,7 @@ void HRBuffer_put(uint32_t red_sample) {
   static uint32_t end_time = 0;
 
   if (buffer_index == 0) {
-    start_time = HAL_GetTick();  // Marca el tiempo de inicio
+    //start_time = HAL_GetTick();  // Marca el tiempo de inicio
   }
 
   // Ignorar las primeras muestras no deseadas
@@ -72,8 +72,8 @@ void HRBuffer_put(uint32_t red_sample) {
   // Si se llena el buffer, ejecutar acciones necesarias
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
     is_buffer_full = 1;
-    end_time = HAL_GetTick();
-    elapsed_time_ms = end_time - start_time;
+    //end_time = HAL_GetTick();
+    //elapsed_time_ms = end_time - start_time;
   }
 }
 
@@ -100,6 +100,6 @@ uint16_t* HRBuffer_getBuffer(void) {
  * @brief Get elapsed time in milliseconds
  * @return Elapsed time in milliseconds
  */
-uint16_t HRBuffer_getElapsedTime(void) {
+volatile uint16_t HRBuffer_getElapsedTime(void) {
   return elapsed_time_ms;
 }

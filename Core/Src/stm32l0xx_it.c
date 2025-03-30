@@ -54,6 +54,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_usart2_rx;
+
 extern ADC_HandleTypeDef hadc;
 extern TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN EV */

@@ -147,8 +147,7 @@ void max30102_init_conf(void) {
   max30102_init(&max30102, &hi2c1);
   max30102_clear_fifo(&max30102);
 
-  uint8_t mode_config = max30102_heart_rate;
-  max30102_write(&max30102, MAX30102_MODE_CONFIG, &mode_config, 1);
+
 
   uint8_t fifo_config = (max30102_smp_ave_1 << MAX30102_FIFO_CONFIG_SMP_AVE);
   max30102_write(&max30102, MAX30102_FIFO_CONFIG, &fifo_config, 1);
@@ -161,6 +160,9 @@ void max30102_init_conf(void) {
 
   uint8_t led_pa = 40;
   max30102_write(&max30102, MAX30102_LED_IR_PA1, &led_pa, 1);
+
+  uint8_t mode_config = max30102_heart_rate;
+  max30102_write(&max30102, MAX30102_MODE_CONFIG, &mode_config, 1);
 
   // Clear FIFO and enable interrupt
   max30102_clear_fifo(&max30102);

@@ -115,6 +115,8 @@ typedef struct max30102_t {
     uint32_t _red_samples[32];
 } max30102_t;
 
+extern max30102_t max30102;
+
 void max30102_init_conf(void);
 
 void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c);
