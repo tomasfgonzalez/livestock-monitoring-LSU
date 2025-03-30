@@ -12,6 +12,9 @@ int peak_count = 0, peak_diff = 0;
 
 
 
+
+
+
 /**
  * @brief Check if buffer contains valid data within threshold range.
  * @param buffer Pointer to data buffer.
@@ -43,22 +46,6 @@ void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size) {
 }
 
 
-void movingAverageFilter(int* input, int* output, int length, int window_size) {
-    for (int i = 0; i < length; i++) {
-        int sum = 0;
-        int count = 0;
-
-        for (int j = -window_size/2; j <= window_size/2; j++) {
-            int idx = i + j;
-            if (idx >= 0 && idx < length) {
-                sum += input[idx];
-                count++;
-            }
-        }
-
-        output[i] = sum / count;
-    }
-}
 
 /**
  * @brief Detect peaks in the signal within a window.
@@ -94,13 +81,12 @@ void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size) {
  * @brief Process buffer data and calculate BPM.
  */
 uint16_t process_buffer(uint16_t* buffer, uint16_t elapsed_time_ms) {
-  if (!HRBuffer_isReady()) return;
+  if (!HRBuffer_isReady()) return 0;
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
 	downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
-	movingAverageFilter(resample_buffer, MAX30102_BUFFER_SIZE, 100, 10);
-    find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
+	find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
     elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
     bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
     HRBuffer_reset();

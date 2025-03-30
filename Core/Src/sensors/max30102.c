@@ -6,7 +6,8 @@
   ******************************************************************************
   */
 #include "max30102.h"
-
+#include "string.h"
+#include <stdlib.h>
 /**
  * @brief Write buffer of buflen bytes to a register of the MAX30102.
  *

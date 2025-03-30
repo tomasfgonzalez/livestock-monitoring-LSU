@@ -28,7 +28,7 @@
 
 #include "tests.h"
 #include "i2c.h"
-// #include "testing_leds.h"
+
 
 #include "fsm/fsm_main.h"
 
@@ -39,13 +39,14 @@ uint32_t mockTimer = 5;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 void run_tests(void) {
- // adc_test();
-  //gps_test();
-  //adc_test();
+  adc_test();
   gps_test();
   hr_test();
-  gps_test();
+
+  adc_test();
   hr_test();
+  gps_test();
+
 }
 
 int main(void) {
@@ -58,9 +59,8 @@ int main(void) {
 
     // Clock initialization
     TIM2_Init();
-
     run_tests();
-    // testing_leds_init();
+
 
     // System start
     FSM_Main_init();

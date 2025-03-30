@@ -7,6 +7,7 @@
   ******************************************************************************
   */
 #include "gps_parser.h"
+#include <string.h>
 
 /* Global variables to store frame data -------------------------------------- */
 NAV_POSLLH navPosllhData;
@@ -37,7 +38,7 @@ bool compareMsgHeader(const uint8_t* msgHeader) {
 
 void processUBXData(uint8_t* data, uint16_t size) {
   for (uint16_t i = 0; i < size; i++) {
-    ubxMsgType msgType = processGPS(data[i]);  // Process byte per byte
+    processGPS(data[i]);  // Process byte per byte
 
     // Verificar si se han recibido ambas tramas
     if (isNavPosllhReceived && isNavStatusReceived) {
