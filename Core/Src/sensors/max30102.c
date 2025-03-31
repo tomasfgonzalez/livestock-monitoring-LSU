@@ -168,6 +168,9 @@ void max30102_init_conf(void) {
   // Clear FIFO and enable interrupt
   max30102_clear_fifo(&max30102);
   max30102_set_a_full(&max30102, 1);
+
+
+  __HAL_GPIO_EXTI_GENERATE_SWIT(GPIO_PIN_8);
 }
 
 /* Interrupt handling ------------------------------------------------------------*/
