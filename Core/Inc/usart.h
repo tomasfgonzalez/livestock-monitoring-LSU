@@ -29,7 +29,18 @@ extern "C" {
 #include "stm32l0xx_hal.h"
 #include "gps_structures.h"
 
+/* Defines ---------------------------------------------------------------*/
+#define UART_RX_BUFF_SIZE 64
+
+/* Extern variables -------------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef hlpuart1;
+extern DMA_HandleTypeDef hdma_lpuart1_rx;
+extern DMA_HandleTypeDef hdma_lpuart1_tx;
+
+void INIT_RX_UART2(void);
+
+void MX_LPUART1_UART_Init(void);
 
 void USART2_Init(void);
 void USART2_Start(void);
@@ -38,6 +49,7 @@ uint8_t* USART2_getData(void);
 uint16_t USART2_getDataLength(void);
 bool USART2_hasError(void);
 
+uint8_t* LPUART1_getRxBuff(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 

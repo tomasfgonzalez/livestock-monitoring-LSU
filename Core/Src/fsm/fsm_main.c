@@ -15,6 +15,7 @@ static uint32_t initTimer = 0;
 
 // Transitions
 static bool isInitError(void) {
+  return false;
   return sensor_temperature_has_error() || sensor_heartrate_has_error() || sensor_gps_has_error();
 }
 
@@ -24,20 +25,10 @@ static void performRestart(void) {
 }
 
 static bool isInitSuccess(void) {
+  return true;
   return sensor_temperature_has_started();
   // TODO: Implement other sensors check
   // return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
-}
-
-static bool isLinkEstablished(void) {
-  // TODO: Implement link establishment check
-  return true;
-  return false;
-}
-
-static bool isLinkError(void) {
-  // TODO: Implement link error check
-  return false;
 }
 
 static bool isLinkErrorResolved(void) {
@@ -62,9 +53,9 @@ void FSM_Main_init(void) {
   sensor_gps_init();
 
   // But stop such sensors until they are needed
-  sensor_temperature_stop();
-  sensor_heartrate_stop();
-  sensor_gps_stop();
+  // sensor_temperature_stop();
+  // sensor_heartrate_stop();
+  // sensor_gps_stop();
 
   initTimer = INIT_TIMEOUT;
 }
@@ -75,6 +66,7 @@ void FSM_Main_handle(void) {
       if (isInitError()) {
         currentState = INIT_ERROR;
       } else if (isInitSuccess()) {
+        FSM_Link_init();
         currentState = LINK;
       }
       break;
@@ -84,11 +76,14 @@ void FSM_Main_handle(void) {
       break;
 
     case LINK:
-      FSM_Link_handle();
+      static bool isLinkEstablished = false;
+      static bool isLinkError = false;
 
-      if (isLinkError()) {
+      FSM_Link_handle(&isLinkEstablished, &isLinkError);
+
+      if (isLinkError) {
         currentState = LINK_ERROR;
-      } else if (isLinkEstablished()) {
+      } else if (isLinkEstablished) {
         currentState = TRANSMIT;
         FSM_Transmit_init();
       }
@@ -131,10 +126,12 @@ void FSM_Main_tick_1s(void) {
     if (initTimer <= 0) {
       currentState = INIT_ERROR;
     }
-
-    if (currentState == TRANSMIT) {
-      FSM_Transmit_tick_1s();
-    }
+  }
+  if (currentState == TRANSMIT) {
+    FSM_Transmit_tick_1s();
+  }
+  if (currentState == LINK) {
+    FSM_Link_tick_1s();
   }
   sensor_temperature_tick_1s();
 }

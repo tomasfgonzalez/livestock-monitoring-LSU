@@ -28,7 +28,7 @@
 
 #include "tests.h"
 #include "i2c.h"
-
+#include "lsu_comms.h"
 
 #include "fsm/fsm_main.h"
 
@@ -56,11 +56,20 @@ int main(void) {
     // Peripherals initialization
     GPIO_Init();
     MX_I2C1_Init();
+    DMA_Init();
+    USART2_Init();
+
+    DMA_Start();
+    USART2_Start();
 
     // Clock initialization
     TIM2_Init();
-    run_tests();
+    MX_LPUART1_UART_Init();
+    INIT_RX_UART2();
+    // run_tests();
 
+    LSU_setAddress(0x03);
+    LSU_setChannelMain();
 
     // System start
     FSM_Main_init();
@@ -81,5 +90,3 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     }
   }
 }
-
-
