@@ -4,9 +4,20 @@
   * @file           : sensor_gps.h
   * @brief          : Header for GPS sensor file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
-#ifndef SENSOR_GPS_H
-#define SENSOR_GPS_H
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __SENSOR_GPS_H__
+#define __SENSOR_GPS_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,7 +31,7 @@ extern "C" {
 #include "usart.h"
 #include "gps_parser.h"
 
-/* Typedefs ------------------------------------------------------------------*/
+/* Structure declarations ----------------------------------------------------*/
 typedef enum {
   SENSOR_GPS_STARTING,
   SENSOR_GPS_IDLE,
@@ -28,12 +39,12 @@ typedef enum {
   SENSOR_GPS_ERROR
 } SensorGPSStatus;
 
-/* Typedefs ------------------------------------------------------------------*/
 typedef struct {
   float latitude;
   float longitude;
 } GPSData;
 
+/* Function prototypes -------------------------------------------------------*/
 void sensor_gps_init(void);
 void sensor_gps_start(void);
 void sensor_gps_stop(void);
@@ -48,4 +59,4 @@ void sensor_gps_read(GPSData *data);
 }
 #endif
 
-#endif /* SENSOR_GPS_H */
+#endif /* __SENSOR_GPS_H__ */

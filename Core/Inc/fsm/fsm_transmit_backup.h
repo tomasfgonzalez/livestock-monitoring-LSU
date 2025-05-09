@@ -4,15 +4,37 @@
   * @file           : fsm_transmit_backup.h
   * @brief          : Header for FSM transmit backup file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  *   
+  ******************************************************************************
   */
-#ifndef FSM_TRANSMIT_BACKUP_H
-#define FSM_TRANSMIT_BACKUP_H
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __FSM_TRANSMIT_BACKUP_H__
+#define __FSM_TRANSMIT_BACKUP_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* FSM states --------------------------------------------------------------- */
 typedef enum {
-    TRANSMIT_BACKUP_IDLE,
+  TRANSMIT_BACKUP_IDLE,
 } FSM_TransmitBackup_State;
 
+/* FSM interface ------------------------------------------------------------ */
 void FSM_TransmitBackup_init(void);
+
 void FSM_TransmitBackup_handle(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FSM_TRANSMIT_BACKUP_H */

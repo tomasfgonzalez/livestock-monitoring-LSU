@@ -20,7 +20,6 @@ static int ackTimer = 0;
 static bool ackReceived       = false;  // Indica que llegó un ACK
 
 static bool isPayloadReady = false;
-static int payload = 0;
 
 // ----------- Internal functions -----------
 static void startSensingTimer(void) {
@@ -80,11 +79,9 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     case TRANSMIT_IDLE:
 
         if (onSensingWindow && !isPayloadReady) {
-            // testing_led1_on();
             startSensing();
             currentState = TRANSMIT_SENSE;
         } else if (onTransmitWindow) {
-            // testing_led2_on();
             ackReceived = false;
             startAckTimer();
             sendPayload();
@@ -99,7 +96,6 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
         bool allSensorsReady = temperatureReady && gpsReady;
 
         if (allSensorsReady || (sensingTimer <= 0)) {
-            // testing_led1_off();
             createPayload();
             stopSensing();
             currentState = TRANSMIT_IDLE;
@@ -109,10 +105,8 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     case TRANSMIT_SEND:
         if (ackReceived) {
             currentState = TRANSMIT_IDLE;
-            // testing_led2_off();
         } else if (ackTimer <= 0) {
             // currentState = TRANSMIT_IDLE;
-            // testing_led2_off();
             sendPayload();
             startAckTimer();
         }

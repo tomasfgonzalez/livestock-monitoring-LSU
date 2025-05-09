@@ -4,11 +4,20 @@
   * @file           : gps_structures.h
   * @brief          : Header for GPS structures file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef GPS_STRUCTURES_H
-#define GPS_STRUCTURES_H
+#ifndef __GPS_STRUCTURES_H__
+#define __GPS_STRUCTURES_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +69,4 @@ typedef union {
 }
 #endif
 
-#endif /* GPS_STRUCTURES_H */
+#endif /* __GPS_STRUCTURES_H__ */

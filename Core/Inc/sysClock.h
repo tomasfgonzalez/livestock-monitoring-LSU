@@ -11,11 +11,11 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __SYSCLOCK_H__
 #define __SYSCLOCK_H__
 
@@ -25,6 +25,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
+
+/* Function prototypes -------------------------------------------------------*/
 
 /**
  * @brief Configures the system clock.
@@ -46,8 +48,4 @@ void Error_Handler(void);
 }
 #endif
 
-
-#ifdef __cplusplus
-}
-#endif
 #endif /*__ GPIO_H__ */

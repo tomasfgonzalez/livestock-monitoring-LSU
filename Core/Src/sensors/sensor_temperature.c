@@ -7,6 +7,8 @@
   ******************************************************************************
   */
 #include "sensor_temperature.h"
+#include "gpio_temperature_power.h"
+#include "adc.h"
 
 /** 
  * Sensor status

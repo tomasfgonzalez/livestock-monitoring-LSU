@@ -4,16 +4,30 @@
   * @file           : time_config.h
   * @brief          : Header for time configuration file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
-#ifndef TIME_CONFIG_H
-#define TIME_CONFIG_H
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __TIME_CONFIG_H__
+#define __TIME_CONFIG_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
 #include <stdint.h>
+
+/* Function prototypes -------------------------------------------------------*/
 
 // Clock
 void time_config_tick_1s(void);
@@ -37,4 +51,5 @@ bool time_config_on_transmit_window();
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* TIME_CONFIG_H */

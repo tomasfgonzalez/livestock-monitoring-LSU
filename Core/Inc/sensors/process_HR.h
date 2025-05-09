@@ -11,7 +11,6 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -40,7 +39,7 @@ extern "C" {
 
 #define PEAK_WINDOW_SIZE 10        // Window used to detect peaks
 
-/* Functions -----------------------------------------------------------------*/
+/* Function prototypes -------------------------------------------------------*/
 uint16_t process_buffer(uint16_t* buffer, uint16_t elapsed_time_ms);
 
 #ifdef __cplusplus

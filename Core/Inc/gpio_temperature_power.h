@@ -1,10 +1,23 @@
 /**
-  * @file    gpio_temperature_power.h
-  * @brief   Temperature sensor power control via GPIO
+  ******************************************************************************
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : gpio_temperature_power.h
+  * @brief          : Temperature sensor power control via GPIO
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  *
+  ******************************************************************************
   */
 
-#ifndef GPIO_TEMPERATURE_POWER_H
-#define GPIO_TEMPERATURE_POWER_H
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __GPIO_TEMPERATURE_POWER_H__
+#define __GPIO_TEMPERATURE_POWER_H__
 
 #ifdef __cplusplus
 extern "C" {

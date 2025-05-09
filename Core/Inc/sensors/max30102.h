@@ -1,5 +1,23 @@
-#ifndef MAX30102_H
-#define MAX30102_H
+/**
+  ******************************************************************************
+  * @author         : Unknown
+  * @file           : max30102.h
+  * @brief          : Header for MAX30102 sensor
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
+  */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MAX30102_H__
+#define __MAX30102_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,6 +81,7 @@ extern "C" {
 #define MAX30102_DIE_TEMP_CONFIG 0x21
 #define MAX30102_DIE_TEMP_EN 1
 
+/* Structure declarations ----------------------------------------------------*/
 typedef enum max30102_mode_t {
     max30102_heart_rate = 0x02,
     max30102_spo2 = 0x03,
@@ -115,8 +134,10 @@ typedef struct max30102_t {
     uint32_t _red_samples[32];
 } max30102_t;
 
+/* Private variables ----------------------------------------------------------*/
 extern max30102_t max30102;
 
+/* Function prototypes -------------------------------------------------------*/
 void max30102_init_conf(void);
 
 void max30102_init(max30102_t *obj, I2C_HandleTypeDef *hi2c);
@@ -127,7 +148,6 @@ void max30102_start(void);
 void max30102_stop(void);
 void max30102_clear_fifo(max30102_t *obj);
 void max30102_read_fifo(max30102_t *obj);
-
 
 #ifdef __cplusplus
 }

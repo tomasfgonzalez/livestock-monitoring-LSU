@@ -4,9 +4,20 @@
   * @file           : fsm_main.h
   * @brief          : Header for FSM main file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
-#ifndef FSM_MAIN_H
-#define FSM_MAIN_H
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __FSM_MAIN_H__
+#define __FSM_MAIN_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,7 +37,7 @@ extern "C" {
 #include "sensor_heartrate.h"
 #include "sensor_gps.h"
 
-/* Public type definitions --------------------------------------------------- */
+/* FSM states --------------------------------------------------------------- */
 typedef enum {
   INIT,
   INIT_ERROR,
@@ -36,9 +47,11 @@ typedef enum {
   TRANSMIT_BACKUP
 } FSM_Main_State;
 
-/* Public function declarations ---------------------------------------------- */
-void FSM_Main_handle(void);
+/* FSM interface ------------------------------------------------------------ */
 void FSM_Main_init(void);
+
+void FSM_Main_handle(void);
+
 void FSM_Main_tick_1s(void);
 
 #ifdef __cplusplus

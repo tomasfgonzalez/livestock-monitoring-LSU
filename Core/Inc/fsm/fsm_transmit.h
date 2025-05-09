@@ -4,11 +4,20 @@
   * @file           : fsm_transmit.h
   * @brief          : Header for FSM transmit file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef FSM_TRANSMIT_H
-#define FSM_TRANSMIT_H
+#ifndef __FSM_TRANSMIT_H__
+#define __FSM_TRANSMIT_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +32,6 @@ extern "C" {
 #include "sensor_gps.h"
 
 #include "time_config.h"
-#include "testing_leds.h"
 
 /* FSM states --------------------------------------------------------------- */
 typedef enum {
@@ -32,7 +40,7 @@ typedef enum {
   TRANSMIT_SEND,
 } FSM_Transmit_State;
 
-/* FSM functions ------------------------------------------------------------- */
+/* FSM interface ------------------------------------------------------------ */
 void FSM_Transmit_init(void);
 
 void FSM_Transmit_handle(bool *mainChannelFail);

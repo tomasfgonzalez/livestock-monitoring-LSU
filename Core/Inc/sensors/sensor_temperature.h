@@ -4,9 +4,20 @@
   * @file           : sensor_temperature.h
   * @brief          : Header for temperature sensor file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
-#ifndef SENSOR_TEMPERATURE_H
-#define SENSOR_TEMPERATURE_H
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __SENSOR_TEMPERATURE_H__
+#define __SENSOR_TEMPERATURE_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,14 +26,13 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdbool.h>
-#include "adc.h"
 
-/* Typedefs ------------------------------------------------------------------*/
+/* Structure declarations ----------------------------------------------------*/
 typedef enum {
-    SENSOR_TEMPERATURE_STARTING,
-    SENSOR_TEMPERATURE_IDLE,
-    SENSOR_TEMPERATURE_MEASUREMENT_READY,
-    SENSOR_TEMPERATURE_ERROR
+  SENSOR_TEMPERATURE_STARTING,
+  SENSOR_TEMPERATURE_IDLE,
+  SENSOR_TEMPERATURE_MEASUREMENT_READY,
+  SENSOR_TEMPERATURE_ERROR
 } SensorTemperatureStatus;
 
 /* Function prototypes -------------------------------------------------------*/

@@ -4,9 +4,20 @@
   * @file           : sensor_heartrate.h
   * @brief          : Header for heartrate sensor file
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 Gonazalez & Morris.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * 
+  ******************************************************************************
   */
-#ifndef SENSOR_HEARTRATE_H
-#define SENSOR_HEARTRATE_H
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __SENSOR_HEARTRATE_H__
+#define __SENSOR_HEARTRATE_H__
 
 #ifdef __cplusplus
 extern "C" {
