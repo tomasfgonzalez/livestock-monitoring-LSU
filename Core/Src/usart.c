@@ -244,22 +244,21 @@ uint16_t USART2_getDataLength(void) {
 }
 
 uint8_t* LPUART1_getRxBuff(void){
-	return rx_buff;
+  return rx_buff;
 }
 
 void INIT_RX_UART2(void){
-	HAL_UARTEx_ReceiveToIdle_DMA(&hlpuart1, rx_buff, UART_RX_BUFF_SIZE);
+  HAL_UARTEx_ReceiveToIdle_DMA(&hlpuart1, rx_buff, UART_RX_BUFF_SIZE);
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
-    // Check if the event is an idle line event
+  // Check if the event is an idle line event
 
-	if((huart == &hlpuart1)){
-		//if (HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_IDLE ||HAL_UARTEx_GetRxEventType(huart) == HAL_UART_RXEVENT_HT) {
+	if (huart == &hlpuart1) {
 		//For some reason, the RXevent IDLE tends to not work right
     if (rx_buff[Size-1] == '\n') {
-			rylr998_SetInterruptFlag(1);
+      rylr998_SetInterruptFlag(1);
     }
     HAL_UARTEx_ReceiveToIdle_DMA(huart, rx_buff, UART_RX_BUFF_SIZE);
-	}
+  }
 }

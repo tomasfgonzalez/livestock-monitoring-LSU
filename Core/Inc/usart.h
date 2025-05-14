@@ -39,10 +39,6 @@ extern UART_HandleTypeDef hlpuart1;
 extern DMA_HandleTypeDef hdma_lpuart1_rx;
 extern DMA_HandleTypeDef hdma_lpuart1_tx;
 
-void INIT_RX_UART2(void);
-
-void MX_LPUART1_UART_Init(void);
-
 /* Function prototypes -------------------------------------------------------*/
 void USART2_Init(void);
 void USART2_Start(void);
@@ -50,6 +46,9 @@ bool USART2_isDataReady(void);
 uint8_t* USART2_getData(void);
 uint16_t USART2_getDataLength(void);
 bool USART2_hasError(void);
+
+void INIT_RX_UART2(void);
+void MX_LPUART1_UART_Init(void);
 
 uint8_t* LPUART1_getRxBuff(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);

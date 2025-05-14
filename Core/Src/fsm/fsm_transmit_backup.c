@@ -10,12 +10,10 @@
 /* Includes ---------------------------------------------------------------*/
 #include "fsm_transmit_backup.h"
 
-/* Private type definitions ----------------------------------------------- */
+/* Private variables ------------------------------------------------------*/
 static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_IDLE;
 
-/* Private function declarations ------------------------------------------- */
-
-/* Public functions --------------------------------------------------------*/
+/* Public functions -------------------------------------------------------*/
 void FSM_TransmitBackup_init(void) {
   current_state = TRANSMIT_BACKUP_IDLE;
 }
