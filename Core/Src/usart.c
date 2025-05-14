@@ -252,10 +252,8 @@ void INIT_RX_UART2(void){
 }
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
-  // Check if the event is an idle line event
-
-	if (huart == &hlpuart1) {
-		//For some reason, the RXevent IDLE tends to not work right
+  if (huart == &hlpuart1) {
+    // For some reason, the RXevent IDLE tends to not work right
     if (rx_buff[Size-1] == '\n') {
       rylr998_SetInterruptFlag(1);
     }
