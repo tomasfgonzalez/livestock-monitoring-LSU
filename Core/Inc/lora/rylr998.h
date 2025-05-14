@@ -90,6 +90,7 @@ void rylr998_config(const RYLR_config_t *config_handler);
 
 
 RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd);
+RYLR_RX_data_t* rylr998_readCurrentPacket(void);
 void rylr998_sendCommand(const char *cmd);
 
 //IRQ

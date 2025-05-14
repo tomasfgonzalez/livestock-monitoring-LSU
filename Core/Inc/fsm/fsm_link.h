@@ -40,6 +40,7 @@ typedef enum {
 /* FSM interface ------------------------------------------------------------ */
 void FSM_Link_init(void);
 void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError);
+void FSM_Link_tick_1s(void);
 
 #ifdef __cplusplus
 }

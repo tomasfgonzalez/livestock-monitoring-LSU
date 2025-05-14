@@ -24,6 +24,9 @@ extern "C" {
 #endif
 
 /* FSM states --------------------------------------------------------------- */
+#include <stdbool.h>
+
+/* Public type definitions ----------------------------------------------- */
 typedef enum {
   TRANSMIT_BACKUP_IDLE,
 } FSM_TransmitBackup_State;
@@ -31,7 +34,7 @@ typedef enum {
 /* FSM interface ------------------------------------------------------------ */
 void FSM_TransmitBackup_init(void);
 
-void FSM_TransmitBackup_handle(void);
+void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete);
 
 #ifdef __cplusplus
 }

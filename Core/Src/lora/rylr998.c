@@ -13,6 +13,7 @@
 /* Private variables ----------------------------------------------------- */
 static char txBuffer[TX_BUFFER_SIZE];
 
+bool packet_available = false;
 RYLR_RX_data_t rx_packet;
 
 //------------------------------
@@ -126,6 +127,7 @@ RYLR_RX_command_t rylr998_parse_received(uint8_t *pBuff, uint8_t pBuff_size) {
     		cmd = RYLR_RCV_ACK;
     	}
 
+		packet_available = true;
     	//TODO proccess recived SYNC DATA
 
     } else if (cmd == RYLR_ERR) {
@@ -152,7 +154,7 @@ uint8_t rylr998_GetInterruptFlag(void){
 // 		 CHANNELS
 //------------------------------
 
-void rylr998_setChannel(uint8_t ch,uint8_t address){
+void rylr998_setChannel(uint8_t ch, uint8_t address) {
 	RYLR_config_t config_handler;
 
 	if (ch) {
@@ -298,4 +300,9 @@ RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd){
 		return NULL;
 	}
 	return &rx_packet;
+}
+
+RYLR_RX_data_t* rylr998_readCurrentPacket(void) {
+	if (packet_available) return &rx_packet;
+	return NULL;
 }

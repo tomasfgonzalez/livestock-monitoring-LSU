@@ -12,9 +12,9 @@ void TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 4000 - 1; // 4 MHz / 4000 = 1 kHz
+  htim2.Init.Prescaler = 8000 - 1; // 32 MHz / 8000 = 4 KHz
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 999; // 1 kHz / 999 = 1 Hz
+  htim2.Init.Period = 4000; // 4 KHz / 4000 = 1 Hz -> 1 s
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 

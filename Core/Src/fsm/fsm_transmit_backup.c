@@ -6,14 +6,21 @@
   *                   transmission of data from the device to the Central Unit
   ******************************************************************************
   */
+
+/* Includes ---------------------------------------------------------------*/
 #include "fsm_transmit_backup.h"
+
+/* Private type definitions ----------------------------------------------- */
 static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_IDLE;
 
+/* Private function declarations ------------------------------------------- */
+
+/* Public functions --------------------------------------------------------*/
 void FSM_TransmitBackup_init(void) {
   current_state = TRANSMIT_BACKUP_IDLE;
 }
 
-void FSM_TransmitBackup_handle(void) {
+void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete) {
   switch (current_state) {
     case TRANSMIT_BACKUP_IDLE:
       // Add state handling logic here

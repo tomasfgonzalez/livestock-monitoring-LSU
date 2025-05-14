@@ -18,14 +18,24 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "rylr998.h"
 
+/* Public type definitions --------------------------------------------------- */
+typedef struct {
+  int32_t latitude;
+  int32_t longitude;
+  uint16_t temperature_livestock;
+  uint16_t temperature_environment;
+  uint8_t heartrate;
+} LSU_Payload;
+
 /* Public functions ----------------------------------------------------------*/
 void LSU_setAddress(uint8_t addr);
 void LSU_setChannelMain(void);
 void LSU_setChannelAux(void);
 
-void LSU_sendParameters(uint16_t destination, int32_t Lat, int32_t Lon, uint16_t T1, uint16_t T2, uint8_t bpm);
+void LSU_sendParameters(uint16_t destination, LSU_Payload* payload);
 void LSU_sendSyncRequest(uint16_t destination);
-RYLR_RX_data_t* LSU_getConfig(void);
+bool LSU_checkChannelBusy(void);
+RYLR_RX_data_t* LSU_getData(void);
 
 #ifdef __cplusplus
 }
