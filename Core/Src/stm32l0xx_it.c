@@ -54,12 +54,12 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_usart2_rx;
+extern DMA_HandleTypeDef hdma_lpuart1_rx;
+extern DMA_HandleTypeDef hdma_lpuart1_tx;
 
 extern ADC_HandleTypeDef hadc;
+extern UART_HandleTypeDef hlpuart1;
 extern TIM_HandleTypeDef htim2;
-/* USER CODE BEGIN EV */
-
-/* USER CODE END EV */
 
 /******************************************************************************/
 /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
@@ -162,4 +162,13 @@ void ADC1_COMP_IRQHandler(void) {
 
 void EXTI4_15_IRQHandler(void) {
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
+}
+
+void LPUART1_IRQHandler(void) {
+  HAL_UART_IRQHandler(&hlpuart1);
+}
+
+void DMA1_Channel2_3_IRQHandler(void) {
+  HAL_DMA_IRQHandler(&hdma_lpuart1_tx);
+  HAL_DMA_IRQHandler(&hdma_lpuart1_rx);
 }

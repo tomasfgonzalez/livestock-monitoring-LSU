@@ -31,9 +31,13 @@ extern "C" {
 /* Defines -------------------------------------------------------------------*/
 #define VCP_TX_Pin GPIO_PIN_9
 #define VCP_RX_Pin GPIO_PIN_10
+#define UART_RX_BUFF_SIZE 64
 
 /* Structure declarations ----------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef hlpuart1;
+extern DMA_HandleTypeDef hdma_lpuart1_rx;
+extern DMA_HandleTypeDef hdma_lpuart1_tx;
 
 /* Function prototypes -------------------------------------------------------*/
 void USART2_Init(void);
@@ -43,6 +47,10 @@ uint8_t* USART2_getData(void);
 uint16_t USART2_getDataLength(void);
 bool USART2_hasError(void);
 
+void INIT_RX_UART2(void);
+void MX_LPUART1_UART_Init(void);
+
+uint8_t* LPUART1_getRxBuff(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
 

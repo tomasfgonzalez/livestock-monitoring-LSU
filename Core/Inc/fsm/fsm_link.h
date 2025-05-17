@@ -23,15 +23,24 @@
 extern "C" {
 #endif
 
+/* Includes ---------------------------------------------------------------*/
+#include <stdbool.h>
+#include "rylr998.h"
+#include "usart.h"
+#include "lsu_comms.h"
+
 /* FSM states --------------------------------------------------------------- */
 typedef enum {
+  LINK_LISTENING,
   LINK_IDLE,
+  LINK_FETCH,
+  LINK_ESTABLISHED,
 } FSM_Link_State;
 
 /* FSM interface ------------------------------------------------------------ */
 void FSM_Link_init(void);
-
-void FSM_Link_handle(void);
+void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError);
+void FSM_Link_tick_1s(void);
 
 #ifdef __cplusplus
 }
