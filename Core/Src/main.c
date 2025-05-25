@@ -57,27 +57,27 @@ int main(void) {
     // Peripherals initialization
     GPIO_Init();
     RTC_Init();
-    // MX_I2C1_Init();
-    // DMA_Init();
-    // USART2_Init();
+    MX_I2C1_Init();
+    DMA_Init();
+    USART2_Init();
 
-    // DMA_Start();
-    // USART2_Start();
+    DMA_Start();
+    USART2_Start();
 
     // Clock initialization
     TIM2_Init();
     MX_LPUART1_UART_Init();
-    // INIT_RX_UART2();
+    INIT_RX_UART2();
     // run_tests();
 
-  // LSU_setAddress(0x03);
-  // LSU_setChannelMain();
+  LSU_setAddress(0x03);
+  LSU_setChannelMain();
 
     // System start
-//    FSM_Main_init();
+   FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
-      // FSM_Main_handle();
+      FSM_Main_handle();
 
       HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
       HAL_Delay(1000);
