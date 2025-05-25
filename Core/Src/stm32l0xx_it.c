@@ -60,6 +60,7 @@ extern DMA_HandleTypeDef hdma_lpuart1_tx;
 extern ADC_HandleTypeDef hadc;
 extern UART_HandleTypeDef hlpuart1;
 extern TIM_HandleTypeDef htim2;
+extern RTC_HandleTypeDef hrtc;
 
 /******************************************************************************/
 /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
@@ -171,4 +172,8 @@ void LPUART1_IRQHandler(void) {
 void DMA1_Channel2_3_IRQHandler(void) {
   HAL_DMA_IRQHandler(&hdma_lpuart1_tx);
   HAL_DMA_IRQHandler(&hdma_lpuart1_rx);
+}
+
+void RTC_IRQHandler(void) {
+  HAL_RTCEx_WakeUpTimerIRQHandler(&hrtc);
 }

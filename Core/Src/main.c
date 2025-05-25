@@ -22,6 +22,7 @@
 #include "dma.h"
 #include "usart.h"
 #include "gpio.h"
+#include "rtc.h"
 #include "tim2.h"
 #include "time_config.h"
 #include "gpio_temperature_power.h"
@@ -55,27 +56,43 @@ int main(void) {
 
     // Peripherals initialization
     GPIO_Init();
-    MX_I2C1_Init();
-    DMA_Init();
-    USART2_Init();
+    RTC_Init();
+    // MX_I2C1_Init();
+    // DMA_Init();
+    // USART2_Init();
 
-    DMA_Start();
-    USART2_Start();
+    // DMA_Start();
+    // USART2_Start();
 
     // Clock initialization
     TIM2_Init();
     MX_LPUART1_UART_Init();
-    INIT_RX_UART2();
+    // INIT_RX_UART2();
     // run_tests();
 
-    LSU_setAddress(0x03);
-    LSU_setChannelMain();
+  // LSU_setAddress(0x03);
+  // LSU_setChannelMain();
 
     // System start
-    FSM_Main_init();
+//    FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
-      FSM_Main_handle();
+      // FSM_Main_handle();
+
+      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+      HAL_Delay(1000);
+      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+
+      HAL_SuspendTick();
+      RTC_setWakeUpTimer(1);
+
+      /* Enter STOP 2 mode */
+      __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+      HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+
+      RTC_clearWakeUpTimer();
+      SystemClock_Config();
+      HAL_ResumeTick();
     }
 }
 
