@@ -58,6 +58,23 @@ void run_tests(void) {
 
 }
 
+void run_rtc_test(void) {
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+  HAL_Delay(1000);
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+
+  HAL_SuspendTick();
+  RTC_setWakeUpTimer(10);
+
+  /* Enter STOP 2 mode */
+  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+  HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+
+  RTC_clearWakeUpTimer();
+  SystemClock_Config();
+  HAL_ResumeTick();
+}
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
@@ -85,37 +102,17 @@ int main(void) {
     MX_LPUART1_UART_Init();
     INIT_RX_UART2();
 
-    // run_tests();
-
-  LSU_setAddress(0x03);
-  LSU_setChannelMain();
-
+    LSU_setAddress(0x00);
+    LSU_setChannelMain();
 
     run_tests();
     // System start
-
-   FSM_Main_init();
+    FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
       FSM_Main_handle();
-
-      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-      HAL_Delay(1000);
-      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-
-      HAL_SuspendTick();
-      RTC_setWakeUpTimer(10);
-
-      /* Enter STOP 2 mode */
-      __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-      HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
-
-      RTC_clearWakeUpTimer();
-      SystemClock_Config();
-      HAL_ResumeTick();
-
-
-}
+      run_rtc_test();
+    }
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {

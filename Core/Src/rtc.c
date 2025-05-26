@@ -29,7 +29,6 @@ RTC_HandleTypeDef hrtc;
 
 /* Public functions ---------------------------------------------------------*/
 void RTC_Init(void) {
-  /* Initialize RTC Only */
   hrtc.Instance = RTC;
   hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
   hrtc.Init.AsynchPrediv = 127;
@@ -46,7 +45,7 @@ void RTC_Init(void) {
 void RTC_setWakeUpTimer(uint32_t seconds) {
   uint32_t necessaryCount = seconds * RTC_WAKEUP_PRESCALER_DIVISOR;
   if (HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, necessaryCount, RTC_WAKEUPCLOCK_RTCCLK_DIV16) != HAL_OK) {
-	  Error_Handler();
+    Error_Handler();
   }
 }
 
