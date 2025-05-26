@@ -50,12 +50,9 @@ void run_tests(void) {
 	hr_test();
 	gps_test();
 
-	HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-	HAL_Delay(1000);
-	HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+	run_rtc_test();
 	LSU_setAddress(0x03);
 	LSU_setChannelMain();
-
 }
 
 void run_rtc_test(void) {
@@ -102,10 +99,8 @@ int main(void) {
     MX_LPUART1_UART_Init();
     INIT_RX_UART2();
 
-    LSU_setAddress(0x00);
-    LSU_setChannelMain();
-
     run_tests();
+
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
