@@ -24,7 +24,6 @@
 #include "gpio.h"
 #include "rtc.h"
 #include "tim2.h"
-#include "time_config.h"
 #include "gpio_temperature_power.h"
 
 #include "tests.h"
@@ -99,20 +98,19 @@ int main(void) {
     MX_LPUART1_UART_Init();
     INIT_RX_UART2();
 
-    run_tests();
+//    run_tests();
 
     // System start
     FSM_Main_init();
     HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
       FSM_Main_handle();
-      run_rtc_test();
+//      run_rtc_test();
     }
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim->Instance == TIM2) {
-    time_config_tick_1s();
     FSM_Main_tick_1s();
     mockTimer--;
     if (mockTimer <= 0) {

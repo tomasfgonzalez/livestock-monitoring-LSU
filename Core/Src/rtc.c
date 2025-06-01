@@ -18,6 +18,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "rtc.h"
+
+#include <stdio.h>
+#include <stdbool.h>
 #include "stm32l0xx_hal.h"
 #include "sysClock.h"
 
