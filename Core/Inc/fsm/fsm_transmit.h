@@ -31,8 +31,6 @@ extern "C" {
 #include "sensor_heartrate.h"
 #include "sensor_gps.h"
 
-#include "time_config.h"
-
 /* FSM states --------------------------------------------------------------- */
 typedef enum {
   TRANSMIT_IDLE,

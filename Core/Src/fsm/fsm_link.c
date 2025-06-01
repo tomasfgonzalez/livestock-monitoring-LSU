@@ -34,23 +34,14 @@ static uint32_t CSMARandomTimeoutTimer = 0;
 bool processPacket(char* data) {
   if (strncmp(data, "CONFIG-", 7) == 0) {
     uint32_t id = 0;
-    uint32_t time_slot_ms = 0;
     uint32_t period_ms = 0;
+    uint32_t now_ms = 0;
+    uint32_t time_slot_ms = 0;
     
-    int parsed = sscanf(data, "CONFIG-%lu-%lu-%lu", &id, &time_slot_ms, &period_ms);
-
-    LSU_setAddress(id);
-    if (parsed == 3) {
-      uint32_t period = period_ms / 1000;
-      uint32_t sensing_start = ((time_slot_ms / 1000) + period / 2) % period;
-      uint32_t sensing_duration = 3;
-      uint32_t transmit_start = time_slot_ms / 1000;
-      uint32_t transmit_duration = 7;
-
-      time_config_set_period(period);
-      time_config_set_sensing_window(sensing_start, sensing_duration);
-      time_config_set_transmit_window(transmit_start, transmit_duration);
-      
+    int parsed = sscanf(data, "CONFIG-%lu-%lu-%lu-%lu", &id, &period_ms, &now_ms, &time_slot_ms);
+    if (parsed == 4) {
+      LSU_setAddress(id);
+      time_config_set(period_ms, now_ms, time_slot_ms);
       return true;
     }
   }

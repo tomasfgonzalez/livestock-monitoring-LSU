@@ -29,24 +29,28 @@ extern "C" {
 
 /* Function prototypes -------------------------------------------------------*/
 
-// Clock
-void time_config_tick_1s(void);
+/**
+ * @brief Set the time configuration
+ * 
+ * @param period The period of the time configuration
+ * @param time_slot The time slot of the time configuration
+ * @param now The current time
+ */
+void time_config_set(uint32_t period, uint32_t time_slot, uint32_t now);
 
-// Setters
-void time_config_set_period(uint32_t period);
-void time_config_set_sensing_window(uint32_t start, uint32_t duration);
-void time_config_set_transmit_window(uint32_t start, uint32_t duration);
+/**
+ * @brief Check if is RTC timer finished and it is time to start sensing
+ * 
+ * @return true iff is time to sense
+ */
+bool time_config_isReadyToSense(void);
 
-// Getters
-uint32_t time_config_get_period(void);
-uint32_t time_config_get_sensing_start(void);
-uint32_t time_config_get_sensing_duration(void);
-uint32_t time_config_get_transmit_start(void);
-uint32_t time_config_get_transmit_duration(void);
-
-// Window check functions
-bool time_config_on_sensing_window();
-bool time_config_on_transmit_window();
+/**
+ * @brief Check if is RTC timer finished and it is time to transmit data
+ * 
+ * @return true iff is time to transmit
+ */
+bool time_config_isReadyToTransmit(void);
 
 #ifdef __cplusplus
 }
