@@ -43,6 +43,7 @@ void DMA1_Channel2_3_IRQHandler(void);
 void DMA1_Channel4_5_6_7_IRQHandler(void);
 void LPUART1_IRQHandler(void);
 void EXTI4_15_IRQHandler(void);
+void RTC_IRQHandler(void);
 
 #ifdef __cplusplus
 }
