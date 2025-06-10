@@ -14,6 +14,7 @@
   *
   ******************************************************************************
   */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -32,27 +33,7 @@
 
 #include "fsm/fsm_main.h"
 
-TIM_HandleTypeDef htim2;
-
 uint32_t mockTimer = 5;
-
-
-
-void run_tests(void) {
-	adc_test();
-	gps_test();
-	hr_test();
-	gps_test();
-
-
-	adc_test();
-	hr_test();
-	gps_test();
-
-	run_rtc_test();
-	LSU_setAddress(0x03);
-	LSU_setChannelMain();
-}
 
 void run_rtc_test(void) {
   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
@@ -71,6 +52,22 @@ void run_rtc_test(void) {
   HAL_ResumeTick();
 }
 
+void run_tests(void) {
+	adc_test();
+	gps_test();
+	hr_test();
+	gps_test();
+
+
+	adc_test();
+	hr_test();
+	gps_test();
+
+	run_rtc_test();
+	LSU_setAddress(0x03);
+	LSU_setChannelMain();
+}
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
@@ -79,24 +76,21 @@ int main(void) {
     GPIO_Init();
 
     RTC_Init();
-    MX_I2C1_Init();
-
+    I2C_Init();
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
     HAL_Delay(1000);
 
 
     DMA_Init();
-    USART2_Init();
-    MX_I2C1_Init();
+    USART_Init();
 
 
     DMA_Start();
-    USART2_Start();
+    USART_Start();
 
     // Clock initialization
     TIM2_Init();
-    MX_LPUART1_UART_Init();
-    INIT_RX_UART2();
+    LPUART_Init();
 
 //    run_tests();
 
@@ -109,14 +103,11 @@ int main(void) {
     }
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-  if (htim->Instance == TIM2) {
-    FSM_Main_tick_1s();
-    mockTimer--;
-    if (mockTimer <= 0) {
-      mockTimer = 5;
-      HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
-    }
+void TIM2_tick(void) {
+  FSM_Main_tick_1s();
+  mockTimer--;
+  if (mockTimer <= 0) {
+    mockTimer = 5;
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
   }
 }
-

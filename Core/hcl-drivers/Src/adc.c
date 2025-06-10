@@ -2,7 +2,7 @@
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
   * @file           : adc.c
-  * @brief          : Source file for ADC configuration
+  * @brief          : Hardware Configuration Layer - ADC configuration
   ******************************************************************************
   * @attention
   *
@@ -18,6 +18,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
 
+#include <stdbool.h>
+
+/* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc;
 
 static bool adcIsEnabled = false;
@@ -26,8 +29,54 @@ static bool initError = false;
 static uint8_t conversionsFinished = 0;
 static uint16_t adc_values[2];
 
-void ADC_Init(void)
-{
+/* HAL Functions -------------------------------------------------------------*/
+void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle) {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  if (adcHandle->Instance == ADC1) {
+    /* ADC1 clock enable */
+    __HAL_RCC_ADC1_CLK_ENABLE();
+
+    /* ADC1 GPIO clock enable */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /* ADC1 GPIO Configuration */
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* ADC1 interrupt Init */
+    HAL_NVIC_SetPriority(ADC1_COMP_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(ADC1_COMP_IRQn);
+  }
+}
+
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle) {
+  if(adcHandle->Instance == ADC1) {
+    /* ADC1 clock disable */
+    __HAL_RCC_ADC1_CLK_DISABLE();
+
+    /* ADC1 GPIO Configuration */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5);
+
+    /* ADC1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(ADC1_COMP_IRQn);
+  }
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
+  if (hadc->Instance == ADC1) {
+    static uint8_t current_channel = 0;
+    adc_values[current_channel] = HAL_ADC_GetValue(hadc);
+    current_channel ^= 1;  // Toggle between channel 0 and 1
+    conversionsFinished++;
+  }
+}
+
+
+/* Public functions ----------------------------------------------------------*/
+void ADC_Init(void) {
   ADC_ChannelConfTypeDef sConfig = {0};
 
   hadc.Instance = ADC1;
@@ -52,7 +101,6 @@ void ADC_Init(void)
 
   if (HAL_ADC_Init(&hadc) != HAL_OK) {
     initError = true;
-    Error_Handler();
   }
 
   /* Configure ADC channel 4 to be converted. */
@@ -60,14 +108,12 @@ void ADC_Init(void)
   sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
     initError = true;
-    Error_Handler();
   }
 
   /* Configure ADC channel 5 to be converted. */
   sConfig.Channel = ADC_CHANNEL_5;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
     initError = true;
-    Error_Handler();
   }
 
   /* Enable ADC interrupt */
@@ -78,60 +124,6 @@ void ADC_Init(void)
   __HAL_ADC_ENABLE_IT(&hadc, ADC_IT_EOC);
 }
 
-/**
- * ADC MSP Initialization and De-Initialization functions
- * - Enable/Disable clock for ADC
- * - Configure/Unconfigure ADC GPIO pins
- * - Configure/Unconfigure ADC interrupt
- * 
- * ADC Conversion Complete callback as well
- */
-
-void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle) {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(adcHandle->Instance == ADC1) {
-    /* ADC1 clock enable */
-    __HAL_RCC_ADC1_CLK_ENABLE();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /* ADC GPIO Configuration */
-    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    /* ADC1 interrupt Init */
-    HAL_NVIC_SetPriority(ADC1_COMP_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(ADC1_COMP_IRQn);
-  }
-}
-
-void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle) {
-  if(adcHandle->Instance == ADC1) {
-    /* Peripheral clock disable */
-    __HAL_RCC_ADC1_CLK_DISABLE();
-
-    /* ADC GPIO Configuration */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5);
-
-    /* ADC1 interrupt Deinit */
-    HAL_NVIC_DisableIRQ(ADC1_COMP_IRQn);
-  }
-}
-
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-  static uint8_t current_channel = 0;
-  if (hadc->Instance == ADC1) {
-    adc_values[current_channel] = HAL_ADC_GetValue(hadc);
-    current_channel ^= 1;  // Toggle between channel 0 and 1
-    conversionsFinished++;
-  }
-}
-
-
-/**
- * ADC management functions
- */
 void ADC_Enable(void) {
   if (!adcIsEnabled) {
     ADC_Init();

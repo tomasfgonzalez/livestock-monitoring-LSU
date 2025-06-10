@@ -29,9 +29,9 @@ void adc_test(void) {
 
 void gps_test(void) {
 	DMA_Init();
-	USART2_Init();
+	USART_Init();
 	DMA_Start();
-	USART2_Start();
+	USART_Start();
 
 	// Obtener latitud y longitud
 	Lat = get_UBX_GpsLatitude();

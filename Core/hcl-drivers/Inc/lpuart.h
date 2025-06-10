@@ -1,51 +1,61 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : i2c.h
-  * @brief          : Header for I2C file
+  * @file           : lpuart.c
+  * @brief          : Hardware Configuration Layer - LPUART configuration
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 Gonazalez & Morris.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __I2C_H__
-#define __I2C_H__
+#ifndef __LPUART_H__
+#define __LPUART_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdbool.h>
+#include <stdint.h>
 
 #include "stm32l0xx_hal.h"
 
+/* Defines -------------------------------------------------------------------*/
+#define LPUART_RX_SIZE 64
+
 /* Structure declarations ----------------------------------------------------*/
-extern I2C_HandleTypeDef hi2c1;
+extern UART_HandleTypeDef hlpuart1;
+extern DMA_HandleTypeDef hdma_lpuart1_rx;
+extern DMA_HandleTypeDef hdma_lpuart1_tx;
+
+/* HAL Functions ------------------------------------------------------------*/
+void LPUART_MspInit(UART_HandleTypeDef* huart);
+void LPUART_MspDeInit(UART_HandleTypeDef* huart);
+void LPUART_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size);
 
 /* Public functions ----------------------------------------------------------*/
 
 /**
- * @brief Initializes the I2C peripheral.
+ * @brief Initializes the LPUART peripheral.
  */
-void I2C_Init(void);
+void LPUART_Init(void);
 
 /**
- * @brief Checks if the I2C peripheral has an error.
+ * @brief Gets the receive buffer.
  */
-bool I2C_hasError(void);
+uint8_t* LPUART_getRxBuff(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __I2C_H__ */
-
+#endif /* __LPUART_H__ */

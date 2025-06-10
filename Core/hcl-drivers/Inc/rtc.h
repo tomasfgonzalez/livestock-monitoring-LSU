@@ -2,7 +2,7 @@
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
   * @file           : rtc.h
-  * @brief          : This file provides code for the RTC.
+  * @brief          : Hardware Configuration Layer - RTC configuration
   ******************************************************************************
   * @attention
   *
@@ -16,8 +16,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef RTC_H
-#define RTC_H
+#ifndef __RTC_H__
+#define __RTC_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,26 +26,33 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 
+#include "stm32l0xx_hal.h"
+
+/* Defines -------------------------------------------------------------------*/
+#define RTC_WAKEUP_PRESCALER_DIVISOR 2048
+
+/* Structure declarations ----------------------------------------------------*/
+extern RTC_HandleTypeDef hrtc;
+
+/* HAL Functions ------------------------------------------------------------*/
+void RTC_MspInit(RTC_HandleTypeDef* hrtc);
+void RTC_MspDeInit(RTC_HandleTypeDef* hrtc);
+
 /* Public functions ----------------------------------------------------------*/
 
 /**
-  * @brief RTC Initialization Function
-  * @param None
-  * @retval None
+  * @brief Initializes the RTC peripheral.
   */
 void RTC_Init(void);
 
 /**
   * @brief Set the Wake Up Timer
   * @param seconds
-  * @retval None
   */
 void RTC_setWakeUpTimer(uint32_t seconds);
 
 /**
   * @brief Clear the Wake Up Timer
-  * @param None
-  * @retval None
   */
 void RTC_clearWakeUpTimer(void);
 
@@ -53,5 +60,5 @@ void RTC_clearWakeUpTimer(void);
 }
 #endif
 
-#endif /* RTC_H */
+#endif /* __RTC_H__ */
 

@@ -20,43 +20,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-/* USER CODE BEGIN Includes */
+#include "usart.h"
+#include "lpuart.h"
+#include "i2c.h"
+#include "rtc.h"
+#include "tim2.h"
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN TD */
-
-/* USER CODE END TD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN Define */
-
-/* USER CODE END Define */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN Macro */
-
-/* USER CODE END Macro */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* External functions --------------------------------------------------------*/
-/* USER CODE BEGIN ExternalFunctions */
-
-/* USER CODE END ExternalFunctions */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 /**
   * Initializes the Global MSP.
   */
@@ -85,17 +54,7 @@ void HAL_MspInit(void)
 */
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base) {
   if(htim_base->Instance == TIM2) {
-  /* USER CODE BEGIN TIM2_MspInit 0 */
-
-  /* USER CODE END TIM2_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_TIM2_CLK_ENABLE();
-    /* TIM2 interrupt Init */
-    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(TIM2_IRQn);
-  /* USER CODE BEGIN TIM2_MspInit 1 */
-
-  /* USER CODE END TIM2_MspInit 1 */
+    TIM2_MspInit(htim_base);
   }
 }
 
@@ -105,21 +64,21 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base) {
 * @param htim_base: TIM_Base handle pointer
 * @retval None
 */
-void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
-{
-  if(htim_base->Instance==TIM2)
-  {
-  /* USER CODE BEGIN TIM2_MspDeInit 0 */
+void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base) {
+  if(htim_base->Instance == TIM2) {
+    TIM2_MspDeInit(htim_base);
+  }
+}
 
-  /* USER CODE END TIM2_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_TIM2_CLK_DISABLE();
-
-    /* TIM2 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(TIM2_IRQn);
-  /* USER CODE BEGIN TIM2_MspDeInit 1 */
-
-  /* USER CODE END TIM2_MspDeInit 1 */
+/**
+* @brief TIM Period Elapsed Callback
+* This function is called when the TIM period is elapsed
+* @param htim: TIM handle pointer
+* @retval None
+*/
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+  if (htim->Instance == TIM2) {
+    TIM2_tick();
   }
 }
 
@@ -145,10 +104,74 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 * @param huart: UART handle pointer
 * @retval None
 */
+void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
+  if(huart->Instance == LPUART1) {
+    LPUART_MspInit(huart);
+  } else if (huart->Instance == USART2) {
+    USART_MspInit(huart);
+  }
+}
 
-/* USER CODE BEGIN 1 */
+/**
+* @brief UART MSP De-Initialization
+* This function freeze the hardware resources used in this example
+* @param huart: UART handle pointer
+* @retval None
+*/
+void HAL_UART_MspDeInit(UART_HandleTypeDef* huart) {
+  if(huart->Instance == LPUART1) {
+    LPUART_MspDeInit(huart);
+  } else if (huart->Instance == USART2) {
+    USART_MspDeInit(huart);
+  }
+}
 
-/* USER CODE END 1 */
+/**
+* @brief UART Rx Complete Callback
+* This function is called when the UART receives a complete message
+* @param huart: UART handle pointer
+* @retval None
+*/
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+  if (huart->Instance == USART2) {
+    USART_RxCpltCallback(huart);
+  }
+}
+
+/**
+* @brief UART Rx Event Callback
+* This function is called when the UART receives an event
+* @param huart: UART handle pointer
+* @param Size: Size of the message
+* @retval None
+*/
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+  if (huart->Instance == LPUART1) {
+    LPUART_RxEventCallback(huart, Size);
+  }
+}
+
+/**
+* @brief UART Error Callback
+* This function is called when the UART encounters an error
+* @param huart: UART handle pointer
+* @retval None
+*/
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+  while (1) {
+    (void) huart->ErrorCode; // Captura y maneja el código de error si es necesario
+  }
+}
+
+/**
+* @brief UART Rx Half Complete Callback
+* This function is called when the UART receives half of a message
+* @param huart: UART handle pointer
+* @retval None
+*/
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
+  // Implementación futura (si es necesario)
+}
 
 /**
 * @brief RTC MSP Initialization
@@ -158,10 +181,7 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 */
 void HAL_RTC_MspInit(RTC_HandleTypeDef* hrtc) {
   if (hrtc->Instance == RTC) {
-    /* Peripheral clock enable */
-    __HAL_RCC_RTC_ENABLE();
-    HAL_NVIC_SetPriority(RTC_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(RTC_IRQn);
+    RTC_MspInit(hrtc);
   }
 }
 
@@ -173,8 +193,6 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef* hrtc) {
 */
 void HAL_RTC_MspDeInit(RTC_HandleTypeDef* hrtc) {
   if (hrtc->Instance == RTC) {
-    /* Peripheral clock disable */
-    __HAL_RCC_RTC_DISABLE();
-    HAL_NVIC_DisableIRQ(RTC_IRQn);
+    RTC_MspDeInit(hrtc);
   }
 }

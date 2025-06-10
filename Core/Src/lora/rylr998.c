@@ -5,10 +5,12 @@
  *      Author: Tomas Francisco Gonzalez
  */
 #include "rylr998.h"
-#include "usart.h"
+#include "lpuart.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 /* Private variables ----------------------------------------------------- */
 static char txBuffer[TX_BUFFER_SIZE];
@@ -281,21 +283,21 @@ void rylr998_config(const RYLR_config_t *config_handler){
 }
 
 //-----------------------------------------------
-// 			SEND AND GET DATA FROM LPUART1
+// 			SEND AND GET DATA FROM LPUART
 //------------------------------------------------
 void rylr998_sendCommand(const char *cmd) {
     HAL_UART_Transmit(&hlpuart1, (uint8_t *)cmd, strlen(cmd), 20);
 }
 
 RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd){
-	uint8_t* rx_buff = LPUART1_getRxBuff();
+	uint8_t* rx_buff = LPUART_getRxBuff();
 
 	// Without delay, the flag does not get set to 1
 	// This part of the code is delicate
 	HAL_Delay(30);
 	while (!rylr998_interrupt_flag);
 
-	if (rylr998_parse_received(rx_buff, UART_RX_BUFF_SIZE) != cmd){
+	if (rylr998_parse_received(rx_buff, LPUART_RX_SIZE) != cmd){
 		// Wrong command
 		return NULL;
 	}

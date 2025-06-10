@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    sysClock.c
-  * @brief   This file provides code for the configuration for SysClock
-  *
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : sysClock.c
+  * @brief          : This file provides code for the configuration for SysClock
   ******************************************************************************
   * @attention
   *
@@ -82,6 +81,5 @@ void SystemClock_Config(void) {
 void Error_Handler(void) {
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1) {
-  }
+  while (1);
 }

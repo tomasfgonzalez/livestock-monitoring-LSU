@@ -26,12 +26,15 @@ I2C_HandleTypeDef hi2c1;
 
 static bool initError = false;
 
-/* Private functions ---------------------------------------------------------*/
+/* HAL Functions ------------------------------------------------------------*/
 void HAL_I2C_MspInit(I2C_HandleTypeDef* i2cHandle) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   if (i2cHandle->Instance == I2C1) {
-    /* Enable GPIO clock */
+    /* I2C1 clock enable */
+    __HAL_RCC_I2C1_CLK_ENABLE();
+
+    /* I2C1 GPIO clock enable */
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /**
@@ -45,15 +48,12 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* i2cHandle) {
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF1_I2C1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-    /* I2C1 clock enable */
-    __HAL_RCC_I2C1_CLK_ENABLE();
   }
 }
 
 void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle) {
   if (i2cHandle->Instance == I2C1) {
-    /* Disable I2C1 clock */
+    /* I2C1 clock disable */
     __HAL_RCC_I2C1_CLK_DISABLE();
 
     /**
@@ -79,17 +79,17 @@ void I2C_Init(void) {
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
   if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
-    Error_Handler();
+    initError = true;
   }
 
   /* Configure Analogue filter */
   if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK) {
-    Error_Handler();
+    initError = true;
   }
 
   /* Configure Digital filter */
   if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK) {
-    Error_Handler();
+    initError = true;
   }
 }
 

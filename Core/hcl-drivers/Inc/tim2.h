@@ -24,13 +24,33 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+
 #include "stm32l0xx_hal.h"
 
 /* Structure declarations ----------------------------------------------------*/
 extern TIM_HandleTypeDef htim2;
 
+/* HAL Functions ------------------------------------------------------------*/
+void TIM2_MspInit(TIM_HandleTypeDef* htim);
+void TIM2_MspDeInit(TIM_HandleTypeDef* htim);
+
 /* Function prototypes -------------------------------------------------------*/
+
+/**
+ * @brief Initializes the TIM2 peripheral.
+ */
 void TIM2_Init(void);
+
+/**
+ * @brief Checks if the TIM2 peripheral has an error.
+ */
+bool TIM2_hasError(void);
+
+/**
+ * @brief Handles the TIM2 interrupt. Should be implemented in the main.c file.
+ */
+void TIM2_tick(void);
 
 #ifdef __cplusplus
 }

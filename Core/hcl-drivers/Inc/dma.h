@@ -27,8 +27,20 @@ extern "C" {
 #include "stm32l0xx_hal.h"
 
 /* Function prototypes -------------------------------------------------------*/
+
+/**
+ * @brief Initializes the DMA peripheral.
+ */
 void DMA_Init(void);
+
+/**
+ * @brief Starts the DMA peripheral.
+ */
 void DMA_Start(void);
+
+/**
+ * @brief Stops the DMA peripheral.
+ */
 void DMA_Stop(void);
 
 #ifdef __cplusplus
@@ -36,4 +48,3 @@ void DMA_Stop(void);
 #endif
 
 #endif /* __DMA_H__ */
-

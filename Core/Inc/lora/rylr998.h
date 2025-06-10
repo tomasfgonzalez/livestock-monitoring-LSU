@@ -14,7 +14,7 @@ extern "C" {
 
 /* Includes --------------------------------------------------------------- */
 #include "stm32l0xx_hal.h"
-#include "usart.h"
+#include "lpuart.h"
 
 /* Defines --------------------------------------------------------------- */
 #define END "\r\n"
