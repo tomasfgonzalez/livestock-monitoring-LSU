@@ -10,22 +10,25 @@
 #include "fsm_transmit.h"
 #include "lsu_comms.h"
 #include "string.h"
+#include "time_config.h"
 
 #define SENSING_TIMEOUT_IN_SECONDS 5
+#define TRANSMIT_TIMEOUT_IN_SECONDS 10
 #define ACK_TIMEOUT_IN_SECONDS 20
 
-// ----------- Internal variables -----------
+/* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
 
-static int sensingTimer = 0;  
+static int sensingTimer = 0;
+static int transmitTimer = 0;
 static int ackTimer = 0;
 
-static bool ackReceived       = false;  // Indica que llegó un ACK
+static bool ackReceived = false;
 
 static LSU_Payload payload;
 static bool isPayloadReady = false;
 
-// ----------- Internal functions -----------
+/* Private functions ----------------------------------------------------------*/
 static void startSensingTimer(void) {
   sensingTimer = SENSING_TIMEOUT_IN_SECONDS;
 }
@@ -38,14 +41,10 @@ static void startSensing(void) {
 }
 
 static void stopSensing(void) {
-    // sensor_gps_stop();
-    // sensor_heartrate_stop();
-    // sensor_temperature_stop();
-    sensingTimer = 0;
-}
-
-static void startAckTimer(void) {
-    ackTimer = ACK_TIMEOUT_IN_SECONDS;
+  // sensor_gps_stop();
+  // sensor_heartrate_stop();
+  // sensor_temperature_stop();
+  sensingTimer = 0;
 }
 
 static void createPayload(void) {
@@ -57,9 +56,11 @@ static void createPayload(void) {
   // sensor_gps_read(&gps);
   // heartrate = sensor_heartrate_read();
 
+  static rising_temperature = 10;
+  rising_temperature += 10;
   payload.latitude = 32312313;
   payload.longitude = 39532141;
-  payload.temperature_livestock = 32;
+  payload.temperature_livestock = rising_temperature;
   payload.temperature_environment = 21;
   payload.heartrate = 72;
   isPayloadReady = true;
@@ -68,58 +69,56 @@ static void createPayload(void) {
 static void sendPayload(void) {
   isPayloadReady = false;
   LSU_sendParameters(0, &payload);
+}
+
+static void startTransmitTimer(void) {
+  transmitTimer = TRANSMIT_TIMEOUT_IN_SECONDS;
+}
+
+static void startAckTimer(void) {
+  ackTimer = ACK_TIMEOUT_IN_SECONDS;
+}
+
+static void startTransmission(void) {
+  ackReceived = false;
+  LSU_setChannelMain();
+  sendPayload();
+
+  startAckTimer();
+  startTransmitTimer();
+}
+
+static void restartTransmission(void) {
+  sendPayload();
   startAckTimer();
 }
 
-// ---------- FSM functions -----------
+/* Public functions ----------------------------------------------------------*/
 void FSM_Transmit_init(void) {
   currentState = TRANSMIT_IDLE;
 
   // Clear flags or timers
   ackReceived = false;
   sensingTimer = 0;
-  ackTimer     = 0;
-
-  // Debug time config
-  uint32_t period = time_config_get_period();
-  uint32_t sensing_start = time_config_get_sensing_start();
-  uint32_t sensing_duration = time_config_get_sensing_duration();
-  uint32_t transmit_start = time_config_get_transmit_start();
-  uint32_t transmit_duration = time_config_get_transmit_duration();
-
-  printf("Period: %lu\n", period);
-  printf("Sensing window: %lu %lu\n", sensing_start, sensing_start + sensing_duration);
-  printf("Transmit window: %lu %lu\n", transmit_start, transmit_start + transmit_duration);
+  transmitTimer = 0;
+  ackTimer = 0;
 }
 
 void FSM_Transmit_handle(bool *mainChannelFail) {
-  bool onSensingWindow = time_config_on_sensing_window();
-  bool onTransmitWindow = time_config_on_transmit_window();
+  bool isTimeToSense = time_config_isReadyToSense();
+  bool isTimeToTransmit = time_config_isReadyToTransmit();
 
   switch (currentState) {
     /* ------------------------- TRANSMIT_IDLE ------------------------- */
     case TRANSMIT_IDLE:
-      if (onSensingWindow && !isPayloadReady) {
+      if (isTimeToSense && !isPayloadReady) {
           startSensing();
           currentState = TRANSMIT_SENSE;
-      } else if (onTransmitWindow && isPayloadReady) {
-          ackReceived = false;
-          LSU_setChannelMain();
-          sendPayload();
+      } else if (isTimeToTransmit && isPayloadReady) {
+          startTransmission();
           currentState = TRANSMIT_SEND;
       }
       break;
-
-        if (onSensingWindow && !isPayloadReady) {
-            startSensing();
-            currentState = TRANSMIT_SENSE;
-        } else if (onTransmitWindow) {
-            ackReceived = false;
-            startAckTimer();
-            sendPayload();
-            currentState = TRANSMIT_SEND;
-        }
-        break;
 
     /* ------------------------- TRANSMIT_SENSE ------------------------- */
     case TRANSMIT_SENSE:
@@ -146,8 +145,8 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     	  ackReceived = false;
         currentState = TRANSMIT_IDLE;
       } else if (ackTimer <= 0) {
-        sendPayload();
-      } else if (!onTransmitWindow) {
+        restartTransmission();
+      } else if (transmitTimer <= 0) {
         *mainChannelFail = true;
       }
       break;
@@ -156,12 +155,15 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     default:
       currentState = TRANSMIT_IDLE;
       break;
-    }
+  }
 }
 
 void FSM_Transmit_tick_1s(void) {
   if (sensingTimer > 0)
     sensingTimer--;
+
+  if (transmitTimer > 0)
+    transmitTimer--;
 
   if (ackTimer > 0)
     ackTimer--;

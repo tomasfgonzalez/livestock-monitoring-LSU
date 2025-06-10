@@ -9,66 +9,71 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "time_config.h"
+#include "stm32l0xx_hal.h"
+#include "rtc.h"
 
-// Default values
-static uint32_t timeInSeconds = 0;
-static uint32_t timePeriod = 20;           // Total cycle period in seconds
-static uint32_t sensingWindowStart = 5;     // When sensing window starts within period
-static uint32_t sensingWindowDuration = 5;  // How long sensing window lasts
-static uint32_t transmitWindowStart = 15;   // When transmit window starts within period  
-static uint32_t transmitWindowDuration = 5; // How long transmit window lasts
+/* Defines -------------------------------------------------------------------*/
+#define SENSING_TRANSMIT_GAP_MS 5000 // Sense 1 minute before transmitting
 
-// Clock
-// TODO: Use real time instead of a mock timer
-void time_config_tick_1s(void) {
-    timeInSeconds++;
+/* Private variables ---------------------------------------------------------*/
+static uint32_t timeToNextTransmission_ms;
+static uint32_t timeToNextSensing_ms;
+
+static bool readyToSense = false;
+static bool readyToTransmit = false;
+static bool shouldSenseNext = false;
+
+extern RTC_HandleTypeDef hrtc;
+
+/* Private functions ----------------------------------------------------------*/
+void startNewTimeWindow() {
+  if (shouldSenseNext) {
+    readyToSense = true;
+    RTC_clearWakeUpTimer();
+    RTC_setWakeUpTimer(timeToNextTransmission_ms / 1000);
+  } else {
+    readyToTransmit = true;
+    RTC_clearWakeUpTimer();
+    RTC_setWakeUpTimer(timeToNextSensing_ms / 1000);
+  }
+  shouldSenseNext = !shouldSenseNext;
 }
 
-// Setters
-void time_config_set_period(uint32_t period) {
-    timePeriod = period;
+void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc) {
+  // Override the RTC interrupt handler to handle the time events
+  if (hrtc->Instance == RTC) {
+    startNewTimeWindow();
+  }
 }
 
-void time_config_set_sensing_window(uint32_t start, uint32_t duration) {
-    sensingWindowStart = start;
-    sensingWindowDuration = duration;
+/* Public functions ----------------------------------------------------------*/
+void time_config_set(uint32_t period, uint32_t now, uint32_t time_slot) {
+  if (period < SENSING_TRANSMIT_GAP_MS) {
+      printf("Period is too short to fit sensing and transmit windows\n");
+      return;
+  }
+  timeToNextTransmission_ms = SENSING_TRANSMIT_GAP_MS;
+  timeToNextSensing_ms = period - SENSING_TRANSMIT_GAP_MS;
+
+  uint32_t timeToFirstSensing_ms = (time_slot + 2*period) - now - SENSING_TRANSMIT_GAP_MS;
+  timeToFirstSensing_ms %= period;
+
+  shouldSenseNext = true;
+  RTC_setWakeUpTimer(timeToFirstSensing_ms / 1000);
 }
 
-void time_config_set_transmit_window(uint32_t start, uint32_t duration) {
-    transmitWindowStart = start;
-    transmitWindowDuration = duration;
+bool time_config_isReadyToSense(void) {
+  if (readyToSense) {
+    readyToSense = false;
+    return true;
+  }
+  return false;
 }
 
-// Getters
-uint32_t time_config_get_period(void) {
-    return timePeriod;
-}
-
-uint32_t time_config_get_sensing_start(void) {
-    return sensingWindowStart;
-}
-
-uint32_t time_config_get_sensing_duration(void) {
-    return sensingWindowDuration;
-}
-
-uint32_t time_config_get_transmit_start(void) {
-    return transmitWindowStart;
-}
-
-uint32_t time_config_get_transmit_duration(void) {
-    return transmitWindowDuration;
-}
-
-// Window check functions
-bool time_config_on_sensing_window(void) {
-    uint32_t moduledTime = timeInSeconds % timePeriod;
-    return (moduledTime >= sensingWindowStart) && 
-           (moduledTime < (sensingWindowStart + sensingWindowDuration));
-}
-
-bool time_config_on_transmit_window(void) {
-    uint32_t moduledTime = timeInSeconds % timePeriod;
-    return (moduledTime >= transmitWindowStart) && 
-           (moduledTime < (transmitWindowStart + transmitWindowDuration));
+bool time_config_isReadyToTransmit(void) {
+  if (readyToTransmit) {
+    readyToTransmit = false;
+    return true;
+  }
+  return false;
 }
