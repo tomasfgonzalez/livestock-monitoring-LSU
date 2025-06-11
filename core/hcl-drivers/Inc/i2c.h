@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : sensor_gps.h
-  * @brief          : Header for GPS sensor file
+  * @file           : i2c.h
+  * @brief          : Header for I2C file
   ******************************************************************************
   * @attention
   *
@@ -11,52 +11,41 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * 
+  *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SENSOR_GPS_H__
-#define __SENSOR_GPS_H__
+#ifndef __I2C_H__
+#define __I2C_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
 #include <stdbool.h>
 
-#include "dma.h"
-#include "usart.h"
-#include "neo6m.h"
+#include "stm32l0xx_hal.h"
 
 /* Structure declarations ----------------------------------------------------*/
-typedef enum {
-  SENSOR_GPS_STARTING,
-  SENSOR_GPS_IDLE,
-  SENSOR_GPS_MEASUREMENT_READY,
-  SENSOR_GPS_ERROR
-} SensorGPSStatus;
+extern I2C_HandleTypeDef hi2c1;
 
-typedef struct {
-  float latitude;
-  float longitude;
-} GPSData;
+/* Public functions ----------------------------------------------------------*/
 
-/* Function prototypes -------------------------------------------------------*/
-void sensor_gps_init(void);
-void sensor_gps_start(void);
-void sensor_gps_stop(void);
+/**
+ * @brief Initializes the I2C peripheral.
+ */
+void I2C_Init(void);
 
-bool sensor_gps_has_started(void);
-bool sensor_gps_is_measurement_ready(void);
-bool sensor_gps_has_error(void);
-
-void sensor_gps_read(GPSData *data);
+/**
+ * @brief Checks if the I2C peripheral has an error.
+ */
+bool I2C_hasError(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SENSOR_GPS_H__ */
+#endif /* __I2C_H__ */
+

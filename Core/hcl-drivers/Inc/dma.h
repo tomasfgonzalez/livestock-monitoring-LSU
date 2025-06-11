@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : sensor_gps.h
-  * @brief          : Header for GPS sensor file
+  * @file           : dma.h
+  * @brief          : Header for DMA file
   ******************************************************************************
   * @attention
   *
@@ -11,52 +11,40 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * 
+  *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SENSOR_GPS_H__
-#define __SENSOR_GPS_H__
+#ifndef __DMA_H__
+#define __DMA_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "dma.h"
-#include "usart.h"
-#include "neo6m.h"
-
-/* Structure declarations ----------------------------------------------------*/
-typedef enum {
-  SENSOR_GPS_STARTING,
-  SENSOR_GPS_IDLE,
-  SENSOR_GPS_MEASUREMENT_READY,
-  SENSOR_GPS_ERROR
-} SensorGPSStatus;
-
-typedef struct {
-  float latitude;
-  float longitude;
-} GPSData;
+#include "stm32l0xx_hal.h"
 
 /* Function prototypes -------------------------------------------------------*/
-void sensor_gps_init(void);
-void sensor_gps_start(void);
-void sensor_gps_stop(void);
 
-bool sensor_gps_has_started(void);
-bool sensor_gps_is_measurement_ready(void);
-bool sensor_gps_has_error(void);
+/**
+ * @brief Initializes the DMA peripheral.
+ */
+void DMA_Init(void);
 
-void sensor_gps_read(GPSData *data);
+/**
+ * @brief Starts the DMA peripheral.
+ */
+void DMA_Start(void);
+
+/**
+ * @brief Stops the DMA peripheral.
+ */
+void DMA_Stop(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SENSOR_GPS_H__ */
+#endif /* __DMA_H__ */

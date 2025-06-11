@@ -7,6 +7,7 @@
   ******************************************************************************
   */
 #include "sensor_gps.h"
+#include <stdint.h>
 
 /** 
  * Sensor status
@@ -17,7 +18,7 @@ static SensorGPSStatus sensor_status = SENSOR_GPS_STARTING;
  * Helper functions
  * */
 static bool processAndValidate(void) {
-  processUBXData(USART2_getData(), USART2_getDataLength());
+  processUBXData(USART_getData(), USART_getDataLength());
 
   uint8_t isFixed = get_UBX_GpsFixStatus();
   uint8_t latitude = get_UBX_GpsLatitude();
@@ -35,12 +36,12 @@ bool sensor_gps_is_measurement_ready(void) {
     return true;
   }
 
-  if (USART2_isDataReady()) {
+  if (USART_isDataReady()) {
     bool isValidData = processAndValidate();
     if (isValidData) {
       sensor_status = SENSOR_GPS_MEASUREMENT_READY;
     } else {
-      USART2_Start(); // Restart measurement
+      USART_Start(); // Restart measurement
     }
   }
   return sensor_status == SENSOR_GPS_MEASUREMENT_READY;
@@ -55,8 +56,8 @@ bool sensor_gps_has_error(void) {
  */
 void sensor_gps_init(void) {
   DMA_Init();
-  USART2_Init();
-  if (USART2_hasError()) {
+  USART_Init();
+  if (USART_hasError()) {
     sensor_status = SENSOR_GPS_ERROR;
   } else {
     sensor_status = SENSOR_GPS_IDLE;
@@ -65,7 +66,7 @@ void sensor_gps_init(void) {
 
 void sensor_gps_start(void) {
   DMA_Start();
-  USART2_Start();
+  USART_Start();
 }
 
 void sensor_gps_stop(void) {

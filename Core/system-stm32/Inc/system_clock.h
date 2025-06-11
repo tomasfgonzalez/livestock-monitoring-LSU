@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : test.h
-  * @brief          : Header for test file
+  * @file           : system_clock.h
+  * @brief          : Header for Sysclock file
   ******************************************************************************
   * @attention
   *
@@ -16,31 +16,33 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TESTS_H__
-#define __TESTS_H__
+#ifndef __SYSTEM_CLOCK_H__
+#define __SYSTEM_CLOCK_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32l0xx_hal.h"
-#include "tests.h"
-#include "usart.h"
-#include "neo6m.h"
-#include "adc.h"
-#include "dma.h"
-#include "max30102.h"
+/* Public functions ----------------------------------------------------------*/
 
-/* Function prototypes -------------------------------------------------------*/
-void gps_test(void);
-void adc_test(void);
-void hr_test(void);
+/**
+ * @brief Configures the system clock.
+ *
+ * This function sets up the system clock to the desired frequency and
+ * configures the clock sources accordingly.
+ */
+void SystemClock_Config(void);
 
+/**
+ * @brief Handles errors during initialization.
+ *
+ * This function is called when an error occurs during the system clock
+ * configuration. It typically enters an infinite loop or logs the error.
+ */
+void Error_Handler(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TESTS_H__ */
-
+#endif /*__ SYSTEM_CLOCK_H__ */

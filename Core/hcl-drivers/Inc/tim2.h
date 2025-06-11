@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : sensor_gps.h
-  * @brief          : Header for GPS sensor file
+  * @file           : tim2.h
+  * @brief          : Header for TIM2 file
   ******************************************************************************
   * @attention
   *
@@ -16,47 +16,44 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SENSOR_GPS_H__
-#define __SENSOR_GPS_H__
+#ifndef __TIM2_H
+#define __TIM2_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
 #include <stdbool.h>
 
-#include "dma.h"
-#include "usart.h"
-#include "neo6m.h"
+#include "stm32l0xx_hal.h"
 
 /* Structure declarations ----------------------------------------------------*/
-typedef enum {
-  SENSOR_GPS_STARTING,
-  SENSOR_GPS_IDLE,
-  SENSOR_GPS_MEASUREMENT_READY,
-  SENSOR_GPS_ERROR
-} SensorGPSStatus;
+extern TIM_HandleTypeDef htim2;
 
-typedef struct {
-  float latitude;
-  float longitude;
-} GPSData;
+/* HAL Functions ------------------------------------------------------------*/
+void TIM2_MspInit(TIM_HandleTypeDef* htim);
+void TIM2_MspDeInit(TIM_HandleTypeDef* htim);
 
 /* Function prototypes -------------------------------------------------------*/
-void sensor_gps_init(void);
-void sensor_gps_start(void);
-void sensor_gps_stop(void);
 
-bool sensor_gps_has_started(void);
-bool sensor_gps_is_measurement_ready(void);
-bool sensor_gps_has_error(void);
+/**
+ * @brief Initializes the TIM2 peripheral.
+ */
+void TIM2_Init(void);
 
-void sensor_gps_read(GPSData *data);
+/**
+ * @brief Checks if the TIM2 peripheral has an error.
+ */
+bool TIM2_hasError(void);
+
+/**
+ * @brief Handles the TIM2 interrupt. Should be implemented in the main.c file.
+ */
+void TIM2_tick(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SENSOR_GPS_H__ */
+#endif /* __TIM2_H */

@@ -7,7 +7,7 @@
   ******************************************************************************
   */
 #include "sensor_temperature.h"
-#include "gpio_temperature_power.h"
+#include "gpio.h"
 #include "adc.h"
 
 /** 
@@ -39,7 +39,7 @@ bool sensor_temperature_has_error(void) {
  * Sensor management
  */
 void sensor_temperature_init(void) {
-  GPIO_temperature_power_init();
+  GPIO_Sensors_PowerOn();
   timer_count = 2;
   sensor_status = SENSOR_TEMPERATURE_STARTING;
 }
@@ -54,7 +54,7 @@ void sensor_temperature_init_adc(void) {
 }
 
 void sensor_temperature_start(void) {
-    GPIO_temperature_power_start();
+    GPIO_Sensors_PowerOn();
     timer_count = 2;
 }
 
@@ -65,7 +65,7 @@ void sensor_temperature_start_adc(void) {
 
 void sensor_temperature_stop(void) {
     ADC_Disable();
-    GPIO_temperature_power_stop();
+    GPIO_Sensors_PowerOff();
     sensor_status = SENSOR_TEMPERATURE_STARTING;
 }
 
