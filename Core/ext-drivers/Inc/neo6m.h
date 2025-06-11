@@ -16,33 +16,45 @@
   */
 
  /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef GPS_PARSER_H
-#define GPS_PARSER_H
+#ifndef __NEO6M_H__
+#define __NEO6M_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdbool.h>
-#include "stm32l0xx_hal.h"
-#include "gps_structures.h"
+#include <stdint.h>
 
-/* Global variables ----------------------------------------------------------*/
-extern UBXMessage ubxMessage;
+/* Public functions ------------------------------------------------------------ */
 
-/* Internal functions --------------------------------------------------------- */
-ubxMsgType processGPS(uint8_t c);
+/**
+ * Process data
+ * */
+void neo6m_ProcessData(uint8_t* data, uint16_t);
 
-/* GPS parser functions ------------------------------------------------------- */
-void processUBXData(uint8_t* data, uint16_t);
-uint8_t get_UBX_GpsFixStatus(void);
-int32_t get_UBX_GpsLongitude(void);
-int32_t get_UBX_GpsLatitude(void);
-uint32_t get_UBX_TimeOfTheWeekUTC_ms(void);
+/**
+ * Get latitude from NavPosLLH message
+ * */
+int32_t neo6m_GetLatitude(void);
+
+/**
+ * Get longitude from NavPosLLH message
+ * */
+int32_t neo6m_GetLongitude(void);
+
+/**
+ * Get time of the week UTC from NavPosLLH message
+ * */
+uint32_t neo6m_GetTimeOfTheWeekUTC_ms(void);
+
+/**
+ * Get fix status from NavStatus message
+ * */
+uint8_t neo6m_GetFixStatus(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* GPS_PARSER_H */
+#endif /* __NEO6M_H__ */

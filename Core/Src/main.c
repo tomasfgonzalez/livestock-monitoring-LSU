@@ -18,17 +18,17 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "sysClock.h"
+#include "system_clock.h"
 #include "adc.h"
 #include "dma.h"
 #include "usart.h"
+#include "lpuart.h"
 #include "gpio.h"
 #include "rtc.h"
 #include "tim2.h"
-#include "gpio_temperature_power.h"
+#include "i2c.h"
 
 #include "tests.h"
-#include "i2c.h"
 #include "lsu_comms.h"
 
 #include "fsm/fsm_main.h"
@@ -36,9 +36,9 @@
 uint32_t mockTimer = 5;
 
 void run_rtc_test(void) {
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_SET);
   HAL_Delay(1000);
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_RESET);
 
   HAL_SuspendTick();
   RTC_setWakeUpTimer(10);
@@ -74,23 +74,18 @@ int main(void) {
 
     // Peripherals initialization
     GPIO_Init();
-
     RTC_Init();
     I2C_Init();
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_Delay(1000);
-
-
+    TIM2_Init();
+    LPUART_Init();
     DMA_Init();
     USART_Init();
-
 
     DMA_Start();
     USART_Start();
 
-    // Clock initialization
-    TIM2_Init();
-    LPUART_Init();
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+    HAL_Delay(1000);
 
 //    run_tests();
 

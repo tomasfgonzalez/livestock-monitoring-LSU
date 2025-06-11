@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : sysClock.c
+  * @file           : system_clock.c
   * @brief          : This file provides code for the configuration for SysClock
   ******************************************************************************
   * @attention
@@ -14,15 +14,15 @@
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
+*/
 
- Includes ------------------------------------------------------------------*/
-
-#include "sysClock.h"
+/* Includes ------------------------------------------------------------------*/
+#include "stm32l0xx_hal.h"
+#include "system_clock.h"
 
 /*----------------------------------------------------------------------------*/
-/* Configure sysClock                                                             */
+/* Configure system clock                                                             */
 /*----------------------------------------------------------------------------*/
-
 
 /**
   * @brief System Clock Configuration

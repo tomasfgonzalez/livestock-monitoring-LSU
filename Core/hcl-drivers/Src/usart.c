@@ -38,10 +38,11 @@ void USART_MspInit(UART_HandleTypeDef* uartHandle) {
   __HAL_RCC_USART2_CLK_ENABLE();
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  /**USART2 GPIO Configuration
-  PA9     ------> USART2_TX
-  PA10     ------> USART2_RX
-  */
+  /**
+   * USART2 GPIO Configuration
+   * PA9     ------> USART2_TX
+   * PA10     ------> USART2_RX
+   */
   GPIO_InitStruct.Pin = VCP_TX_Pin|VCP_RX_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -71,10 +72,11 @@ void USART_MspDeInit(UART_HandleTypeDef* uartHandle) {
   /* Peripheral clock disable */
   __HAL_RCC_USART2_CLK_DISABLE();
 
-  /**USART2 GPIO Configuration
-  PA9     ------> USART2_TX
-  PA10     ------> USART2_RX
-  */
+  /**
+   * USART2 GPIO Configuration
+   * PA9     ------> USART2_TX
+   * PA10     ------> USART2_RX
+   */
   HAL_GPIO_DeInit(GPIOA, VCP_TX_Pin|VCP_RX_Pin);
 
   /* USART2 DMA DeInit */

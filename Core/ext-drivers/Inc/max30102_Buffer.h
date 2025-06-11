@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : HR_Buffer.h
-  * @brief          : Header file for HR Buffer
+  * @file           : MAX30102_Buffer.h
+  * @brief          : Header file for MAX30102 Buffer
   ******************************************************************************
   * @attention
   *
@@ -16,8 +16,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __HR_BUFFER_H__
-#define __HR_BUFFER_H__
+#ifndef __MAX30102_BUFFER_H__
+#define __MAX30102_BUFFER_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,18 +30,44 @@ extern "C" {
 #define MAX30102_BUFFER_SIZE 2000 // Buffer size if change go check bpm
 #define MAX30102_UNUSED_DATA 128    // Skip first 128 samples
 
-/* Function prototypes -------------------------------------------------------*/
-void HRBuffer_init(void);
-void HRBuffer_reset(void);
-void HRBuffer_put(uint32_t red_sample);
-uint8_t HRBuffer_isReady(void);
+/* Public functions ----------------------------------------------------------*/
 
-uint16_t* HRBuffer_getBuffer(void);
-volatile uint16_t HRBuffer_getElapsedTime(void);
+/**
+ * @brief Initialize the buffer
+ */
+void max30102_Buffer_Init(void);
+
+/**
+ * @brief Reset the buffer
+ */
+void max30102_Buffer_Reset(void);
+
+/**
+ * @brief Put a sample in the buffer
+ * @param red_sample Sample to put
+ */
+void max30102_Buffer_Put(uint32_t red_sample);
+
+/**
+ * @brief Check if the buffer is ready
+ * @return 1 if the buffer is ready, 0 otherwise
+ */
+uint8_t max30102_Buffer_IsReady(void);
+
+/**
+ * @brief Get buffer
+ * @return Buffer
+ */
+uint16_t* max30102_Buffer_GetBuffer(void);
+
+/**
+ * @brief Get elapsed time
+ * @return Elapsed time
+ */
+volatile uint16_t max30102_Buffer_GetElapsedTime(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* HR_BUFFER_H */
- 
+#endif /* __MAX30102_BUFFER_H__ */

@@ -18,6 +18,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "lpuart.h"
+#include "rylr998.h" //TODO: Remove
 
 #include <stdbool.h>
 

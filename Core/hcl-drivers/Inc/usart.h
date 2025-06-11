@@ -28,7 +28,7 @@ extern "C" {
 #include <stdint.h>
 
 #include "stm32l0xx_hal.h"
-#include "gps_structures.h"
+#include "neo6m_Structures.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define VCP_TX_Pin GPIO_PIN_9

@@ -6,24 +6,25 @@
   *                   received from GPS module
   ******************************************************************************
   */
-#include "gps_parser.h"
+#include "neo6m.h"
+#include "neo6m_Structures.h"
+
+#include <stdbool.h>
 #include <string.h>
 
-/* Global variables to store frame data -------------------------------------- */
-NAV_POSLLH navPosllhData;
-NAV_STATUS navStatusData;
+/* Private variables ---------------------------------------------------------- */
+static UBXMessage ubxMessage;
 
-/* Indicators to know if the frames have been received ----------------------- */
-bool isNavPosllhReceived = false;
-bool isNavStatusReceived = false;
+static NAV_POSLLH navPosllhData;
+static NAV_STATUS navStatusData;
 
+/* Constant values ------------------------------------------------------------ */
 const uint8_t UBX_HEADER[] = { 0xB5, 0x62 };
 const uint8_t NAV_POSLLH_HEADER[] = { 0x01, 0x02 };
 const uint8_t NAV_STATUS_HEADER[] = { 0x01, 0x03 };
 
-UBXMessage ubxMessage;
-
-void calcChecksum(uint8_t* CK, uint16_t msgSize) {
+/* Private functions ----------------------------------------------------------- */
+static void calcChecksum(uint8_t* CK, uint16_t msgSize) {
   memset(CK, 0, 2);
   for (uint16_t i = 0; i < msgSize; i++) {
     CK[0] += ((uint8_t*)(&ubxMessage))[i];
@@ -31,41 +32,9 @@ void calcChecksum(uint8_t* CK, uint16_t msgSize) {
   }
 }
 
-bool compareMsgHeader(const uint8_t* msgHeader) {
+static bool compareMsgHeader(const uint8_t* msgHeader) {
   uint8_t* ptr = (uint8_t*)(&ubxMessage);
   return ptr[0] == msgHeader[0] && ptr[1] == msgHeader[1];
-}
-
-void processUBXData(uint8_t* data, uint16_t size) {
-  for (uint16_t i = 0; i < size; i++) {
-    processGPS(data[i]);  // Process byte per byte
-
-    // Verificar si se han recibido ambas tramas
-    if (isNavPosllhReceived && isNavStatusReceived) {
-      // Ambas tramas han sido recibidas, procesar los datos
-      // Reiniciar los indicadores
-      isNavPosllhReceived = false;
-      isNavStatusReceived = false;
-      break;
-    }
-  }
-
-}
-
-int32_t get_UBX_GpsLatitude(void) {
-	  return navPosllhData.lat;
-}
-
-int32_t get_UBX_GpsLongitude(void) {
-	  return navPosllhData.lon;
-}
-
-uint32_t get_UBX_TimeOfTheWeekUTC_ms(void){
-	return navPosllhData.iTOW;      //domingo a las 00:00:00 UTC-> 000000.000 [s]
-}
-
-uint8_t get_UBX_GpsFixStatus(void) {
-    return navStatusData.gpsFix;
 }
 
 ubxMsgType processGPS(uint8_t c) {
@@ -117,10 +86,8 @@ ubxMsgType processGPS(uint8_t c) {
         // Copiamos los datos a la estructura global correspondiente
         if (currentMsgType == MT_NAV_POSLLH) {
           navPosllhData = ubxMessage.navPosllh;
-          isNavPosllhReceived = true;
         } else if (currentMsgType == MT_NAV_STATUS) {
           navStatusData = ubxMessage.navStatus;
-          isNavStatusReceived = true;
         }
         return currentMsgType;  // Mensaje válido
       }
@@ -131,4 +98,27 @@ ubxMsgType processGPS(uint8_t c) {
   }
 
   return MT_NONE;  // No hay mensaje completo aún
+}
+
+/* Public functions ------------------------------------------------------------ */
+void neo6m_ProcessData(uint8_t* data, uint16_t size) {
+  for (uint16_t i = 0; i < size; i++) {
+    processGPS(data[i]);
+  }
+}
+
+int32_t neo6m_GetLatitude(void) {
+	  return navPosllhData.lat;
+}
+
+int32_t neo6m_GetLongitude(void) {
+	  return navPosllhData.lon;
+}
+
+uint32_t neo6m_GetTimeOfTheWeekUTC_ms(void){
+	return navPosllhData.iTOW;      //domingo a las 00:00:00 UTC-> 000000.000 [s]
+}
+
+uint8_t neo6m_GetFixStatus(void) {
+    return navStatusData.gpsFix;
 }

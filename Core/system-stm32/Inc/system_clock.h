@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : sysclock.h
+  * @file           : system_clock.h
   * @brief          : Header for Sysclock file
   ******************************************************************************
   * @attention
@@ -16,17 +16,14 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SYSCLOCK_H__
-#define __SYSCLOCK_H__
+#ifndef __SYSTEM_CLOCK_H__
+#define __SYSTEM_CLOCK_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32l0xx_hal.h"
-
-/* Function prototypes -------------------------------------------------------*/
+/* Public functions ----------------------------------------------------------*/
 
 /**
  * @brief Configures the system clock.
@@ -48,4 +45,4 @@ void Error_Handler(void);
 }
 #endif
 
-#endif /*__ GPIO_H__ */
+#endif /*__ SYSTEM_CLOCK_H__ */
