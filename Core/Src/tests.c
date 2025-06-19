@@ -34,15 +34,15 @@ void gps_test(void) {
 	USART_Start();
 
 	// Obtener latitud y longitud
-	Lat = get_UBX_GpsLatitude();
-	Lon = get_UBX_GpsLongitude();
+	Lat = neo6m_GetLongitude();
+	Lon = neo6m_GetLongitude();
 
 	HAL_Delay(2000);
 
 
 	// GPS FIX STATUS: 0 NO FIX, 1 DEAD RECKONING ONLY, 2 2D FIX, 3 3D FIX,
 	// 4 GPS + DEAD RECKONING COMBINED, 5 TIME ONLY FIX
-	fixStatus = get_UBX_GpsFixStatus();
+	fixStatus = neo6m_GetFixStatus();
 }
 
 
