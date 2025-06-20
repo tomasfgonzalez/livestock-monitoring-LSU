@@ -122,24 +122,15 @@ void ADC_Init(void) {
 
   /* Enable ADC end-of-conversion interrupt */
   __HAL_ADC_ENABLE_IT(&hadc, ADC_IT_EOC);
+  HAL_ADC_Start_IT(&hadc);
 }
 
-void ADC_Enable(void) {
-  if (!adcIsEnabled) {
-    ADC_Init();
-    HAL_ADC_Start_IT(&hadc);
+void ADC_DeInit(void) {
+  HAL_ADC_Stop_IT(&hadc);
+  HAL_ADC_DeInit(&hadc);
+  HAL_NVIC_DisableIRQ(ADC1_IRQn);
 
-    adcIsEnabled = true;
-  }
-}
-
-void ADC_Disable(void) {
-  if (adcIsEnabled) {
-    HAL_ADC_Stop_IT(&hadc);
-    HAL_ADC_DeInit(&hadc);
-
-    adcIsEnabled = false;
-  }
+  adc_values[0] = adc_values[1] = 0;
 }
 
 bool ADC_hasError(void) {

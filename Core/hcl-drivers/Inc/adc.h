@@ -44,14 +44,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 void ADC_Init(void);
 
 /**
- * @brief Enables the ADC peripheral.
+ * @brief Deinitializes the ADC peripheral.
  */
-void ADC_Enable(void);
-
-/**
- * @brief Disables the ADC peripheral.
- */
-void ADC_Disable(void);
+void ADC_DeInit(void);
 
 /**
  * @brief Retrieves the ADC value stored in the provided pointer.

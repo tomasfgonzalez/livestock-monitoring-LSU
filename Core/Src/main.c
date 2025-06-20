@@ -54,6 +54,8 @@ void run_rtc_test(void) {
 
 void run_tests(void) {
 	adc_test();
+	temperature_test();
+
 	gps_test();
 	hr_test();
 	gps_test();
@@ -72,16 +74,19 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
 
+
     // Peripherals initialization
     GPIO_Init();
     RTC_Init();
     I2C_Init();
-    TIM2_Init();
-    LPUART_Init();
-    DMA_Init();
-    USART_Init();
 
+    TIM2_Init();
+    DMA_Init();
     DMA_Start();
+    HAL_TIM_Base_Start_IT(&htim2);
+
+    LPUART_Init();
+    USART_Init();
     USART_Start();
 
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
@@ -91,7 +96,6 @@ int main(void) {
 
     // System start
     FSM_Main_init();
-    HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
       FSM_Main_handle();
 //      run_rtc_test();
@@ -105,4 +109,7 @@ void TIM2_tick(void) {
     mockTimer = 5;
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
   }
+
+  // For testing purposes
+  tests_tick_1s();
 }
