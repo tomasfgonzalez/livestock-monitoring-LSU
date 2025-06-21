@@ -98,7 +98,7 @@ int main(void) {
     MX_LPUART1_UART_Init();
     INIT_RX_UART2();
 
-//    run_tests();
+    run_tests();
 
     // System start
     FSM_Main_init();
