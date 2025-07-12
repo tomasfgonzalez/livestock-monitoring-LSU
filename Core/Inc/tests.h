@@ -33,10 +33,13 @@ extern "C" {
 #include "max30102.h"
 
 /* Function prototypes -------------------------------------------------------*/
-void gps_test(void);
 void adc_test(void);
+void temperature_test(void);
+
+void gps_test(void);
 void hr_test(void);
 
+void tests_tick_1s(void);
 
 #ifdef __cplusplus
 }

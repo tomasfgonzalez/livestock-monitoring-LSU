@@ -39,7 +39,7 @@ extern "C" {
 #define BOARD_LED_PIN         GPIO_PIN_3
 
 #define SENSORS_POWER_PORT    GPIOA
-#define SENSORS_POWER_PIN     GPIO_PIN_6
+#define SENSORS_POWER_PIN     GPIO_PIN_0
 
 /* Public functions ----------------------------------------------------------*/
 

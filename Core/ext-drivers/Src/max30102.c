@@ -29,7 +29,7 @@
 /* Private variables ---------------------------------------------------------*/
 max30102_t max30102;
 
-static bool is_initialized = false;
+static bool isInitialized = false;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -83,7 +83,6 @@ void max30102_init(max30102_t* obj, I2C_HandleTypeDef* hi2c) {
  * @brief MAX30102 reset function.
  *
  * @param obj Pointer to max30102_t object instance.
- * @param hi2c Pointer to I2C object handle
  */
 void max30102_reset(max30102_t *obj) {
   uint8_t val = 0x40;
@@ -187,7 +186,7 @@ void max30102_Init(void) {
   max30102_clear_fifo(&max30102);
   max30102_set_a_full(&max30102, 1);
 
-  is_initialized = true;
+  isInitialized = true;
   __HAL_GPIO_EXTI_GENERATE_SWIT(GPIO_PIN_8);
 }
 
@@ -213,8 +212,6 @@ uint16_t max30102_GetBPM(void) {
 
 /**
  * @brief Read interrupt status registers (0x00 and 0x01) and perform corresponding tasks.
- *
- * @param obj Pointer to max30102_t object instance.
  */
 void max30102_InterruptHandler(void) {
   uint8_t reg[2] = {0x00};
@@ -228,7 +225,7 @@ void max30102_InterruptHandler(void) {
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-  if (GPIO_Pin == GPIO_PIN_8 && is_initialized) {
+  if (GPIO_Pin == GPIO_PIN_8 && isInitialized) {
     max30102_InterruptHandler();
   }
 }

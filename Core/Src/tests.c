@@ -15,11 +15,16 @@
 #include "sensor_temperature.h"
 #include <assert.h>
 
-
+// GPS testing variables
 int32_t Lat, Lon;
 uint8_t fixStatus;
+
+// Temperature testing variables
 uint16_t Voltage_val[2];
 uint8_t Temperature_val[2];
+
+// Heart rate testing variables
+uint16_t bpm;
 
 
 void adc_test(void) {
@@ -94,10 +99,10 @@ void gps_test(void) {
 	fixStatus = neo6m_GetFixStatus();
 }
 
-uint16_t bpm;
-
-
 void hr_test(void){
+	GPIO_Init();
+	GPIO_Sensors_PowerOn();
+
 	max30102_Init();
 	max30102_Start();
 
@@ -105,6 +110,7 @@ void hr_test(void){
 	bpm = max30102_GetBPM();
 
 	max30102_Stop();
+	GPIO_Sensors_PowerOff();
 }
 
 void tests_tick_1s(void) {

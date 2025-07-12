@@ -56,13 +56,12 @@ void run_tests(void) {
 	adc_test();
 	temperature_test();
 
-	gps_test();
 	hr_test();
-	gps_test();
-
-
-	adc_test();
 	hr_test();
+
+//	gps_test();
+//	gps_test();
+
 	gps_test();
 
 	run_rtc_test();
@@ -85,11 +84,11 @@ int main(void) {
     DMA_Start();
     HAL_TIM_Base_Start_IT(&htim2);
 
-    LPUART_Init();
-    USART_Init();
-    USART_Start();
+    // LPUART_Init();
+    // USART_Init();
+    // USART_Start();
 
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+    GPIO_Sensors_PowerOn();
     HAL_Delay(1000);
 
     run_tests();

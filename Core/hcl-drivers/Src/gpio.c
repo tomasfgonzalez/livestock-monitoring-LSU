@@ -37,15 +37,6 @@ void GPIO_Init(void) {
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(BOARD_LED_PORT, &GPIO_InitStruct);
 
-  // TODO: Check if can be removed
-  /* Configure GPIO pin: Implemented with RTC */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
   /* Configure GPIO pin: Sensors power control */
   HAL_GPIO_WritePin(SENSORS_POWER_PORT, SENSORS_POWER_PIN, GPIO_PIN_RESET);
   GPIO_InitStruct.Pin = SENSORS_POWER_PIN;
@@ -67,9 +58,9 @@ void GPIO_Init(void) {
 }
 
 void GPIO_Sensors_PowerOn(void) {
-  HAL_GPIO_WritePin(SENSORS_POWER_PORT, SENSORS_POWER_PIN, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(SENSORS_POWER_PORT, SENSORS_POWER_PIN, GPIO_PIN_RESET);
 }
 
 void GPIO_Sensors_PowerOff(void) {
-  HAL_GPIO_WritePin(SENSORS_POWER_PORT, SENSORS_POWER_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SENSORS_POWER_PORT, SENSORS_POWER_PIN, GPIO_PIN_SET);
 }
