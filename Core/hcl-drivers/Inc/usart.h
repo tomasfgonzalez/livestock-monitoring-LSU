@@ -25,34 +25,55 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
+#include <stdint.h>
+
 #include "stm32l0xx_hal.h"
-#include "gps_structures.h"
+#include "neo6m_Structures.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define VCP_TX_Pin GPIO_PIN_9
 #define VCP_RX_Pin GPIO_PIN_10
-#define UART_RX_BUFF_SIZE 64
 
 /* Structure declarations ----------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef hlpuart1;
-extern DMA_HandleTypeDef hdma_lpuart1_rx;
-extern DMA_HandleTypeDef hdma_lpuart1_tx;
+extern DMA_HandleTypeDef hdma_usart2_rx;
 
-/* Function prototypes -------------------------------------------------------*/
-void USART2_Init(void);
-void USART2_Start(void);
-bool USART2_isDataReady(void);
-uint8_t* USART2_getData(void);
-uint16_t USART2_getDataLength(void);
-bool USART2_hasError(void);
+/* HAL Functions ------------------------------------------------------------*/
+void USART_MspInit(UART_HandleTypeDef* uartHandle);
+void USART_MspDeInit(UART_HandleTypeDef* uartHandle);
+void USART_RxCpltCallback(UART_HandleTypeDef *huart);
 
-void INIT_RX_UART2(void);
-void MX_LPUART1_UART_Init(void);
+/* Public functions ----------------------------------------------------------*/
 
-uint8_t* LPUART1_getRxBuff(void);
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *);
+/**
+ * @brief Initializes the USART peripheral.
+ */
+void USART_Init(void);
+
+/**
+ * @brief Starts the USART peripheral.
+ */
+void USART_Start(void);
+
+/**
+ * @brief Checks if the USART peripheral has data ready.
+ */
+bool USART_isDataReady(void);
+
+/**
+ * @brief Gets the data from the USART peripheral.
+ */
+uint8_t* USART_getData(void);
+
+/**
+ * @brief Gets the length of the data from the USART peripheral.
+ */
+uint16_t USART_getDataLength(void);
+
+/**
+ * @brief Checks if the USART peripheral has an error.
+ */
+bool USART_hasError(void);
 
 #ifdef __cplusplus
 }

@@ -25,9 +25,18 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
+
 #include "stm32l0xx_hal.h"
 
-/* Function prototypes -------------------------------------------------------*/
+/* Structure declarations ----------------------------------------------------*/
+extern ADC_HandleTypeDef hadc;
+
+/* HAL Functions ------------------------------------------------------------*/
+void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc);
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc);
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+
+/* Public functions ----------------------------------------------------------*/
 
 /**
  * @brief Initializes the ADC peripheral.
@@ -35,27 +44,26 @@ extern "C" {
 void ADC_Init(void);
 
 /**
- * @brief Retrieves the ADC value and stores it in the provided pointer.
- *
- * @param adc_val Pointer to a 16-bit variable where the ADC value will be stored.
+ * @brief Deinitializes the ADC peripheral.
  */
-extern ADC_HandleTypeDef hadc;
+void ADC_DeInit(void);
 
 /**
- * @brief Computes the voltage corresponding to the given ADC value.
+ * @brief Retrieves the ADC value stored in the provided pointer.
  *
- * @param ADC_DATA ADC data value to be converted to voltage.
- * @return The computed voltage.
+ * @param reg points to a 16-bit variable where the ADC value will be stored.
  */
+void ADC_GetValues(uint16_t* reg);
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* );
-
-void ADC_GetValues(uint16_t* );
-
-void ADC_Enable(void);
-void ADC_Disable(void);
-bool ADC_hasError(void);
+/**
+ * @brief Checks if the ADC peripheral has data ready.
+ */
 bool ADC_isDataReady(void);
+
+/**
+ * @brief Checks if the ADC peripheral has an error.
+ */
+bool ADC_hasError(void);
 
 #ifdef __cplusplus
 }

@@ -26,15 +26,37 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
 
+/* System debug defines ------------------------------------------------------*/
+#define VCP_TX_GPIO_Port      GPIOA
+#define VCP_RX_GPIO_Port      GPIOA
+#define TMS_Pin               GPIO_PIN_13
+#define TMS_GPIO_Port         GPIOA
+#define TCK_Pin               GPIO_PIN_14
+#define TCK_GPIO_Port         GPIOA
+
+/* Private defines -----------------------------------------------------------*/
+#define BOARD_LED_PORT        GPIOB
+#define BOARD_LED_PIN         GPIO_PIN_3
+
+#define SENSORS_POWER_PORT    GPIOA
+#define SENSORS_POWER_PIN     GPIO_PIN_6
+
+/* Public functions ----------------------------------------------------------*/
+
+/**
+ * @brief Initializes the GPIO pins.
+ */
 void GPIO_Init(void);
-#define VCP_TX_GPIO_Port GPIOA
-#define VCP_RX_GPIO_Port GPIOA
-#define TMS_Pin GPIO_PIN_13
-#define TMS_GPIO_Port GPIOA
-#define TCK_Pin GPIO_PIN_14
-#define TCK_GPIO_Port GPIOA
-#define LD3_Pin GPIO_PIN_3
-#define LD3_GPIO_Port GPIOB
+
+/**
+ * @brief Powers on all the sensors.
+ */
+void GPIO_Sensors_PowerOn(void);
+
+/**
+ * @brief Powers off all the sensors.
+ */
+void GPIO_Sensors_PowerOff(void);
 
 #ifdef __cplusplus
 }

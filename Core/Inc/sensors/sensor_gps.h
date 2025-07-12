@@ -29,7 +29,7 @@ extern "C" {
 
 #include "dma.h"
 #include "usart.h"
-#include "gps_parser.h"
+#include "neo6m.h"
 
 /* Structure declarations ----------------------------------------------------*/
 typedef enum {

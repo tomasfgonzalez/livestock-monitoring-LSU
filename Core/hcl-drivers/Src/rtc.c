@@ -2,7 +2,7 @@
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
   * @file           : rtc.c
-  * @brief          : This file provides code for the RTC.
+  * @brief          : Hardware Configuration Layer - RTC configuration
   ******************************************************************************
   * @attention
   *
@@ -19,16 +19,26 @@
 /* Includes ------------------------------------------------------------------*/
 #include "rtc.h"
 
-#include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include "stm32l0xx_hal.h"
-#include "sysClock.h"
-
-/* Defines -------------------------------------------------------------------*/
-#define RTC_WAKEUP_PRESCALER_DIVISOR 2048
 
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef hrtc;
+
+static bool initError = false;
+
+/* HAL Functions ------------------------------------------------------------*/
+void RTC_MspInit(RTC_HandleTypeDef* hrtc) {
+  __HAL_RCC_RTC_ENABLE();
+  HAL_NVIC_SetPriority(RTC_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(RTC_IRQn);
+}
+
+void RTC_MspDeInit(RTC_HandleTypeDef* hrtc) {
+  __HAL_RCC_RTC_DISABLE();
+  HAL_NVIC_DisableIRQ(RTC_IRQn);
+}
 
 /* Public functions ---------------------------------------------------------*/
 void RTC_Init(void) {
@@ -41,14 +51,14 @@ void RTC_Init(void) {
   hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
   hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
   if (HAL_RTC_Init(&hrtc) != HAL_OK) {
-    Error_Handler();
+    initError = true;
   }
 }
 
 void RTC_setWakeUpTimer(uint32_t seconds) {
   uint32_t necessaryCount = seconds * RTC_WAKEUP_PRESCALER_DIVISOR;
   if (HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, necessaryCount, RTC_WAKEUPCLOCK_RTCCLK_DIV16) != HAL_OK) {
-    Error_Handler();
+    initError = true;
   }
 }
 

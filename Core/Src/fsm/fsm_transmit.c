@@ -56,7 +56,7 @@ static void createPayload(void) {
   // sensor_gps_read(&gps);
   // heartrate = sensor_heartrate_read();
 
-  static rising_temperature = 10;
+  static int rising_temperature = 10;
   rising_temperature += 10;
   payload.latitude = 32312313;
   payload.longitude = 39532141;
