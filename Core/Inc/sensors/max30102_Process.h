@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : process_HR.h
-  * @brief          : Header for process HR file
+  * @file           : max30102_Process.h
+  * @brief          : Header for max30102 signal processing file
   ******************************************************************************
   * @attention
   *
@@ -16,17 +16,17 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef PROCESS_HR_H
-#define PROCESS_HR_H
+#ifndef __MAX30102_PROCESS_H__
+#define __MAX30102_PROCESS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "max30102_Buffer.h"
+
 #include <stdint.h>
-#include <stdio.h>
-#include "HR_Buffer.h"
 
 /* Defines -------------------------------------------------------------------*/
 #define ALPHA 0.05                 // Smoothing factor for low-pass filter
@@ -35,15 +35,22 @@ extern "C" {
 #define THRESHOLD_UPPER 45000      // Upper threshold for valid data
 
 #define DOWNSAMPLE_FACTOR 20       // Downsampling factor
-#define RESAMPLE_BUFFER_SIZE 100  //MAX30102_BUFFER_SIZE / DOWNSAMPLE_FACTOR
+#define RESAMPLE_BUFFER_SIZE 100   // MAX30102_BUFFER_SIZE / DOWNSAMPLE_FACTOR
 
 #define PEAK_WINDOW_SIZE 10        // Window used to detect peaks
 
-/* Function prototypes -------------------------------------------------------*/
-uint16_t process_buffer(uint16_t* buffer, uint16_t elapsed_time_ms);
+/* Public functions ----------------------------------------------------------*/
+
+/**
+ * @brief Process a buffer of data from MAX30102 that stores the red LED samples.
+ * @param buffer Buffer to process
+ * @param elapsed_time_ms Elapsed time
+ * @return Heart rate in beats per minute (bpm)
+ */
+uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* PROCESS_HR_H */
+#endif /* __MAX30102_PROCESS_H__ */
