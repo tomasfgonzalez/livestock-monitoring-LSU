@@ -24,17 +24,27 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include <stdbool.h>
+
+#include "stm32l0xx_hal.h"
 
 /* Structure declarations ----------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
 
-/* Function prototypes -------------------------------------------------------*/
-void MX_I2C1_Init(void);
+/* Public functions ----------------------------------------------------------*/
+
+/**
+ * @brief Initializes the I2C peripheral.
+ */
+void I2C_Init(void);
+
+/**
+ * @brief Checks if the I2C peripheral has an error.
+ */
+bool I2C_hasError(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __I2C_H__ */
-

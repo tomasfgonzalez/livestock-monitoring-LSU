@@ -30,7 +30,7 @@ extern "C" {
 #include "gps_parser.h"
 #include "adc.h"
 #include "dma.h"
-#include "process_HR.h"
+#include "max30102_Process.h"
 #include "max30102.h"
 
 /* Function prototypes -------------------------------------------------------*/
