@@ -36,15 +36,37 @@ typedef enum {
 } SensorTemperatureStatus;
 
 /* Function prototypes -------------------------------------------------------*/
-void sensor_temperature_init(void);
-void sensor_temperature_start(void);
-void sensor_temperature_stop(void);
-void sensor_temperature_tick_1s(void);
-
+/**
+ * @brief Checks if the sensor has initialized correctly.
+ */
 bool sensor_temperature_has_started(void);
+
+/**
+ * @brief Checks if the sensor has finished processing the measurement,
+ *        which is able to be read.
+ */
 bool sensor_temperature_is_measurement_ready(void);
+
+/**
+ * @brief Checks if the sensor has an error.
+ */
 bool sensor_temperature_has_error(void);
 
+/**
+ * @brief Initializes the sensor.
+ */
+void sensor_temperature_init(void);
+
+/**
+ * @brief Stops and deinitializes the sensor. Disables the ADC.
+ */
+void sensor_temperature_stop(void);
+
+/**
+ * @brief Reads the sensor's measurement.
+ * @param target The target array to store the measurement.
+ * @return True iff the measurement was read successfully.
+ */
 bool sensor_temperature_read(uint8_t* target);
 
 #ifdef __cplusplus

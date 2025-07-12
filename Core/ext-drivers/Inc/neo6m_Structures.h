@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : gps_structures.h
-  * @brief          : Header for GPS structures file
+  * @file           : neo6m_Structures.h
+  * @brief          : Header for Neo6M structures file
   ******************************************************************************
   * @attention
   *
@@ -15,9 +15,12 @@
   ******************************************************************************
   */
 
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __GPS_STRUCTURES_H__
-#define __GPS_STRUCTURES_H__
+#ifndef __NEO6M_STRUCTURES_H__
+#define __NEO6M_STRUCTURES_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,4 +72,4 @@ typedef union {
 }
 #endif
 
-#endif /* __GPS_STRUCTURES_H__ */
+#endif /* __NEO6M_STRUCTURES_H__ */

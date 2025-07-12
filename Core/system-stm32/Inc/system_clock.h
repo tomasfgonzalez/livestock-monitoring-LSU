@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : rtc.h
-  * @brief          : This file provides code for the RTC.
+  * @file           : system_clock.h
+  * @brief          : Header for Sysclock file
   ******************************************************************************
   * @attention
   *
@@ -11,47 +11,38 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef RTC_H
-#define RTC_H
+#ifndef __SYSTEM_CLOCK_H__
+#define __SYSTEM_CLOCK_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
-
 /* Public functions ----------------------------------------------------------*/
 
 /**
-  * @brief RTC Initialization Function
-  * @param None
-  * @retval None
-  */
-void RTC_Init(void);
+ * @brief Configures the system clock.
+ *
+ * This function sets up the system clock to the desired frequency and
+ * configures the clock sources accordingly.
+ */
+void SystemClock_Config(void);
 
 /**
-  * @brief Set the Wake Up Timer
-  * @param seconds
-  * @retval None
-  */
-void RTC_setWakeUpTimer(uint32_t seconds);
-
-/**
-  * @brief Clear the Wake Up Timer
-  * @param None
-  * @retval None
-  */
-void RTC_clearWakeUpTimer(void);
+ * @brief Handles errors during initialization.
+ *
+ * This function is called when an error occurs during the system clock
+ * configuration. It typically enters an infinite loop or logs the error.
+ */
+void Error_Handler(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* RTC_H */
-
+#endif /*__ SYSTEM_CLOCK_H__ */

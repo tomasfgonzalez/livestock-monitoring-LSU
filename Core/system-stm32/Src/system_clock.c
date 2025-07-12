@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    sysClock.c
-  * @brief   This file provides code for the configuration for SysClock
-  *
+  * @authors        : Tomas Gonzalez & Brian Morris
+  * @file           : system_clock.c
+  * @brief          : This file provides code for the configuration for SysClock
   ******************************************************************************
   * @attention
   *
@@ -15,15 +14,15 @@
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
+*/
 
- Includes ------------------------------------------------------------------*/
-
-#include "sysClock.h"
+/* Includes ------------------------------------------------------------------*/
+#include "stm32l0xx_hal.h"
+#include "system_clock.h"
 
 /*----------------------------------------------------------------------------*/
-/* Configure sysClock                                                             */
+/* Configure system clock                                                             */
 /*----------------------------------------------------------------------------*/
-
 
 /**
   * @brief System Clock Configuration
@@ -82,6 +81,5 @@ void SystemClock_Config(void) {
 void Error_Handler(void) {
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1) {
-  }
+  while (1);
 }

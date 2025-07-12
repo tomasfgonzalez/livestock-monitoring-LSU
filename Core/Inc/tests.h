@@ -27,10 +27,9 @@ extern "C" {
 #include "stm32l0xx_hal.h"
 #include "tests.h"
 #include "usart.h"
-#include "gps_parser.h"
+#include "neo6m.h"
 #include "adc.h"
 #include "dma.h"
-#include "max30102_Process.h"
 #include "max30102.h"
 
 /* Function prototypes -------------------------------------------------------*/
