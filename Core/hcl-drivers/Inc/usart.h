@@ -51,14 +51,19 @@ void USART_RxCpltCallback(UART_HandleTypeDef *huart);
 void USART_Init(void);
 
 /**
- * @brief Starts the USART peripheral.
+ * @brief Deinitializes the USART peripheral.
  */
-void USART_Start(void);
+void USART_DeInit(void);
 
 /**
  * @brief Checks if the USART peripheral has data ready.
  */
 bool USART_isDataReady(void);
+
+/**
+ * @brief Clears the data from the USART peripheral.
+ */
+void USART_clearData(void);
 
 /**
  * @brief Gets the data from the USART peripheral.

@@ -105,22 +105,30 @@ void USART_Init(void) {
   if (HAL_UART_Init(&huart2) != HAL_OK) {
     initError = true;
   }
+
+  dataReady = false;
+  HAL_UART_Receive_DMA(&huart2, usart_rx_data, USART_RX_SIZE);
+}
+
+void USART_DeInit(void) {
+  HAL_UART_DMAStop(&huart2);
+  HAL_UART_DeInit(&huart2);
 }
 
 /**
  * USART management functions
  */
-void USART_Start(void) {
-  dataReady = false;
-  HAL_UART_Receive_DMA(&huart2, usart_rx_data, USART_RX_SIZE);
-}
-
 bool USART_hasError(void) {
   return initError;
 }
 
 bool USART_isDataReady(void) {
   return dataReady;
+}
+
+void USART_clearData(void) {
+  dataReady = false;
+  HAL_UART_Receive_DMA(&huart2, usart_rx_data, USART_RX_SIZE);
 }
 
 uint8_t* USART_getData(void) {

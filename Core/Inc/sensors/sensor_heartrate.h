@@ -27,7 +27,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-/* Typedefs ------------------------------------------------------------------*/
+/* Structure declarations ----------------------------------------------------*/
 typedef enum {
     SENSOR_HEARTRATE_STARTING,
     SENSOR_HEARTRATE_IDLE,
@@ -36,15 +36,43 @@ typedef enum {
 } SensorHeartrateStatus;
 
 /* Function prototypes -------------------------------------------------------*/
-void sensor_heartrate_init(void);
-void sensor_heartrate_start(void);
-void sensor_heartrate_stop(void);
-
+/**
+ * @brief Checks if the sensor has initialized correctly.
+ */
 bool sensor_heartrate_has_started(void);
+
+/**
+ * @brief Checks if the sensor has finished processing the measurement,
+ *        which is able to be read.
+ */
 bool sensor_heartrate_is_measurement_ready(void);
+
+/**
+ * @brief Checks if the sensor has an error.
+ */
 bool sensor_heartrate_has_error(void);
 
-uint8_t sensor_heartrate_read(void);
+/**
+ * @brief Initializes the sensor.
+ */
+void sensor_heartrate_init(void);
+
+/**
+ * @brief Stops and deinitializes the sensor.
+ */
+void sensor_heartrate_stop(void);
+
+/**
+ * @brief Reads the sensor's measurement.
+ * @param target The target variable to store the measurement.
+ * @return True iff the measurement was read successfully.
+ */
+bool sensor_heartrate_read(uint8_t* target);
+
+/**
+ * @brief Performs periodic tasks for the sensor (called every second).
+ */
+void sensor_heartrate_tick_1s(void);
 
 #ifdef __cplusplus
 }

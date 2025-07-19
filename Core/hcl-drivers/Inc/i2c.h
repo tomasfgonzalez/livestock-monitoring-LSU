@@ -39,6 +39,11 @@ extern I2C_HandleTypeDef hi2c1;
 void I2C_Init(void);
 
 /**
+ * @brief Deinitializes the I2C peripheral.
+ */
+void I2C_DeInit(void);
+
+/**
  * @brief Checks if the I2C peripheral has an error.
  */
 bool I2C_hasError(void);

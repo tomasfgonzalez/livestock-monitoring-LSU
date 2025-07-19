@@ -53,47 +53,40 @@ void run_rtc_test(void) {
 }
 
 void run_tests(void) {
-	adc_test();
-	temperature_test();
+  adc_test();
+  temperature_test();
+  
+	i2c_test();
+	max30102_test();
+	heartrate_test();
 
-	hr_test();
-	hr_test();
-
-//	gps_test();
-//	gps_test();
-
-	gps_test();
+  usart_test();
+  neo6m_test();
+  neo6m_fix_test();
+  gps_test();
 
 	run_rtc_test();
-	LSU_setAddress(0x03);
-	LSU_setChannelMain();
 }
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
-
     // Peripherals initialization
     GPIO_Init();
     RTC_Init();
-    I2C_Init();
 
     TIM2_Init();
-    DMA_Init();
-    DMA_Start();
     HAL_TIM_Base_Start_IT(&htim2);
 
-    // LPUART_Init();
-    // USART_Init();
-    // USART_Start();
 
-    GPIO_Sensors_PowerOn();
-    HAL_Delay(1000);
-
-    run_tests();
+    // run_tests();
 
     // System start
+    LPUART_Init();
+    LSU_setAddress(0x03);
+    LSU_setChannelMain();
+
     FSM_Main_init();
     while (1) {
       FSM_Main_handle();
@@ -110,5 +103,5 @@ void TIM2_tick(void) {
   }
 
   // For testing purposes
-  tests_tick_1s();
+//  tests_tick_1s();
 }

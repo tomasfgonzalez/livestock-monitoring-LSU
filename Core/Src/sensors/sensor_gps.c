@@ -6,27 +6,30 @@
   *                   sensor measurements and readings
   ******************************************************************************
   */
+
+/* Includes ------------------------------------------------------------------*/
 #include "sensor_gps.h"
 #include <stdint.h>
+#include <stdbool.h>
 
-/** 
- * Sensor status
- * */
+#include "dma.h"
+#include "usart.h"
+#include "neo6m.h"
+
+/* Defines -------------------------------------------------------------------*/
+#define LAT_LONG_SCALE 0.0000001
+
+/* Private variables ---------------------------------------------------------*/
 static SensorGPSStatus sensor_status = SENSOR_GPS_STARTING;
 
-/**
- * Helper functions
- * */
+/* Private functions ---------------------------------------------------------*/
 static bool processAndValidate(void) {
-  processUBXData(USART_getData(), USART_getDataLength());
-
-  uint8_t isFixed = get_UBX_GpsFixStatus();
-  uint8_t latitude = get_UBX_GpsLatitude();
-  uint8_t longitude = get_UBX_GpsLongitude();
-
-  return true;
+  neo6m_ProcessData(USART_getData(), USART_getDataLength());
+  uint8_t isFixed = neo6m_GetFixStatus();
+  return isFixed >= 3;
 }
 
+/* Public status check functions ---------------------------------------------*/
 bool sensor_gps_has_started(void) {
   return sensor_status == SENSOR_GPS_IDLE || sensor_status == SENSOR_GPS_MEASUREMENT_READY;
 }
@@ -41,7 +44,7 @@ bool sensor_gps_is_measurement_ready(void) {
     if (isValidData) {
       sensor_status = SENSOR_GPS_MEASUREMENT_READY;
     } else {
-      USART_Start(); // Restart measurement
+      USART_clearData(); // Restart measurement
     }
   }
   return sensor_status == SENSOR_GPS_MEASUREMENT_READY;
@@ -51,9 +54,7 @@ bool sensor_gps_has_error(void) {
   return sensor_status == SENSOR_GPS_ERROR;
 }
 
-/**
- * Sensor management
- */
+/* Public management functions -----------------------------------------------*/
 void sensor_gps_init(void) {
   DMA_Init();
   USART_Init();
@@ -64,22 +65,15 @@ void sensor_gps_init(void) {
   }
 }
 
-void sensor_gps_start(void) {
-  DMA_Start();
-  USART_Start();
-}
-
 void sensor_gps_stop(void) {
+  USART_DeInit();
   DMA_Stop();
   sensor_status = SENSOR_GPS_IDLE;
 }
 
-/**
- * Sensor reading
- */
 void sensor_gps_read(GPSData *data) {
-  data->latitude = get_UBX_GpsLatitude();
-  data->longitude = get_UBX_GpsLongitude();
+  data->latitude = neo6m_GetLatitude() * LAT_LONG_SCALE;
+  data->longitude = neo6m_GetLongitude() * LAT_LONG_SCALE;
 
   sensor_status = SENSOR_GPS_IDLE;
 }

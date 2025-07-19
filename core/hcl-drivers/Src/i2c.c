@@ -93,6 +93,10 @@ void I2C_Init(void) {
   }
 }
 
+void I2C_DeInit(void) {
+  HAL_I2C_DeInit(&hi2c1);
+}
+
 bool I2C_hasError(void) {
   return initError;
 }

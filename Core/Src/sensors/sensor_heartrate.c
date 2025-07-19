@@ -18,11 +18,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "sensor_heartrate.h"
+#include "i2c.h"
+#include "max30102.h"
 
 /* Private variables ---------------------------------------------------------*/
 static SensorHeartrateStatus sensor_status = SENSOR_HEARTRATE_STARTING;
-
-/* Private functions ---------------------------------------------------------*/
 
 /* Public status check functions ---------------------------------------------*/
 bool sensor_heartrate_has_started(void) {
@@ -30,6 +30,9 @@ bool sensor_heartrate_has_started(void) {
 }
 
 bool sensor_heartrate_is_measurement_ready(void) {
+  if (max30102_IsReady()) {
+    sensor_status = SENSOR_HEARTRATE_MEASUREMENT_READY;
+  }
   return sensor_status == SENSOR_HEARTRATE_MEASUREMENT_READY;
 }
 
@@ -39,25 +42,30 @@ bool sensor_heartrate_has_error(void) {
 
 /* Public management functions -----------------------------------------------*/
 void sensor_heartrate_init(void) {
-  // TODO: Implement sensor initialization
+  I2C_Init();
+  if (I2C_hasError()) {
+    sensor_status = SENSOR_HEARTRATE_ERROR;
+    return;
+  }
+  
+  max30102_Init();
   sensor_status = SENSOR_HEARTRATE_IDLE;
-}
-
-void sensor_heartrate_start(void) {
-  // TODO: Implement sensor start procedure (a.k.a: start measurement)
-  sensor_status = SENSOR_HEARTRATE_MEASUREMENT_READY;
 }
 
 void sensor_heartrate_stop(void) {
-  // TODO: Implement sensor stop procedure (a.k.a: stop the sensor)
+  max30102_Stop();
+  I2C_DeInit();
   sensor_status = SENSOR_HEARTRATE_IDLE;
 }
 
-uint8_t sensor_heartrate_read(void) {
+bool sensor_heartrate_read(uint8_t* target) {
   if (sensor_status != SENSOR_HEARTRATE_MEASUREMENT_READY) {
-      return 0; // Error value
+    return false;
   }
-  // TODO: Implement heart rate reading
+
+  uint16_t bpm = max30102_GetBPM();
+  *target = (uint8_t)bpm;
+  
   sensor_status = SENSOR_HEARTRATE_IDLE;
-  return 75; // Default test value
+  return true;
 }

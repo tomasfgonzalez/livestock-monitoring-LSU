@@ -36,8 +36,14 @@ extern "C" {
 void adc_test(void);
 void temperature_test(void);
 
+void i2c_test(void);
+void max30102_test(void);
+void heartrate_test(void);
+
+void usart_test(void);
+void neo6m_test(void);
+void neo6m_fix_test(void);
 void gps_test(void);
-void hr_test(void);
 
 void tests_tick_1s(void);
 
