@@ -14,50 +14,31 @@
   *
   ******************************************************************************
   */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-#include "sysClock.h"
+#include "system_clock.h"
 #include "adc.h"
 #include "dma.h"
 #include "usart.h"
+#include "lpuart.h"
 #include "gpio.h"
 #include "rtc.h"
 #include "tim2.h"
-#include "gpio_temperature_power.h"
+#include "i2c.h"
 
 #include "tests.h"
-#include "i2c.h"
 #include "lsu_comms.h"
 
 #include "fsm/fsm_main.h"
 
-TIM_HandleTypeDef htim2;
-
 uint32_t mockTimer = 5;
 
-
-
-void run_tests(void) {
-	adc_test();
-	gps_test();
-	hr_test();
-	gps_test();
-
-
-	adc_test();
-	hr_test();
-	gps_test();
-
-	run_rtc_test();
-	LSU_setAddress(0x03);
-	LSU_setChannelMain();
-}
-
 void run_rtc_test(void) {
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_SET);
   HAL_Delay(1000);
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_RESET);
 
   HAL_SuspendTick();
   RTC_setWakeUpTimer(10);
@@ -71,52 +52,56 @@ void run_rtc_test(void) {
   HAL_ResumeTick();
 }
 
+void run_tests(void) {
+  adc_test();
+  temperature_test();
+  
+	i2c_test();
+	max30102_test();
+	heartrate_test();
+
+  usart_test();
+  neo6m_test();
+  neo6m_fix_test();
+  gps_test();
+
+	run_rtc_test();
+}
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
     // Peripherals initialization
     GPIO_Init();
-
     RTC_Init();
-    MX_I2C1_Init();
 
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_Delay(1000);
-
-
-    DMA_Init();
-    USART2_Init();
-    MX_I2C1_Init();
-
-
-    DMA_Start();
-    USART2_Start();
-
-    // Clock initialization
     TIM2_Init();
-    MX_LPUART1_UART_Init();
-    INIT_RX_UART2();
+    HAL_TIM_Base_Start_IT(&htim2);
 
-    run_tests();
+
+    // run_tests();
 
     // System start
+    LPUART_Init();
+    LSU_setAddress(0x03);
+    LSU_setChannelMain();
+
     FSM_Main_init();
-    HAL_TIM_Base_Start_IT(&htim2);
     while (1) {
       FSM_Main_handle();
 //      run_rtc_test();
     }
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-  if (htim->Instance == TIM2) {
-    FSM_Main_tick_1s();
-    mockTimer--;
-    if (mockTimer <= 0) {
-      mockTimer = 5;
-      HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
-    }
+void TIM2_tick(void) {
+  FSM_Main_tick_1s();
+  mockTimer--;
+  if (mockTimer <= 0) {
+    mockTimer = 5;
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
   }
-}
 
+  // For testing purposes
+//  tests_tick_1s();
+}

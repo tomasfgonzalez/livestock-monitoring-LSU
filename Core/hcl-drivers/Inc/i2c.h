@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : test.h
-  * @brief          : Header for test file
+  * @file           : i2c.h
+  * @brief          : Header for I2C file
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2025 Gonazalez & Morris.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -16,40 +16,40 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TESTS_H__
-#define __TESTS_H__
+#ifndef __I2C_H__
+#define __I2C_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+
 #include "stm32l0xx_hal.h"
-#include "tests.h"
-#include "usart.h"
-#include "neo6m.h"
-#include "adc.h"
-#include "dma.h"
-#include "max30102.h"
 
-/* Function prototypes -------------------------------------------------------*/
-void adc_test(void);
-void temperature_test(void);
+/* Structure declarations ----------------------------------------------------*/
+extern I2C_HandleTypeDef hi2c1;
 
-void i2c_test(void);
-void max30102_test(void);
-void heartrate_test(void);
+/* Public functions ----------------------------------------------------------*/
 
-void usart_test(void);
-void neo6m_test(void);
-void neo6m_fix_test(void);
-void gps_test(void);
+/**
+ * @brief Initializes the I2C peripheral.
+ */
+void I2C_Init(void);
 
-void tests_tick_1s(void);
+/**
+ * @brief Deinitializes the I2C peripheral.
+ */
+void I2C_DeInit(void);
+
+/**
+ * @brief Checks if the I2C peripheral has an error.
+ */
+bool I2C_hasError(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TESTS_H__ */
-
+#endif /* __I2C_H__ */

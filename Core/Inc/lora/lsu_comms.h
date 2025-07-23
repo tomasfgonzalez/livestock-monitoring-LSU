@@ -16,6 +16,9 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+#include <stdbool.h>
+
 #include "rylr998.h"
 
 /* Public type definitions --------------------------------------------------- */

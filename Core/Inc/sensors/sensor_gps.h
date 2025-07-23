@@ -24,12 +24,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
 #include <stdbool.h>
-
-#include "dma.h"
-#include "usart.h"
-#include "gps_parser.h"
 
 /* Structure declarations ----------------------------------------------------*/
 typedef enum {
@@ -46,7 +41,6 @@ typedef struct {
 
 /* Function prototypes -------------------------------------------------------*/
 void sensor_gps_init(void);
-void sensor_gps_start(void);
 void sensor_gps_stop(void);
 
 bool sensor_gps_has_started(void);

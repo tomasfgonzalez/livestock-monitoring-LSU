@@ -1,55 +1,59 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : test.h
-  * @brief          : Header for test file
+  * @file           : tim2.h
+  * @brief          : Header for TIM2 file
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2025 Gonazalez & Morris.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  *
+  * 
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TESTS_H__
-#define __TESTS_H__
+#ifndef __TIM2_H
+#define __TIM2_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+
 #include "stm32l0xx_hal.h"
-#include "tests.h"
-#include "usart.h"
-#include "neo6m.h"
-#include "adc.h"
-#include "dma.h"
-#include "max30102.h"
+
+/* Structure declarations ----------------------------------------------------*/
+extern TIM_HandleTypeDef htim2;
+
+/* HAL Functions ------------------------------------------------------------*/
+void TIM2_MspInit(TIM_HandleTypeDef* htim);
+void TIM2_MspDeInit(TIM_HandleTypeDef* htim);
 
 /* Function prototypes -------------------------------------------------------*/
-void adc_test(void);
-void temperature_test(void);
 
-void i2c_test(void);
-void max30102_test(void);
-void heartrate_test(void);
+/**
+ * @brief Initializes the TIM2 peripheral.
+ */
+void TIM2_Init(void);
 
-void usart_test(void);
-void neo6m_test(void);
-void neo6m_fix_test(void);
-void gps_test(void);
+/**
+ * @brief Checks if the TIM2 peripheral has an error.
+ */
+bool TIM2_hasError(void);
 
-void tests_tick_1s(void);
+/**
+ * @brief Handles the TIM2 interrupt. Should be implemented in the main.c file.
+ */
+void TIM2_tick(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TESTS_H__ */
-
+#endif /* __TIM2_H */
