@@ -59,7 +59,7 @@ void sensor_temperature_start(void) {
 }
 
 void sensor_temperature_start_adc(void) {
-  ADC_Enable();
+  ADC_Start();
   sensor_status = SENSOR_TEMPERATURE_IDLE;
 }
 

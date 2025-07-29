@@ -156,7 +156,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 /**
  * ADC management functions
  */
-void ADC_Enable(void) {
+void ADC_Start(void) {
   if (!adcIsEnabled) {
     ADC_Init();
     HAL_ADC_Start_IT(&hadc);

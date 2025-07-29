@@ -53,7 +53,7 @@ void USART2_Init(void) {
   }
 }
 
-void MX_LPUART1_UART_Init(void) {
+void LPUART1_Init(void) {
   hlpuart1.Instance = LPUART1;
   hlpuart1.Init.BaudRate = 115200;
   hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
@@ -247,7 +247,7 @@ uint8_t* LPUART1_getRxBuff(void){
   return rx_buff;
 }
 
-void INIT_RX_UART2(void){
+void LPUART1_Start(void){
   HAL_UARTEx_ReceiveToIdle_DMA(&hlpuart1, rx_buff, UART_RX_BUFF_SIZE);
 }
 

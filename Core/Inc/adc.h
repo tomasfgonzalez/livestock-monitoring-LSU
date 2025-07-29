@@ -52,7 +52,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* );
 
 void ADC_GetValues(uint16_t* );
 
-void ADC_Enable(void);
+void ADC_Start(void);
 void ADC_Disable(void);
 bool ADC_hasError(void);
 bool ADC_isDataReady(void);

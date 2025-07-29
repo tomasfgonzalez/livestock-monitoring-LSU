@@ -25,7 +25,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
-#include "tests.h"
+#include <data.h>
 #include "usart.h"
 #include "gps_parser.h"
 #include "adc.h"
@@ -34,10 +34,30 @@ extern "C" {
 #include "max30102.h"
 
 /* Function prototypes -------------------------------------------------------*/
-void gps_test(void);
-void adc_test(void);
-void hr_test(void);
+void gps_data(void);
+void adc_data(void);
+void hr_data(void);
+void run_sleep_mode(uint32_t);
+int32_t get_Lat();
+int32_t get_Lon();
+uint8_t get_fixStatus();
+uint16_t get_V_T1();
+uint16_t get_V_T2();
+uint16_t get_bpm();
 
+
+
+
+
+
+struct data_package{
+	int32_t Lat;
+	int32_t Lon;
+	uint8_t fixStatus;
+	uint16_t V_T1;
+	uint16_t V_T2;
+	uint16_t bpm;
+};
 
 #ifdef __cplusplus
 }
