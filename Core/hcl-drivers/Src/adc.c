@@ -23,7 +23,6 @@
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc;
 
-static bool adcIsEnabled = false;
 static bool initError = false;
 
 static uint8_t conversionsFinished = 0;

@@ -18,6 +18,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "fsm_link.h"
+
+#include "gpio.h"
 #include "time_config.h"
 #include "lsu_comms.h"
 #include "string.h"
@@ -85,6 +87,11 @@ void startCSMATimer(void) {
 
 /* Public functions ------------------------------------------------------- */
 void FSM_Link_init(void) {
+  GPIO_Init();
+  GPIO_Sensors_PowerOn();
+
+  DMA_Init();
+  LPUART_Init();
   LSU_setAddress(getRandomUint8());
   LSU_setChannelAux();
   startChannelFreeTimer();
@@ -124,9 +131,11 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
 
         if (isValid) {
           *isLinkEstablished = true;
+          // LPUART_DeInit();
+          DMA_Stop();
           current_state = LINK_ESTABLISHED;
         } else {
-          printf("Invalid response\n");
+          // Invalid response
           startChannelFreeTimer();
           current_state = LINK_LISTENING;
         }
