@@ -66,19 +66,20 @@ void run_tests(void) {
   gps_test();
 
 	run_rtc_test();
+
+  LSU_setAddress(0x03);
+  LSU_setChannelMain();
 }
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
-    // Peripherals initialization
+    // Peripherals and timers initialization
     GPIO_Init();
     RTC_Init();
-
     TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim2);
-
 
     // run_tests();
 
@@ -90,7 +91,6 @@ int main(void) {
     FSM_Main_init();
     while (1) {
       FSM_Main_handle();
-//      run_rtc_test();
     }
 }
 

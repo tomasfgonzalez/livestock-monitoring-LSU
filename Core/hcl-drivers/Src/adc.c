@@ -41,7 +41,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle) {
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* ADC1 GPIO Configuration */
-    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -58,7 +58,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle) {
     __HAL_RCC_ADC1_CLK_DISABLE();
 
     /* ADC1 GPIO Configuration */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_4);
 
     /* ADC1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(ADC1_COMP_IRQn);
@@ -74,39 +74,45 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
   }
 }
 
-
 /* Public functions ----------------------------------------------------------*/
 void ADC_Init(void) {
   ADC_ChannelConfTypeDef sConfig = {0};
 
-	  /* USER CODE BEGIN ADC_Init 1 */
-
-	  /* USER CODE END ADC_Init 1 */
-
+  /* Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) */
+  hadc.Instance = ADC1;
+  hadc.Init.OversamplingMode = DISABLE;
+  hadc.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc.Init.SamplingTime = ADC_SAMPLETIME_3CYCLES_5;
+  hadc.Init.ScanConvMode = ADC_SCAN_DIRECTION_FORWARD;
+  hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc.Init.ContinuousConvMode = DISABLE;
+  hadc.Init.DiscontinuousConvMode = DISABLE;
+  hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc.Init.DMAContinuousRequests = DISABLE;
+  hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
+  hadc.Init.LowPowerAutoWait = ENABLE;
+  hadc.Init.LowPowerFrequencyMode = ENABLE;
+  hadc.Init.LowPowerAutoPowerOff = ENABLE;
   if (HAL_ADC_Init(&hadc) != HAL_OK) {
     initError = true;
   }
 
-  /* Configure ADC channel 4 to be converted. */
-  sConfig.Channel = ADC_CHANNEL_4;
+  /* Configure ADC channel 1 to be converted. */
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_RANK_CHANNEL_NUMBER;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
     initError = true;
   }
 
-  /* Configure ADC channel 5 to be converted. */
-  sConfig.Channel = ADC_CHANNEL_5;
+  /* Configure ADC channel 4 to be converted. */
+  sConfig.Channel = ADC_CHANNEL_4;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK) {
     initError = true;
   }
 
-	  /** Configure for the selected ADC regular channel to be converted.
-	  */
-	  sConfig.Channel = ADC_CHANNEL_4;
-	  if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
-	  {
-	    Error_Handler();
-	  }
   /* Enable ADC interrupt */
   HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0); // Set priority for ADC interrupt
   HAL_NVIC_EnableIRQ(ADC1_IRQn);        // Enable ADC interrupt in NVIC
