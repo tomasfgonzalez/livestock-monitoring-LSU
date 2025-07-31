@@ -50,6 +50,11 @@ void LPUART_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size);
 void LPUART_Init(void);
 
 /**
+ * @brief Deinitializes the LPUART peripheral.
+ */
+void LPUART_DeInit(void);
+
+/**
  * @brief Gets the receive buffer.
  */
 uint8_t* LPUART_getRxBuff(void);

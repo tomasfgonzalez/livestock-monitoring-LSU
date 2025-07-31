@@ -7,14 +7,25 @@
   ******************************************************************************
   */
 
+/* Includes ------------------------------------------------------------------*/
 #include "fsm_transmit.h"
+
+#include <string.h>
+
+#include "sensor_temperature.h"
+#include "sensor_gps.h"
+#include "sensor_heartrate.h"
+#include "sensor_all.h"
 #include "lsu_comms.h"
-#include "string.h"
 #include "time_config.h"
+
+#include "lpuart.h"
+#include "dma.h"
+#include "gpio.h"
 
 #define SENSING_TIMEOUT_IN_SECONDS 5
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
-#define ACK_TIMEOUT_IN_SECONDS 20
+#define ACK_TIMEOUT_IN_SECONDS 2
 
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
@@ -34,35 +45,29 @@ static void startSensingTimer(void) {
 }
 
 static void startSensing(void) {
-  // sensor_gps_start();
-  // sensor_heartrate_start();
-  // sensor_temperature_start();
+  sensor_all_init();
   startSensingTimer();
 }
 
 static void stopSensing(void) {
-  // sensor_gps_stop();
-  // sensor_heartrate_stop();
-  // sensor_temperature_stop();
+  sensor_all_stop();
   sensingTimer = 0;
 }
 
 static void createPayload(void) {
-  // uint8_t temperature[2];
-  // GPSData gps;
-  // uint8_t heartrate;
+  static uint8_t temperature[2];
+  static GPSData gps;
+  static uint8_t heartrate;
 
-  // sensor_temperature_read(temperature);
-  // sensor_gps_read(&gps);
-  // heartrate = sensor_heartrate_read();
+  sensor_temperature_read(temperature);
+  sensor_gps_read(&gps);
+  sensor_heartrate_read(&heartrate);
 
-  static int rising_temperature = 10;
-  rising_temperature += 10;
-  payload.latitude = 32312313;
-  payload.longitude = 39532141;
-  payload.temperature_livestock = rising_temperature;
-  payload.temperature_environment = 21;
-  payload.heartrate = 72;
+  payload.latitude = gps.latitude;
+  payload.longitude = gps.longitude;
+  payload.temperature_livestock = temperature[0];
+  payload.temperature_environment = temperature[1];
+  payload.heartrate = heartrate;
   isPayloadReady = true;
 }
 
@@ -81,6 +86,10 @@ static void startAckTimer(void) {
 
 static void startTransmission(void) {
   ackReceived = false;
+  GPIO_Sensors_PowerOn();
+  DMA_Init();
+  LPUART_Init();
+
   LSU_setChannelMain();
   sendPayload();
 
@@ -122,12 +131,12 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 
     /* ------------------------- TRANSMIT_SENSE ------------------------- */
     case TRANSMIT_SENSE:
-        // bool temperatureReady = sensor_temperature_is_measurement_ready();
-        // bool gpsReady = sensor_gps_is_measurement_ready();
-        // bool heartrateReady = sensor_heartrate_is_ready();
-        // bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
+        bool temperatureReady = sensor_temperature_is_measurement_ready();
+        bool gpsReady = sensor_gps_is_measurement_ready();
+        bool heartrateReady = sensor_heartrate_is_measurement_ready();
+        bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
 
-        if (sensingTimer <= 0) {
+        if (sensingTimer <= 0 || allSensorsReady) {
             createPayload();
             stopSensing();
             currentState = TRANSMIT_IDLE;
@@ -142,7 +151,10 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
       }
 
       if (ackReceived) {
-    	  ackReceived = false;
+        ackReceived = false;
+        LPUART_DeInit();
+        DMA_Stop();
+        GPIO_Sensors_PowerOff();
         currentState = TRANSMIT_IDLE;
       } else if (ackTimer <= 0) {
         restartTransmission();

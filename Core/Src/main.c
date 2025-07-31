@@ -22,75 +22,85 @@
 #include "adc.h"
 #include "dma.h"
 #include "usart.h"
-#include "lpuart.h"
 #include "gpio.h"
 #include "rtc.h"
 #include "tim2.h"
 #include "i2c.h"
+#include "lpuart.h"
 
-#include "tests.h"
+/* Test includes - only compiled in debug builds */
+#ifdef DEBUG
+// #include "tests.h"
+// #include "all_sensors_test.h"
+#endif
+
+#include "sensor_temperature.h"
+
 #include "lsu_comms.h"
 
 #include "fsm/fsm_main.h"
 
 uint32_t mockTimer = 5;
 
-void run_rtc_test(void) {
-  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_SET);
-  HAL_Delay(1000);
-  HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_RESET);
+/* Test functions - only compiled in debug builds */
+#ifdef DEBUG
+// void run_rtc_test(void) {
+//   HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_SET);
+//   HAL_Delay(1000);
+//   HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_RESET);
 
-  HAL_SuspendTick();
-  RTC_setWakeUpTimer(10);
+//   HAL_SuspendTick();
+//   RTC_setWakeUpTimer(10);
 
-  /* Enter STOP 2 mode */
-  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-  HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+//   /* Enter STOP 2 mode */
+//   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+//   HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
 
-  RTC_clearWakeUpTimer();
-  SystemClock_Config();
-  HAL_ResumeTick();
-}
+//   RTC_clearWakeUpTimer();
+//   SystemClock_Config();
+//   HAL_ResumeTick();
+// }
 
-void run_tests(void) {
-  adc_test();
-  temperature_test();
+// void run_tests(void) {
+  // adc_test();
+  // temperature_test();
   
-	i2c_test();
-	max30102_test();
-	heartrate_test();
+	// i2c_test();
+	// max30102_test();
+	// heartrate_test();
 
-  usart_test();
-  neo6m_test();
-  neo6m_fix_test();
-  gps_test();
+  // usart_test();
+  // neo6m_test();
+  // neo6m_fix_test();
+  // gps_test();
 
-	run_rtc_test();
-}
+// 	run_rtc_test();
+
+//   LSU_setAddress(0x03);
+//   LSU_setChannelMain();
+// }
+#endif
 
 int main(void) {
     HAL_Init();
     SystemClock_Config();
 
-    // Peripherals initialization
+    // Peripherals and timers initialization
     GPIO_Init();
     RTC_Init();
-
     TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim2);
 
-
-    // run_tests();
+    /* Test code - only executed in debug builds */
+#ifdef DEBUG
+    //  run_tests();
+  //  all_sensors_test();
+#endif
 
     // System start
-    LPUART_Init();
-    LSU_setAddress(0x03);
-    LSU_setChannelMain();
-
     FSM_Main_init();
     while (1) {
       FSM_Main_handle();
-//      run_rtc_test();
     }
 }
 
@@ -104,4 +114,5 @@ void TIM2_tick(void) {
 
   // For testing purposes
 //  tests_tick_1s();
+  sensor_temperature_tick_1s();
 }

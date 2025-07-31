@@ -17,6 +17,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "max30102_Buffer.h"
+#include "stm32l0xx_hal.h"
 
 /* Private variables ---------------------------------------------------------*/
 static uint16_t buffer[MAX30102_BUFFER_SIZE];

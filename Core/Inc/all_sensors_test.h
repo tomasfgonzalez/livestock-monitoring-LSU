@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : test.h
-  * @brief          : Header for test file
+  * @file           : all_sensors_test.h
+  * @brief          : Header for all sensors test file
   ******************************************************************************
   * @attention
   *
@@ -16,8 +16,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __TESTS_H__
-#define __TESTS_H__
+#ifndef __ALL_SENSORS_TEST_H__
+#define __ALL_SENSORS_TEST_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,32 +25,16 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_hal.h"
-#include "tests.h"
-#include "usart.h"
-#include "neo6m.h"
-#include "adc.h"
-#include "dma.h"
-#include "i2c.h"
-#include "max30102.h"
+#include "sensor_all.h"
+#include "sensor_temperature.h"
+#include "sensor_heartrate.h"
+#include "sensor_gps.h"
 
 /* Function prototypes -------------------------------------------------------*/
-void adc_test(void);
-void temperature_test(void);
-
-void i2c_test(void);
-void max30102_test(void);
-void heartrate_test(void);
-
-void usart_test(void);
-void neo6m_test(void);
-void neo6m_fix_test(void);
-void gps_test(void);
-
-void tests_tick_1s(void);
+void all_sensors_test(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TESTS_H__ */
-
+#endif /* __ALL_SENSORS_TEST_H__ */

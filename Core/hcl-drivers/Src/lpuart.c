@@ -133,6 +133,11 @@ void LPUART_Init(void) {
   HAL_UARTEx_ReceiveToIdle_DMA(&hlpuart1, lpuart_rx_buff, LPUART_RX_SIZE);
 }
 
+void LPUART_DeInit(void){
+  HAL_UART_DMAStop(&hlpuart1);
+  HAL_UART_DeInit(&hlpuart1);
+}
+
 uint8_t* LPUART_getRxBuff(void){
   return lpuart_rx_buff;
 }
