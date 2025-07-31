@@ -19,9 +19,13 @@
 #include "lsu_comms.h"
 #include "time_config.h"
 
+#include "lpuart.h"
+#include "dma.h"
+#include "gpio.h"
+
 #define SENSING_TIMEOUT_IN_SECONDS 5
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
-#define ACK_TIMEOUT_IN_SECONDS 20
+#define ACK_TIMEOUT_IN_SECONDS 2
 
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
@@ -84,7 +88,6 @@ static void startTransmission(void) {
   ackReceived = false;
   GPIO_Sensors_PowerOn();
   DMA_Init();
-  DMA_Start();
   LPUART_Init();
 
   LSU_setChannelMain();
@@ -149,6 +152,7 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 
       if (ackReceived) {
         ackReceived = false;
+        LPUART_DeInit();
         DMA_Stop();
         GPIO_Sensors_PowerOff();
         currentState = TRANSMIT_IDLE;

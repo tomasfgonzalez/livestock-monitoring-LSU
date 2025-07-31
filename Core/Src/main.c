@@ -26,6 +26,7 @@
 #include "rtc.h"
 #include "tim2.h"
 #include "i2c.h"
+#include "lpuart.h"
 
 /* Test includes - only compiled in debug builds */
 #ifdef DEBUG
@@ -97,10 +98,6 @@ int main(void) {
 #endif
 
     // System start
-    LPUART_Init();
-    LSU_setAddress(0x03);
-    LSU_setChannelMain();
-
     FSM_Main_init();
     while (1) {
       FSM_Main_handle();

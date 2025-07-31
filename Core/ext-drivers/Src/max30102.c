@@ -184,6 +184,7 @@ void max30102_Start(void) {
 }
 
 void max30102_Stop(void) {
+  isInitialized = false;
   max30102_set_shutdown(&max30102, 1);
 }
 

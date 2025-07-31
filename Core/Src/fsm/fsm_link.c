@@ -22,6 +22,9 @@
 #include "gpio.h"
 #include "time_config.h"
 #include "lsu_comms.h"
+#include "dma.h"
+#include "lpuart.h"
+
 #include "string.h"
 #include "stdio.h"
 
@@ -131,7 +134,7 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
 
         if (isValid) {
           *isLinkEstablished = true;
-          // LPUART_DeInit();
+          LPUART_DeInit();
           DMA_Stop();
           current_state = LINK_ESTABLISHED;
         } else {
