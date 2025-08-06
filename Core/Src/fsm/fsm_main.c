@@ -18,6 +18,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "fsm_main.h"
 
+#include "sensor_all.h"
+
 #define INIT_TIMEOUT 50
 
 /* Private variables ---------------------------------------------------------*/
@@ -26,8 +28,7 @@ static uint32_t initTimer = 0;
 
 /* Private functions ---------------------------------------------------------*/
 static bool isInitError(void) {
-  return false;
-  return sensor_temperature_has_error() || sensor_heartrate_has_error() || sensor_gps_has_error();
+  return sensor_all_has_error();
 }
 
 static void performRestart(void) {
@@ -36,10 +37,7 @@ static void performRestart(void) {
 }
 
 static bool isInitSuccess(void) {
-  return true;
-  return sensor_temperature_has_started();
-  // TODO: Implement other sensors check
-  // return sensor_temperature_has_started() && sensor_heartrate_has_started() && sensor_gps_has_started();
+  return sensor_all_has_started();
 }
 
 static bool isLinkErrorResolved(void) {
@@ -55,15 +53,7 @@ static bool isBackupTransmissionComplete(void) {
 /* Public functions ----------------------------------------------------------*/
 void FSM_Main_init(void) {
   currentState = INIT;
-  // Initialize sensors
-  sensor_temperature_init();
-  sensor_heartrate_init();
-  sensor_gps_init();
-
-  // But stop such sensors until they are needed
-  // sensor_temperature_stop();
-  // sensor_heartrate_stop();
-  // sensor_gps_stop();
+  sensor_all_init();
 
   initTimer = INIT_TIMEOUT;
 }
@@ -152,5 +142,4 @@ void FSM_Main_tick_1s(void) {
   if (currentState == LINK) {
     FSM_Link_tick_1s();
   }
-  sensor_temperature_tick_1s();
 }

@@ -80,16 +80,6 @@ void max30102_init(max30102_t* obj, I2C_HandleTypeDef* hi2c) {
 }
 
 /**
- * @brief MAX30102 reset function.
- *
- * @param obj Pointer to max30102_t object instance.
- */
-void max30102_reset(max30102_t *obj) {
-  uint8_t val = 0x40;
-  max30102_write(obj, MAX30102_MODE_CONFIG, &val, 1);
-}
-
-/**
  * @brief Enable A_FULL interrupt.
  *
  * @param obj Pointer to max30102_t object instance.
@@ -164,7 +154,6 @@ void max30102_Init(void) {
   max30102_Buffer_Init();
 
   max30102_init(&max30102, &hi2c1);
-  max30102_reset(&max30102);
   max30102_clear_fifo(&max30102);
 
   uint8_t fifo_config = (max30102_smp_ave_1 << MAX30102_FIFO_CONFIG_SMP_AVE);
@@ -195,6 +184,7 @@ void max30102_Start(void) {
 }
 
 void max30102_Stop(void) {
+  isInitialized = false;
   max30102_set_shutdown(&max30102, 1);
 }
 

@@ -49,7 +49,7 @@ void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc) {
 /* Public functions ----------------------------------------------------------*/
 void time_config_set(uint32_t period, uint32_t now, uint32_t time_slot) {
   if (period < SENSING_TRANSMIT_GAP_MS) {
-      printf("Period is too short to fit sensing and transmit windows\n");
+      // Period is too short to fit sensing and transmit windows
       return;
   }
   timeToNextTransmission_ms = SENSING_TRANSMIT_GAP_MS;
