@@ -23,9 +23,9 @@
 #include "dma.h"
 #include "gpio.h"
 
-#define SENSING_TIMEOUT_IN_SECONDS 5
+#define SENSING_TIMEOUT_IN_SECONDS 20
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
-#define ACK_TIMEOUT_IN_SECONDS 2
+#define ACK_TIMEOUT_IN_SECONDS 5
 
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
@@ -36,8 +36,9 @@ static int ackTimer = 0;
 
 static bool ackReceived = false;
 
+static int debug_sensingCount = 0;
+
 static LSU_Payload payload;
-static bool isPayloadReady = false;
 
 /* Private functions ----------------------------------------------------------*/
 static void startSensingTimer(void) {
@@ -45,6 +46,7 @@ static void startSensingTimer(void) {
 }
 
 static void startSensing(void) {
+  debug_sensingCount++;
   sensor_all_init();
   startSensingTimer();
 }
@@ -68,11 +70,9 @@ static void createPayload(void) {
   payload.temperature_livestock = temperature[0];
   payload.temperature_environment = temperature[1];
   payload.heartrate = heartrate;
-  isPayloadReady = true;
 }
 
 static void sendPayload(void) {
-  isPayloadReady = false;
   LSU_sendParameters(0, &payload);
 }
 
@@ -120,12 +120,12 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
   switch (currentState) {
     /* ------------------------- TRANSMIT_IDLE ------------------------- */
     case TRANSMIT_IDLE:
-      if (isTimeToSense && !isPayloadReady) {
-          startSensing();
-          currentState = TRANSMIT_SENSE;
-      } else if (isTimeToTransmit && isPayloadReady) {
-          startTransmission();
-          currentState = TRANSMIT_SEND;
+      if (isTimeToSense) {
+        startSensing();
+        currentState = TRANSMIT_SENSE;
+      } else if (isTimeToTransmit) {
+        startTransmission();
+        currentState = TRANSMIT_SEND;
       }
       break;
 
