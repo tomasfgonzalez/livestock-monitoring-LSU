@@ -48,7 +48,7 @@ typedef enum {
 	//RYLR_VER,
 	RYLR_FACTORY,
 	//RYLR_RESET,
-	//RYLR_READY,
+	RYLR_READY,
 	RYLR_ERR,
 	RYLR_NOT_FOUND
 } RYLR_RX_command_t;
@@ -112,7 +112,7 @@ void rylr998_config(const RYLR_config_t *config_handler);
  * @param cmd: command to get
  * @return Pointer to the deserialized message
  */
-RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd);
+//RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd);
 
 /**
  * @brief Reads the latest stored packet received
@@ -128,6 +128,9 @@ RYLR_RX_data_t* rylr998_readCurrentPacket(void);
  */
 void rylr998_sendCommand(const char *cmd);
 
+void rylr998_processcmd(void);
+
+RYLR_RX_command_t getlast_cmd(void);
 /**
  * @brief Set the interrupt flag
  * 

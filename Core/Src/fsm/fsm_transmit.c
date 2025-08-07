@@ -23,10 +23,9 @@
 #include "dma.h"
 #include "gpio.h"
 
-#define SENSING_TIMEOUT_IN_SECONDS 20
+#define SENSING_TIMEOUT_IN_SECONDS 15
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
 #define ACK_TIMEOUT_IN_SECONDS 5
-
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
 
@@ -89,12 +88,14 @@ static void startTransmission(void) {
   GPIO_Sensors_PowerOn();
   DMA_Init();
   LPUART_Init();
-
+  HAL_Delay(50);
   LSU_setChannelMain();
-  sendPayload();
+  HAL_Delay(50);
 
+  sendPayload();
   startAckTimer();
   startTransmitTimer();
+
 }
 
 static void restartTransmission(void) {
@@ -145,21 +146,24 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 
     /* ------------------------- TRANSMIT_SEND ------------------------- */
     case TRANSMIT_SEND:
-      RYLR_RX_data_t* rx_data = LSU_getData();
+       RYLR_RX_data_t* rx_data = LSU_getData();
+
       if (rx_data != NULL) {
         ackReceived = strcmp(rx_data->data, "ACK") == 0;
+        rx_data->data == NULL;
       }
 
       if (ackReceived) {
+    	 HAL_Delay(50);
         ackReceived = false;
         LPUART_DeInit();
         DMA_Stop();
         GPIO_Sensors_PowerOff();
         currentState = TRANSMIT_IDLE;
       } else if (ackTimer <= 0) {
-        restartTransmission();
+        //restartTransmission();
       } else if (transmitTimer <= 0) {
-        *mainChannelFail = true;
+      //mainChannelFail = true;
       }
       break;
 

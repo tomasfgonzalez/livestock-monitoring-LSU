@@ -32,6 +32,7 @@ static char txBuffer[TX_BUFFER_SIZE];
 
 static bool rx_packet_available = false;
 static RYLR_RX_data_t rx_packet;
+RYLR_RX_command_t last_cmd;
 
 static bool hasError = false;
 
@@ -40,6 +41,7 @@ const RYLR_CommandEntry commandTable[] = {
   {"+OK", RYLR_OK},
   {"+RCV", RYLR_RCV},
   {"+ERR", RYLR_ERR},
+  {"+READY",RYLR_READY},
 	{"ACK", RYLR_RCV_ACK},
   {"+FACTORY", RYLR_FACTORY},
   {NULL, RYLR_NOT_FOUND} // Sentinel value
@@ -59,11 +61,12 @@ RYLR_RX_command_t rylr998_ResponseFind(const char *rxBuffer) {
   return RYLR_NOT_FOUND;
 }
 
+static uint16_t start_indx = 0;
+
+
 RYLR_RX_command_t rylr998_parse_received(uint8_t *pBuff, uint8_t pBuff_size) {
   static char aux_buff[RX_BUFFER_SIZE];  // Should match with RX_BUFFER_SIZE
-  static uint8_t start_indx = 0;
   uint8_t i = 0;
-
   // Find the '+' start character
   while (i < pBuff_size && pBuff[(start_indx + i) % pBuff_size] != '+') i++;
 
@@ -170,6 +173,7 @@ static void rylr998_networkId(const uint8_t networkId){
 	memset(txBuffer, 0, sizeof(TX_BUFFER_SIZE));
 	snprintf(txBuffer, TX_BUFFER_SIZE, AT "NETWORKID=%u" END, networkId);
 	rylr998_sendCommand(txBuffer);
+
 }
 
 static void rylr998_setParameter(const uint8_t SF,const uint8_t BW,const uint8_t CR,const uint8_t ProgramedPreamble){
@@ -215,28 +219,35 @@ void rylr998_config(const RYLR_config_t *config_handler){
 	//rylr998_getCommand(RYLR_FACTORY);
 
 	rylr998_networkId(config_handler->networkId);
-	rylr998_getCommand(RYLR_OK);
+
+	if(last_cmd !=RYLR_OK){
+	}
 
 	rylr998_setAddress(config_handler->address);
-	rylr998_getCommand(RYLR_OK);
+	if(last_cmd !=RYLR_OK){
+		}
 
 	rylr998_setParameter(config_handler->SF, config_handler->BW, config_handler->CR, config_handler->ProgramedPreamble);
-	rylr998_getCommand(RYLR_OK);
+	if(last_cmd !=RYLR_OK){
+	}
 
 	rylr998_mode(config_handler->mode,config_handler->rxTime,config_handler->LowSpeedTime);
-	rylr998_getCommand(RYLR_OK);
+	if(last_cmd !=RYLR_OK){
+	}
 
 	//rylr998_setBaudRate(config_handler->baudRate);
 	//rylr998_getCommand(RYLR_IPR); //ADD RYLR_IPR
 
 	rylr998_setBand(config_handler->frequency,config_handler->memory);
-	rylr998_getCommand(RYLR_OK);
+	if(last_cmd !=RYLR_OK){
+	}
 
 	//rylr998_setCPIN(config_handler->password);
 	//rylr998_getCommand(RYLR_OK);
 
 	rylr998_setCRFOP(config_handler->CRFOP);
-	rylr998_getCommand(RYLR_OK);
+	if(last_cmd !=RYLR_OK){
+	}
 }
 
 /* Public functions ----------------------------------------------------- */
@@ -246,6 +257,7 @@ void rylr998_config(const RYLR_config_t *config_handler){
 //----------------------------------
 
 volatile uint8_t rylr998_interrupt_flag;
+volatile uint16_t rylr998_last_rx;
 
 void rylr998_SetInterruptFlag(uint8_t val){
 	rylr998_interrupt_flag = val;
@@ -301,9 +313,10 @@ void rylr998_setChannel(uint8_t channel, uint8_t address) {
 //------------------------------------------------
 void rylr998_sendCommand(const char *cmd) {
   HAL_UART_Transmit(&hlpuart1, (uint8_t *)cmd, strlen(cmd), 20);
+  HAL_Delay(60);
 }
 
-RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd){
+/*RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd){
 	uint8_t* rx_buff = LPUART_getRxBuff();
 
 	// Without delay, the flag does not get set to 1
@@ -311,15 +324,33 @@ RYLR_RX_data_t* rylr998_getCommand(RYLR_RX_command_t cmd){
 	HAL_Delay(30);
 	while (!rylr998_interrupt_flag);
 
+
 	if (rylr998_parse_received(rx_buff, LPUART_RX_SIZE) != cmd) {
 		// Wrong command
 		return NULL;
 	}
+
 	return &rx_packet;
+}*/
+
+
+void rylr998_processcmd(void){
+	last_cmd = rylr998_parse_received(LPUART_getRxBuff(), LPUART_RX_SIZE);
+}
+
+RYLR_RX_command_t getlast_cmd(void){
+	return last_cmd;
+}
+
+void reset_rx_pointer(void){
+	start_indx=0;
 }
 
 RYLR_RX_data_t* rylr998_readCurrentPacket(void) {
-	if (rx_packet_available) return &rx_packet;
+	if (rx_packet_available) {
+		rx_packet_available=false;
+		return &rx_packet;
+	}
 	return NULL;
 }
 

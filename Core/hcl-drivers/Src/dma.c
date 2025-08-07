@@ -40,6 +40,7 @@ void DMA_Start(void) {
 }
 
 void DMA_Stop(void) {
+	reset_rx_pointer();
   HAL_NVIC_DisableIRQ(DMA1_Channel4_5_6_7_IRQn);
   HAL_NVIC_DisableIRQ(DMA1_Channel2_3_IRQn);
   __HAL_RCC_DMA1_CLK_DISABLE();

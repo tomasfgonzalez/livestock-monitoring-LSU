@@ -109,9 +109,11 @@ void LPUART_MspDeInit(UART_HandleTypeDef* uartHandle) {
   HAL_NVIC_DisableIRQ(LPUART1_IRQn);
 }
 
+
 void LPUART_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
   if (lpuart_rx_buff[Size-1] == '\n') {
     rylr998_SetInterruptFlag(true);
+    rylr998_processcmd();
   }
   HAL_UARTEx_ReceiveToIdle_DMA(huart, lpuart_rx_buff, LPUART_RX_SIZE);
 }
@@ -141,3 +143,6 @@ void LPUART_DeInit(void){
 uint8_t* LPUART_getRxBuff(void){
   return lpuart_rx_buff;
 }
+
+
+

@@ -58,7 +58,9 @@ void LSU_sendParameters(uint16_t destination, LSU_Payload* payload) {
 
   rylr998_sendCommand(txBuffer);
   HAL_Delay(SEND_DATA_DELAY);
-  rylr998_getCommand(RYLR_OK);
+  if(getlast_cmd() !=RYLR_OK){
+  		Error_Handler();
+  	}
 }
 
 #define SEND_SYNC_DELAY 100
@@ -69,20 +71,21 @@ void LSU_sendSyncRequest(uint16_t destination){
 
   rylr998_sendCommand(txBuffer);
   HAL_Delay(SEND_SYNC_DELAY);
-  rylr998_getCommand(RYLR_OK);
+  if(getlast_cmd() !=RYLR_OK){
+  		Error_Handler();
+  	}
 }
 
 bool LSU_checkChannelBusy(void) {
   if (rylr998_GetInterruptFlag()) {
-    rylr998_getCommand(RYLR_RCV);
-    return true;
+	  if(getlast_cmd()==RYLR_RCV)    return true;
   }
   return false;
 }
 
 RYLR_RX_data_t* LSU_getData(void){
-  if (rylr998_GetInterruptFlag()) {
+ /* if (rylr998_GetInterruptFlag()) {
     return rylr998_getCommand(RYLR_RCV);
-  }
+  }*/
   return rylr998_readCurrentPacket();
 }

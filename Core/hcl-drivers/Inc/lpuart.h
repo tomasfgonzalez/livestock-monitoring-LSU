@@ -58,6 +58,7 @@ void LPUART_DeInit(void);
  * @brief Gets the receive buffer.
  */
 uint8_t* LPUART_getRxBuff(void);
+uint16_t LPUART_getRxIndx(void);
 
 #ifdef __cplusplus
 }

@@ -194,7 +194,7 @@ bool max30102_IsReady(void) {
 
 uint16_t max30102_GetBPM(void) {
   uint16_t* buffer = max30102_Buffer_GetBuffer();
-  uint16_t elapsed_time = max30102_Buffer_GetElapsedTime();
+  volatile uint16_t elapsed_time = max30102_Buffer_GetElapsedTime();
   return max30102_Process_Run(buffer, elapsed_time);
 }
 
