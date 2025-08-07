@@ -13,7 +13,7 @@
 #include "rtc.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define SENSING_TRANSMIT_GAP_MS 5000 // Sense 1 minute before transmitting
+#define SENSING_TRANSMIT_GAP_MS 30000 // Sense 30 seconds before transmitting
 
 /* Private variables ---------------------------------------------------------*/
 static uint32_t timeToNextTransmission_ms;
