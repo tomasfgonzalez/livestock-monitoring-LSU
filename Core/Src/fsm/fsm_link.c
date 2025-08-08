@@ -93,6 +93,9 @@ void FSM_Link_init(void) {
   GPIO_Init();
   GPIO_Sensors_PowerOn();
 
+
+  sensor_heartrate_stop();
+
   DMA_Init();
   LPUART_Init();
   LSU_setAddress(getRandomUint8());
