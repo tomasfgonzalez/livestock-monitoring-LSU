@@ -23,9 +23,11 @@
 #include "dma.h"
 #include "gpio.h"
 
+#define SENSING_INIT_WAIT_IN_SECONDS 5
 #define SENSING_TIMEOUT_IN_SECONDS 15
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
 #define ACK_TIMEOUT_IN_SECONDS 5
+
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
 
@@ -35,8 +37,6 @@ static int ackTimer = 0;
 
 static bool ackReceived = false;
 
-static int debug_sensingCount = 0;
-
 static LSU_Payload payload;
 
 /* Private functions ----------------------------------------------------------*/
@@ -45,7 +45,6 @@ static void startSensingTimer(void) {
 }
 
 static void startSensing(void) {
-  debug_sensingCount++;
   sensor_all_init();
   startSensingTimer();
 }
@@ -55,7 +54,7 @@ static void stopSensing(void) {
   sensingTimer = 0;
 }
 
-static void createPayload(void) {
+static void createPayload(void) {  
   static uint8_t temperature[2];
   static GPSData gps;
   static uint8_t heartrate;
@@ -132,15 +131,20 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 
     /* ------------------------- TRANSMIT_SENSE ------------------------- */
     case TRANSMIT_SENSE:
+        // Give sensors some time to start up before checking readiness
+        if (sensingTimer > SENSING_TIMEOUT_IN_SECONDS - SENSING_INIT_WAIT_IN_SECONDS) {
+            break;
+        }
+        
         bool temperatureReady = sensor_temperature_is_measurement_ready();
         bool gpsReady = sensor_gps_is_measurement_ready();
         bool heartrateReady = sensor_heartrate_is_measurement_ready();
         bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
 
         if (sensingTimer <= 0 || allSensorsReady) {
-            createPayload();
-            stopSensing();
-            currentState = TRANSMIT_IDLE;
+          createPayload();
+          stopSensing();
+          currentState = TRANSMIT_IDLE;
         }
         break;
 
