@@ -119,6 +119,8 @@ void ADC_Init(void) {
   /* Enable ADC end-of-conversion interrupt */
   __HAL_ADC_ENABLE_IT(&hadc, ADC_IT_EOC);
   HAL_ADC_Start_IT(&hadc);
+
+  conversionsFinished = 0;
 }
 
 void ADC_DeInit(void) {
