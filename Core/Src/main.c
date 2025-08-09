@@ -74,6 +74,8 @@ void run_rtc_test(void) {
   HAL_ResumeTick();
 }
 
+
+
 int main(void) {
     HAL_Init();
     SystemClock_Config();

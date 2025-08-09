@@ -63,8 +63,8 @@ void max30102_Buffer_Put(uint32_t red_sample) {
     return;  // Avoid overwriting data if buffer is full
   }
 
-  if (buffer_index == 0) {
-    start_time = HAL_GetTick();
+  if (buffer_index == MAX30102_UNUSED_DATA) {
+	  start_time = HAL_GetTick();
   }
 
   // Ignore unwanted samples

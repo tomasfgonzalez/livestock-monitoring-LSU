@@ -21,8 +21,8 @@
 #include <stdint.h>
 
 /* Private variables ---------------------------------------------------------*/
-uint16_t resample_buffer[400];
-int peak_count = 0, peak_diff = 0;
+uint16_t resample_buffer[100];
+volatile int peak_count = 0, peak_diff = 0;
 
 /* Private functions ----------------------------------------------------------*/
 
@@ -48,12 +48,26 @@ static uint8_t is_data_clear(uint16_t* buffer, uint16_t size) {
  * @param input_size Size of input buffer.
  * @param output_size Pointer to store output buffer size.
  */
-static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size) {
-  uint16_t j = 0;
-  for (uint16_t i = 0; i < input_size; i += DOWNSAMPLE_FACTOR) {
-    output[j++] = input[i];
-  }
 
+
+
+static void smooth_downsample(uint16_t* in, uint16_t* out, uint16_t in_size) {
+    uint16_t j = 0;
+    int half_w = 4 / 2;
+
+    for (uint16_t i = 0; i < in_size; i += DOWNSAMPLE_FACTOR) {
+        uint32_t sum = 0;
+        uint16_t count = 0;
+
+        for (int k = -half_w; k <= half_w; k++) {
+            int idx = i + k;
+            if (idx >= 0 && idx < in_size) {
+                sum += in[idx];
+                count++;
+            }
+        }
+        out[j++] = sum / count;
+    }
 }
 
 /**
@@ -62,6 +76,9 @@ static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_
  * @param signal_length Length of signal buffer.
  * @param window_size Size of window to detect peaks.
  */
+
+
+
 static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size) {
   int half_window = window_size / 2;
   int first_peak = 0, last_peak = 0;
@@ -92,9 +109,9 @@ uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms) {
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
-    downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
-    find_peaks(buffer, MAX30102_BUFFER_SIZE, 40);
-    elapsed_time_ms = elapsed_time_ms * peak_diff / 400;
+	  smooth_downsample(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
+    find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, 15);
+    elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
     bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
     max30102_Buffer_Reset();
   }
