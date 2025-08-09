@@ -130,13 +130,6 @@ void max30102_clear_fifo(max30102_t* obj) {
 }
 
 
-#include "usart.h"
-
-int __io_putchar(int ch) {
-    HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
-    return ch;
-}
-
 /**
  * @brief Read FIFO content and store to buffer in max30102_t object instance.
  *

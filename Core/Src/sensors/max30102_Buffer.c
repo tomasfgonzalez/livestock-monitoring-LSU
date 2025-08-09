@@ -54,6 +54,8 @@ void max30102_Buffer_Reset(void) {
 }
 
 
+#include "stm32l0xx_hal.h"
+
 /**
  * @brief Store red LED sample in buffer and process data when full.
  * @param red_sample Red LED sample value from sensor.
