@@ -163,11 +163,6 @@ void max30102_read_fifo(max30102_t* obj) {
       max30102_read(obj, MAX30102_FIFO_DATA, sample, 6);
       red_sample_16 = (int16_t)(((uint32_t)(sample[3]) << 16 | (uint32_t)(sample[4]) << 8 | sample[5]) >> 2) & 0xFFFF;
 
-      // Transmit all 6 bytes of the sample (one by one)
-       for (int j = 3; j < 6; j++) {
-    	   printf("%d" ,sample[3]);
-       }
-
 
 
       max30102_Buffer_Put(red_sample_16);
