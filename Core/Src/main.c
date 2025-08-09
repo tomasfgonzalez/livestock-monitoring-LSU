@@ -40,8 +40,11 @@ uint32_t mockTimer = 5;
 
 void run_tests(void) {
 	adc_test();
+	while (1){
+		hr_test();
+	}
 	gps_test();
-	hr_test();
+
 	gps_test();
 
 
@@ -79,7 +82,7 @@ int main(void) {
     GPIO_Init();
 
     RTC_Init();
-    MX_I2C1_Init();
+    I2C_Init();
 
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
     HAL_Delay(1000);
@@ -87,7 +90,6 @@ int main(void) {
 
     DMA_Init();
     USART2_Init();
-    MX_I2C1_Init();
 
 
     DMA_Start();
@@ -96,7 +98,7 @@ int main(void) {
     // Clock initialization
     TIM2_Init();
     MX_LPUART1_UART_Init();
-    INIT_RX_UART2();
+    //INIT_RX_UART2();
 
     run_tests();
 

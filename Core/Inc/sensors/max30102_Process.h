@@ -34,7 +34,7 @@ extern "C" {
 #define THRESHOLD_LOWER 28000      // Lower threshold for valid data
 #define THRESHOLD_UPPER 45000      // Upper threshold for valid data
 
-#define DOWNSAMPLE_FACTOR 20       // Downsampling factor
+#define DOWNSAMPLE_FACTOR 5       // Downsampling factor
 #define RESAMPLE_BUFFER_SIZE 100   // MAX30102_BUFFER_SIZE / DOWNSAMPLE_FACTOR
 
 #define PEAK_WINDOW_SIZE 10        // Window used to detect peaks
