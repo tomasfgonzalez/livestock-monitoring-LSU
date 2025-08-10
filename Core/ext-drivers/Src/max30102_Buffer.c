@@ -65,7 +65,7 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   }
 
   if (buffer_index == MAX30102_UNUSED_DATA) {
-   start_time = RTC_GetTick();
+
   }
 
   // Ignore unwanted samples
@@ -84,8 +84,7 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   // If buffer is full, execute necessary actions
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
     is_buffer_full = 1;
-    end_time = RTC_GetTick();
-    elapsed_time_ms = end_time - start_time;
+    elapsed_time_ms = 4000;
   }
 }
 

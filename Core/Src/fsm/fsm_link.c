@@ -137,9 +137,11 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
 
         if (isValid) {
           *isLinkEstablished = true;
+
           LPUART_DeInit();
           DMA_Stop();
           current_state = LINK_ESTABLISHED;
+          GPIO_Sensors_PowerOff();
         } else {
           // Invalid response
           startChannelFreeTimer();

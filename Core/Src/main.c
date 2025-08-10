@@ -112,7 +112,6 @@ void TIM2_tick(void) {
   mockTimer--;
   if (mockTimer <= 0) {
     mockTimer = 5;
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
   }
 
   // For testing purposes
