@@ -27,6 +27,30 @@ int peak_count = 0, peak_diff = 0;
 /* Private functions ----------------------------------------------------------*/
 
 /**
+ * @brief Apply low-pass filter using sliding window average in-place.
+ * @param buffer Pointer to input/output buffer (overwritten with filtered data).
+ * @param size Size of the buffer.
+ */
+static void apply_lowpass_filter(uint16_t* buffer, uint16_t size) {
+  // Process each sample with a forward-looking window
+  for (uint16_t i = 0; i < size; i++) {
+    uint32_t sum = 0;
+    uint16_t count = 0;
+    
+    // Window from i to i+window_size (forward-looking)
+    uint16_t end = (i + FIR_WINDOW_SIZE < size) ? (i + FIR_WINDOW_SIZE) : (size - 1);
+    
+    // Calculate average within the window
+    for (uint16_t j = i; j <= end; j++) {
+      sum += buffer[j];
+      count++;
+    }
+    
+    buffer[i] = (uint16_t)(sum / count);
+  }
+}
+
+/**
  * @brief Check if buffer contains valid data within threshold range.
  * @param buffer Pointer to data buffer.
  * @param size Size of the buffer.
@@ -64,7 +88,7 @@ static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_
  */
 static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size) {
   int half_window = window_size / 2;
-  int first_peak = 0, last_peak = 0;
+  int first_peak = -1, last_peak = 0;
   peak_count = 0;
 
   for (int i = half_window; i < signal_length - half_window; i++) {
@@ -77,7 +101,7 @@ static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size
     }
     if (is_peak && signal[i] >= signal[i - 1] && signal[i] >= signal[i + 1] && signal[i - 1] != signal[i]) {
       peak_count++;
-      if (first_peak == 0) {
+      if (first_peak == -1) {
         first_peak = i;
       }
       last_peak = i;
@@ -92,10 +116,15 @@ uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms) {
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
+    // Apply low-pass filter first
+    apply_lowpass_filter(buffer, MAX30102_BUFFER_SIZE);
+    
+    // Then downsample the filtered data
     downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
     find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
-     elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
-    bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
+    
+    elapsed_time_ms = elapsed_time_ms * peak_diff / RESAMPLE_BUFFER_SIZE;
+    bpm = (peak_count - 1) * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
     max30102_Buffer_Reset();
   }
   if (50 < bpm && bpm < 140) {
