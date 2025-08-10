@@ -17,7 +17,6 @@
 #include "neo6m.h"
 
 /* Defines -------------------------------------------------------------------*/
-#define LAT_LONG_SCALE 0.0000001
 
 /* Private variables ---------------------------------------------------------*/
 static SensorGPSStatus sensor_status = SENSOR_GPS_STARTING;
@@ -72,8 +71,8 @@ void sensor_gps_stop(void) {
 }
 
 void sensor_gps_read(GPSData *data) {
-  data->latitude = neo6m_GetLatitude() * LAT_LONG_SCALE;
-  data->longitude = neo6m_GetLongitude() * LAT_LONG_SCALE;
+  data->latitude = neo6m_GetLatitude();
+  data->longitude = neo6m_GetLongitude();
 
   sensor_status = SENSOR_GPS_IDLE;
 }

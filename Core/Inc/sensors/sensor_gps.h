@@ -25,6 +25,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
+#include <stdint.h>
 
 /* Structure declarations ----------------------------------------------------*/
 typedef enum {
@@ -35,8 +36,8 @@ typedef enum {
 } SensorGPSStatus;
 
 typedef struct {
-  float latitude;
-  float longitude;
+	int32_t latitude;
+	int32_t longitude;
 } GPSData;
 
 /* Function prototypes -------------------------------------------------------*/
