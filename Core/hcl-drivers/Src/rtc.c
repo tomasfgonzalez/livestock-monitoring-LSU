@@ -27,6 +27,8 @@
 RTC_HandleTypeDef hrtc;
 
 static bool initError = false;
+static uint32_t rtc_tick_offset = 0;
+static uint32_t rtc_last_subsecond = 0;
 
 /* HAL Functions ------------------------------------------------------------*/
 void RTC_MspInit(RTC_HandleTypeDef* hrtc) {
@@ -38,6 +40,13 @@ void RTC_MspInit(RTC_HandleTypeDef* hrtc) {
 void RTC_MspDeInit(RTC_HandleTypeDef* hrtc) {
   __HAL_RCC_RTC_DISABLE();
   HAL_NVIC_DisableIRQ(RTC_IRQn);
+}
+
+/* Private functions ---------------------------------------------------------*/
+void RTC_InitTick(void) {
+  // Initialize the tick offset to start counting from 0
+  rtc_tick_offset = 0;
+  rtc_last_subsecond = 0;
 }
 
 /* Public functions ---------------------------------------------------------*/
@@ -53,6 +62,7 @@ void RTC_Init(void) {
   if (HAL_RTC_Init(&hrtc) != HAL_OK) {
     initError = true;
   }
+  RTC_InitTick();
 }
 
 void RTC_setWakeUpTimer(uint32_t seconds) {
@@ -64,4 +74,21 @@ void RTC_setWakeUpTimer(uint32_t seconds) {
 
 void RTC_clearWakeUpTimer(void) {
   HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
+}
+
+uint32_t RTC_GetTick(void) {
+  RTC_TimeTypeDef sTime;
+  HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+  
+  // Convert time to milliseconds
+  // The subsecond field counts down from SynchPrediv to 0
+  // We need to invert it to get an ascending count
+  uint32_t subsecond_ms = ((hrtc.Init.SynchPrediv - sTime.SubSeconds) * 1000) / (hrtc.Init.SynchPrediv + 1);
+  
+  uint32_t total_ms = (sTime.Hours * 3600000UL) +
+                      (sTime.Minutes * 60000UL) +
+                      (sTime.Seconds * 1000UL) +
+                      subsecond_ms;
+  
+  return total_ms + rtc_tick_offset;
 }
