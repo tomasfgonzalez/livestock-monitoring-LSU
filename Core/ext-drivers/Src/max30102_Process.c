@@ -47,14 +47,14 @@ static uint8_t is_data_clear(uint16_t* buffer, uint16_t size) {
  * @param output Pointer to output buffer.
  * @param input_size Size of input buffer.
  * @param output_size Pointer to store output buffer size.
- */
+ *//*
 static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size) {
   uint16_t j = 0;
   for (uint16_t i = 0; i < input_size; i += DOWNSAMPLE_FACTOR) {
     output[j++] = input[i];
   }
 
-}
+}*/
 
 /**
  * @brief Detect peaks in the signal within a window.
@@ -92,10 +92,10 @@ uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms) {
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
-    downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
-    find_peaks(resample_buffer, RESAMPLE_BUFFER_SIZE, PEAK_WINDOW_SIZE);
+    //downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
+    find_peaks(buffer, MAX30102_BUFFER_SIZE, 40);
      elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
-    bpm = peak_count * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
+    bpm = (peak_count-1) * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
     max30102_Buffer_Reset();
   }
   if (50 < bpm && bpm < 140) {

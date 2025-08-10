@@ -18,7 +18,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "max30102_Buffer.h"
 #include "stm32l0xx_hal.h"
-
+#include "rtc.h"
 /* Private variables ---------------------------------------------------------*/
 static uint16_t buffer[MAX30102_BUFFER_SIZE];
 static uint16_t buffer_index = 0;
@@ -27,7 +27,7 @@ static uint8_t is_buffer_ready = 0;
 
 static uint32_t start_time = 0;
 static uint32_t end_time = 0;
-static uint32_t elapsed_time_ms = 0;
+volatile static uint32_t elapsed_time_ms = 0;
 
 /* Public functions ----------------------------------------------------------*/
 
@@ -64,8 +64,8 @@ void max30102_Buffer_Put(uint32_t red_sample) {
     return;  // Avoid overwriting data if buffer is full
   }
 
-  if (buffer_index == 0) {
-    start_time = HAL_GetTick();
+  if (buffer_index == MAX30102_UNUSED_DATA) {
+   start_time = RTC_GetTick();
   }
 
   // Ignore unwanted samples
@@ -84,7 +84,7 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   // If buffer is full, execute necessary actions
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
     is_buffer_full = 1;
-    end_time = HAL_GetTick();
+    end_time = RTC_GetTick();
     elapsed_time_ms = end_time - start_time;
   }
 }

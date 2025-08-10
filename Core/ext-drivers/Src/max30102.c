@@ -149,6 +149,17 @@ void max30102_read_fifo(max30102_t* obj) {
   }
 }
 
+void max30102_set_fifo_config(max30102_t *obj, max30102_smp_ave_t smp_ave, uint8_t roll_over_en, uint8_t fifo_a_full)
+{
+    uint8_t config = 0x00;
+    config |= smp_ave << MAX30102_FIFO_CONFIG_SMP_AVE;
+    config |= ((roll_over_en & 0x01) << MAX30102_FIFO_CONFIG_ROLL_OVER_EN);
+    config |= ((fifo_a_full & 0x0f) << MAX30102_FIFO_CONFIG_FIFO_A_FULL);
+    max30102_write(obj, MAX30102_FIFO_CONFIG, &config, 1);
+}
+
+
+
 /* Public functions ------------------------------------------------------------*/
 void max30102_Init(void) {
   max30102_Buffer_Init();
@@ -156,8 +167,8 @@ void max30102_Init(void) {
   max30102_init(&max30102, &hi2c1);
   max30102_clear_fifo(&max30102);
 
-  uint8_t fifo_config = (max30102_smp_ave_1 << MAX30102_FIFO_CONFIG_SMP_AVE);
-  max30102_write(&max30102, MAX30102_FIFO_CONFIG, &fifo_config, 1);
+  //max30102_write(&max30102, MAX30102_FIFO_CONFIG, 0xFF, 1);
+  max30102_set_fifo_config(&max30102, max30102_smp_ave_32, 1,0xF);
 
   uint8_t spo2_config
     = (max30102_adc_4096 << MAX30102_SPO2_ADC_RGE)  // ADC Resolution
@@ -165,11 +176,12 @@ void max30102_Init(void) {
     | (max30102_pw_16_bit << MAX30102_SPO2_LED_PW); // LED Pulse Width
   max30102_write(&max30102, MAX30102_SPO2_CONFIG, &spo2_config, 1);
 
-  uint8_t led_pa = 40;
-  max30102_write(&max30102, MAX30102_LED_IR_PA1, &led_pa, 1);
 
-  uint8_t mode_config = max30102_heart_rate;
-  max30102_write(&max30102, MAX30102_MODE_CONFIG, &mode_config, 1);
+  uint8_t pa =80;
+  max30102_write(&max30102, MAX30102_LED1_PA1, &pa, 1);
+
+  uint8_t mode_config = 0x02;
+   max30102_write(&max30102, MAX30102_MODE_CONFIG, &mode_config, 1);
 
   // Clear FIFO and enable interrupt
   max30102_clear_fifo(&max30102);
