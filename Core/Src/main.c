@@ -100,8 +100,6 @@ int main(void) {
     // System start
     FSM_Main_init();
 
-
-
     while (1) {
       FSM_Main_handle();
     }

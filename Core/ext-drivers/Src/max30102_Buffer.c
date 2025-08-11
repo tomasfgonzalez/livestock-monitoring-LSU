@@ -65,7 +65,6 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   }
 
   if (buffer_index == MAX30102_UNUSED_DATA) {
-
   }
 
   // Ignore unwanted samples
@@ -84,13 +83,14 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   // If buffer is full, execute necessary actions
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
     is_buffer_full = 1;
-    elapsed_time_ms = 4000;
+    elapsed_time_ms = 7600;
   }
 }
 
 uint8_t max30102_Buffer_IsReady(void) {
   if (buffer_index == MAX30102_BUFFER_SIZE + MAX30102_UNUSED_DATA) {
     is_buffer_ready = 1;
+    sensor_heartrate_stop();
   }
   return is_buffer_ready;
 }

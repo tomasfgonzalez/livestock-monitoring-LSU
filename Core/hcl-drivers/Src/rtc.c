@@ -76,19 +76,4 @@ void RTC_clearWakeUpTimer(void) {
   HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
 }
 
-uint32_t RTC_GetTick(void) {
-  RTC_TimeTypeDef sTime;
-  HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-  
-  // Convert time to milliseconds
-  // The subsecond field counts down from SynchPrediv to 0
-  // We need to invert it to get an ascending count
-  uint32_t subsecond_ms = ((hrtc.Init.SynchPrediv - sTime.SubSeconds) * 1000) / (hrtc.Init.SynchPrediv + 1);
-  
-  uint32_t total_ms = (sTime.Hours * 3600000UL) +
-                      (sTime.Minutes * 60000UL) +
-                      (sTime.Seconds * 1000UL) +
-                      subsecond_ms;
-  
-  return total_ms + rtc_tick_offset;
-}
+

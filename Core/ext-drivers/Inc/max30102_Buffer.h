@@ -27,7 +27,7 @@ extern "C" {
 #include <stdint.h>
 
 /* Defines -------------------------------------------------------------------*/
-#define MAX30102_BUFFER_SIZE 1000 // Buffer size if change go check bpm
+#define MAX30102_BUFFER_SIZE 2000 // Buffer size if change go check bpm
 #define MAX30102_UNUSED_DATA 128    // Skip first 128 samples
 
 /* Public functions ----------------------------------------------------------*/

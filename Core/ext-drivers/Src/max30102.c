@@ -177,7 +177,7 @@ void max30102_Init(void) {
   max30102_write(&max30102, MAX30102_SPO2_CONFIG, &spo2_config, 1);
 
 
-  uint8_t pa =80;
+  uint8_t pa =60;
   max30102_write(&max30102, MAX30102_LED1_PA1, &pa, 1);
 
   uint8_t mode_config = 0x02;

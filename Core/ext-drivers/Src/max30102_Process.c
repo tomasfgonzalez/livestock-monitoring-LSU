@@ -21,7 +21,6 @@
 #include <stdint.h>
 
 /* Private variables ---------------------------------------------------------*/
-uint16_t resample_buffer[RESAMPLE_BUFFER_SIZE];
 int peak_count = 0, peak_diff = 0;
 
 /* Private functions ----------------------------------------------------------*/
@@ -32,29 +31,38 @@ int peak_count = 0, peak_diff = 0;
  * @param size Size of the buffer.
  * @return 1 if data is valid, 0 otherwise.
  */
-static uint8_t is_data_clear(uint16_t* buffer, uint16_t size) {
+static uint8_t is_data_clear(uint16_t* buffer, uint16_t size,uint16_t flatline) {
+	uint16_t low_val, high_val;
+	low_val=0;
+	high_val=0;
   for (int i = 0; i < size; i++) {
     if (buffer[i] < THRESHOLD_LOWER || buffer[i] > THRESHOLD_UPPER) {
       return 0;
     }
+    if(buffer[i]<low_val){
+    	low_val=buffer[i];
+    }
+    if(buffer[i]>high_val){
+    	high_val=buffer[i];
+    }
   }
+
+  if(high_val-low_val<flatline){
+	  return 0;
+  }
+
   return 1;
 }
 
-/**
- * @brief Downsample input buffer by a given factor.
- * @param input Pointer to input buffer.
- * @param output Pointer to output buffer.
- * @param input_size Size of input buffer.
- * @param output_size Pointer to store output buffer size.
- *//*
+
 static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_size) {
   uint16_t j = 0;
-  for (uint16_t i = 0; i < input_size; i += DOWNSAMPLE_FACTOR) {
+  for (uint16_t i = 0; i < input_size; i += 10) {
     output[j++] = input[i];
   }
+}
 
-}*/
+
 
 /**
  * @brief Detect peaks in the signal within a window.
@@ -62,25 +70,29 @@ static void downsample_buffer(uint16_t* input, uint16_t* output, uint16_t input_
  * @param signal_length Length of signal buffer.
  * @param window_size Size of window to detect peaks.
  */
-static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size) {
+
+
+
+static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size,uint8_t debounce) {
   int half_window = window_size / 2;
   int first_peak = 0, last_peak = 0;
   peak_count = 0;
 
   for (int i = half_window; i < signal_length - half_window; i++) {
-    int is_peak = 1;
+    uint8_t is_peak = 1;
     for (int j = i - half_window; j <= i + half_window; j++) {
       if (signal[i] < signal[j]) {
         is_peak = 0;
         break;
       }
     }
-    if (is_peak && signal[i] >= signal[i - 1] && signal[i] >= signal[i + 1] && signal[i - 1] != signal[i]) {
-      peak_count++;
+    if (is_peak){
+    	peak_count++;
       if (first_peak == 0) {
         first_peak = i;
       }
       last_peak = i;
+      i=i+debounce;
     }
   }
   peak_diff = last_peak - first_peak;
@@ -91,11 +103,11 @@ uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms) {
   if (!max30102_Buffer_IsReady()) return 0;
 
   uint16_t bpm = 0;
-  if (is_data_clear(buffer, MAX30102_BUFFER_SIZE)) {
-    //downsample_buffer(buffer, resample_buffer, MAX30102_BUFFER_SIZE);
-    find_peaks(buffer, MAX30102_BUFFER_SIZE, 40);
-     elapsed_time_ms = elapsed_time_ms * peak_diff / 100;
-    bpm = (peak_count-1) * 60 * 1000 / elapsed_time_ms;       // Revisar este calculo si cambio el tamaño del buffer
+  if (is_data_clear(buffer, MAX30102_BUFFER_SIZE,THRESHOLD_FLATLINE)) {
+    downsample_buffer(buffer, buffer, MAX30102_BUFFER_SIZE);
+    find_peaks(buffer, 200, PEAK_WINDOW_SIZE,DEBOUNCE_SIZE);
+     elapsed_time_ms = elapsed_time_ms * peak_diff / 200;
+    bpm = (peak_count-1) * 60 * 1000 / elapsed_time_ms;
     max30102_Buffer_Reset();
   }
   if (50 < bpm && bpm < 140) {
