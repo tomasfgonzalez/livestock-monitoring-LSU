@@ -29,6 +29,8 @@ extern "C" {
 
 /* Function prototypes -------------------------------------------------------*/
 
+
+void mode_STOP(void);
 /**
  * @brief Set the time configuration
  * 

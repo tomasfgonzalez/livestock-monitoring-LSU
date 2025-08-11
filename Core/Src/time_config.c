@@ -29,8 +29,12 @@ extern RTC_HandleTypeDef hrtc;
 void startNewTimeWindow() {
   if (shouldSenseNext) {
     readyToSense = true;
+
+
     RTC_clearWakeUpTimer();
     RTC_setWakeUpTimer(timeToNextTransmission_ms / 1000);
+
+
   } else {
     readyToTransmit = true;
     RTC_clearWakeUpTimer();
@@ -39,10 +43,25 @@ void startNewTimeWindow() {
   shouldSenseNext = !shouldSenseNext;
 }
 
+void mode_STOP(void){
+	HAL_SuspendTick();
+	__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+	 HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+}
+
+void mode_Run(void){
+	SystemClock_Config();
+	HAL_ResumeTick();
+}
+
+
+
 void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc) {
   // Override the RTC interrupt handler to handle the time events
   if (hrtc->Instance == RTC) {
+	mode_Run();
     startNewTimeWindow();
+
   }
 }
 

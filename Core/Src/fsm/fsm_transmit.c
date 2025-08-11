@@ -111,6 +111,9 @@ void FSM_Transmit_init(void) {
   sensingTimer = 0;
   transmitTimer = 0;
   ackTimer = 0;
+
+
+  mode_STOP();
 }
 
 void FSM_Transmit_handle(bool *mainChannelFail) {
@@ -145,6 +148,7 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
           createPayload();
           stopSensing();
           currentState = TRANSMIT_IDLE;
+          mode_STOP();
         }
         break;
 
@@ -164,6 +168,10 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
         DMA_Stop();
         GPIO_Sensors_PowerOff();
         currentState = TRANSMIT_IDLE;
+        sensingTimer = 0;
+         transmitTimer = 0;
+         ackTimer = 0;
+        mode_STOP();
       } else if (ackTimer <= 0) {
         //restartTransmission();
       } else if (transmitTimer <= 0) {

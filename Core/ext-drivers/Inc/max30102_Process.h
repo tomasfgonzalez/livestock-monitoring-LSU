@@ -32,6 +32,7 @@ extern "C" {
 
 #define THRESHOLD_LOWER 18000      // Lower threshold for valid data
 #define THRESHOLD_UPPER 65000      // Upper threshold for valid data
+#define RESAMPLE_SIZE 200
 #define THRESHOLD_FLATLINE 100
 #define DEBOUNCE_SIZE 5
 #define PEAK_WINDOW_SIZE 10        // Window used to detect peaks
