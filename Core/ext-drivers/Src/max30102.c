@@ -173,7 +173,7 @@ void max30102_Init(void) {
   uint8_t spo2_config
     = (max30102_adc_4096 << MAX30102_SPO2_ADC_RGE)  // ADC Resolution
     | (max30102_sr_400 << MAX30102_SPO2_SR)         // Sampling Rate
-    | (max30102_pw_16_bit << MAX30102_SPO2_LED_PW); // LED Pulse Width
+    | (max30102_pw_14_bit << MAX30102_SPO2_LED_PW); // LED Pulse Width
   max30102_write(&max30102, MAX30102_SPO2_CONFIG, &spo2_config, 1);
 
 
