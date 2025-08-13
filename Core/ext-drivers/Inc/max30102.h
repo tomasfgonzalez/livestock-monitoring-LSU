@@ -110,10 +110,10 @@ typedef enum max30102_sr_t {
 } max30102_sr_t;
 
 typedef enum max30102_led_pw_t {
+  max30102_pw_13_bit,
+  max30102_pw_14_bit,
   max30102_pw_15_bit,
-  max30102_pw_16_bit,
-  max30102_pw_17_bit,
-  max30102_pw_18_bit
+  max30102_pw_16_bit
 } max30102_led_pw_t;
 
 typedef enum max30102_adc_t {
