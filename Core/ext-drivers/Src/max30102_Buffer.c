@@ -83,7 +83,7 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   // If buffer is full, execute necessary actions
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
     is_buffer_full = 1;
-    elapsed_time_ms = 7700;
+    elapsed_time_ms = 7600;
   }
 }
 

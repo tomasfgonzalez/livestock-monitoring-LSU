@@ -24,7 +24,7 @@
 #include "gpio.h"
 
 #define SENSING_INIT_WAIT_IN_SECONDS 5
-#define SENSING_TIMEOUT_IN_SECONDS 20
+#define SENSING_TIMEOUT_IN_SECONDS 200
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
 #define ACK_TIMEOUT_IN_SECONDS 5
 
@@ -143,8 +143,8 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
         bool gpsReady = sensor_gps_is_measurement_ready();
         bool heartrateReady = sensor_heartrate_is_measurement_ready();
         bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
-
-        if (sensingTimer <= 0 || allSensorsReady) {
+//sensingTimer <= 0 ||
+        if (allSensorsReady) {
           createPayload();
           stopSensing();
           currentState = TRANSMIT_IDLE;

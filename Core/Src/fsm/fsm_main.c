@@ -53,7 +53,9 @@ static bool isBackupTransmissionComplete(void) {
 /* Public functions ----------------------------------------------------------*/
 void FSM_Main_init(void) {
   currentState = INIT;
+
   sensor_all_init();
+
 
   sensor_heartrate_stop();
   initTimer = INIT_TIMEOUT;

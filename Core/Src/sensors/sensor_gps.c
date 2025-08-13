@@ -25,7 +25,7 @@ static SensorGPSStatus sensor_status = SENSOR_GPS_STARTING;
 static bool processAndValidate(void) {
   neo6m_ProcessData(USART_getData(), USART_getDataLength());
   uint8_t isFixed = neo6m_GetFixStatus();
-  return isFixed >= 3;
+  return isFixed >= 2;
 }
 
 /* Public status check functions ---------------------------------------------*/
