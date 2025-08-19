@@ -111,7 +111,7 @@ void FSM_Link_init(void) {
   LSU_setAddress(getRandomUint8());
   LSU_setChannelAux();
 
-  sensor_heartrate_stop();
+  //sensor_heartrate_stop();
 
   // Start in listening state to check if channel is clear
   startListeningTimeoutTimer();
