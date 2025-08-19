@@ -24,7 +24,7 @@
 #include "gpio.h"
 
 #define SENSING_INIT_WAIT_IN_SECONDS 5
-#define SENSING_TIMEOUT_IN_SECONDS 200
+#define SENSING_TIMEOUT_IN_SECONDS 10
 #define TRANSMIT_TIMEOUT_IN_SECONDS 10
 #define ACK_TIMEOUT_IN_SECONDS 5
 
@@ -55,19 +55,14 @@ static void stopSensing(void) {
 }
 
 static void createPayload(void) {  
-  static uint8_t temperature[2];
-  static GPSData gps;
-  static uint8_t heartrate;
 
-  sensor_temperature_read(temperature);
-  sensor_gps_read(&gps);
-  sensor_heartrate_read(&heartrate);
 
-  payload.latitude = gps.latitude;
-  payload.longitude = gps.longitude;
-  payload.temperature_livestock = temperature[0];
-  payload.temperature_environment = temperature[1];
-  payload.heartrate = heartrate;
+
+  payload.latitude = 10;
+  payload.longitude = 10;
+  payload.temperature_livestock = 10;
+  payload.temperature_environment = 10;
+  payload.heartrate = 10;
 }
 
 static void sendPayload(void) {
@@ -124,7 +119,7 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     /* ------------------------- TRANSMIT_IDLE ------------------------- */
     case TRANSMIT_IDLE:
       if (isTimeToSense) {
-        startSensing();
+        //startSensing();
         currentState = TRANSMIT_SENSE;
       } else if (isTimeToTransmit) {
         startTransmission();
@@ -138,13 +133,8 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
         if (sensingTimer > SENSING_TIMEOUT_IN_SECONDS - SENSING_INIT_WAIT_IN_SECONDS) {
             break;
         }
-        
-        bool temperatureReady = sensor_temperature_is_measurement_ready();
-        bool gpsReady = sensor_gps_is_measurement_ready();
-        bool heartrateReady = sensor_heartrate_is_measurement_ready();
-        bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
 //sensingTimer <= 0 ||
-        if (allSensorsReady) {
+        if (sensingTimer==0) {
           createPayload();
           stopSensing();
           currentState = TRANSMIT_IDLE;
