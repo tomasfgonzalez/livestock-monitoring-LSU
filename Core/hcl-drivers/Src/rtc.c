@@ -66,8 +66,8 @@ void RTC_Init(void) {
 }
 
 void RTC_setWakeUpTimer(uint32_t seconds) {
-  uint32_t necessaryCount = seconds * RTC_WAKEUP_PRESCALER_DIVISOR;
-  if (HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, necessaryCount, RTC_WAKEUPCLOCK_RTCCLK_DIV16) != HAL_OK) {
+  uint32_t necessaryCount = seconds; // Clock frequency is 1 Hz, so the necessary count is the number of seconds
+  if (HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, necessaryCount, RTC_WAKEUPCLOCK_CK_SPRE_16BITS) != HAL_OK) {
     initError = true;
   }
 }
