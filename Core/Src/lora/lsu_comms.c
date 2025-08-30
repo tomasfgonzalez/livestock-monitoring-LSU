@@ -8,7 +8,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "LSU_comms.h"
+#include "lsu_comms.h"
 #include "rylr998.h"
 #include "stm32l0xx_hal.h"
 
