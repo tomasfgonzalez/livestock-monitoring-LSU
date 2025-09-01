@@ -11,6 +11,9 @@
 #include "LSU_comms.h"
 #include "rylr998.h"
 #include "stm32l0xx_hal.h"
+#include "gpio.h"
+#include "dma.h"
+#include "lpuart.h"
 
 #include <math.h>
 #include <string.h>
@@ -71,14 +74,14 @@ void LSU_sendSyncRequest(uint16_t destination){
 
   rylr998_sendCommand(txBuffer);
   HAL_Delay(SEND_SYNC_DELAY);
-  if(getlast_cmd() !=RYLR_OK){
+  if(getlast_cmd() != RYLR_OK){
   		Error_Handler();
   	}
 }
 
 bool LSU_checkChannelBusy(void) {
   if (rylr998_GetInterruptFlag()) {
-	  if(getlast_cmd()==RYLR_RCV)    return true;
+	  if (getlast_cmd() == RYLR_RCV)    return true;
   }
   return false;
 }
@@ -88,4 +91,18 @@ RYLR_RX_data_t* LSU_getData(void){
     return rylr998_getCommand(RYLR_RCV);
   }*/
   return rylr998_readCurrentPacket();
+}
+
+/* Peripheral management ---------------------------------------------------- */
+void LSU_initPeripherals(void) {
+  GPIO_Sensors_PowerOn();
+  DMA_Init();
+  LPUART_Init();
+  HAL_Delay(50);
+}
+
+void LSU_deinitPeripherals(void) {
+  LPUART_DeInit();
+  DMA_Stop();
+  GPIO_Sensors_PowerOff();
 }

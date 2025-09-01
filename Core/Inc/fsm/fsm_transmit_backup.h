@@ -29,12 +29,18 @@ extern "C" {
 /* Public type definitions ----------------------------------------------- */
 typedef enum {
   TRANSMIT_BACKUP_IDLE,
+  TRANSMIT_BACKUP_WAITING_RESPONSE,
+  TRANSMIT_BACKUP_COMPLETE,
 } FSM_TransmitBackup_State;
 
 /* FSM interface ------------------------------------------------------------ */
 void FSM_TransmitBackup_init(void);
 
 void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete);
+
+void FSM_TransmitBackup_tick_1s(void);
+
+
 
 #ifdef __cplusplus
 }

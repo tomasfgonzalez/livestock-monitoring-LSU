@@ -40,6 +40,9 @@ void LSU_sendSyncRequest(uint16_t destination);
 bool LSU_checkChannelBusy(void);
 RYLR_RX_data_t* LSU_getData(void);
 
+void LSU_initPeripherals(void);
+void LSU_deinitPeripherals(void);
+
 #ifdef __cplusplus
 }
 #endif
