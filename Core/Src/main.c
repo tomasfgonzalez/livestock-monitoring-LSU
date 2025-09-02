@@ -44,43 +44,8 @@ uint32_t mockTimer = 5;
 
 /* Test functions - only compiled in debug builds */
 #ifdef DEBUG
-// void run_rtc_test(void) {
-//   HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_SET);
-//   HAL_Delay(1000);
-//   HAL_GPIO_WritePin(BOARD_LED_PORT, BOARD_LED_PIN, GPIO_PIN_RESET);
 
-//   HAL_SuspendTick();
-//   RTC_setWakeUpTimer(10);
-
-//   /* Enter STOP 2 mode */
-//   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-//   HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
-
-//   RTC_clearWakeUpTimer();
-//   SystemClock_Config();
-//   HAL_ResumeTick();
-// }
-
-// void run_tests(void) {
-  // adc_test();
-  // temperature_test();
-  
-	// i2c_test();
-	// max30102_test();
-	// heartrate_test();
-
-  // usart_test();
-  // neo6m_test();
-  // neo6m_fix_test();
-  // gps_test();
-
-// 	run_rtc_test();
-
-//   LSU_setAddress(0x03);
-//   LSU_setChannelMain();
-// }
 #endif
-#include "rtc.h"
 
 int main(void) {
     HAL_Init();
@@ -92,11 +57,7 @@ int main(void) {
     TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim2);
 
-    //RTC_Init();
-    //volatile uint32_t start = RTC_GetTick_ms();
-    //HAL_Delay(100000);
-    //volatile uint32_t stop = RTC_GetTick_ms();
-    //volatile uint32_t elapsed_time = stop-start;
+
     /* Test code - only executed in debug builds */
 #ifdef DEBUG
     //  run_tests();

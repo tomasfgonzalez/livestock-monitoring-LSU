@@ -36,14 +36,20 @@ void sensor_temperature_init_adc(void) {
  * @param target The target temperature value.
  */
 void sensor_temperature_parse(uint16_t *raw, uint8_t *target) {
-	uint16_t value = *raw;
-  float voltage = (value * 3.3f) / 4095.0f;
-  float temp = (voltage - 0.5f) * 100.0f;
-  
-  // Round and clamp temperature to valid range
-  if (temp < 0.0f) temp = 0.0f;
-  if (temp > 100.0f) temp = 100.0f;
-  *target = (uint8_t) temp;
+   volatile uint32_t value = *raw - 135;
+
+    // Convert ADC to millivolts (integer math)
+   volatile uint32_t voltage_mV = (value * 3300U) / 4095U;
+
+    // Convert millivolts to temperature in °C
+    // Formula: (V - 500 mV) / 10 mV/°C
+    int32_t temp = ((int32_t)voltage_mV - 500) / 10;
+
+    // Clamp to [0, 100]
+    if (temp < 0) temp = 0;
+    if (temp > 100) temp = 100;
+
+    *target = (uint8_t)temp;
 }
 
 /**
