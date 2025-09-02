@@ -101,14 +101,14 @@ static void find_peaks(uint16_t* signal, uint16_t signal_length, int window_size
 
 
 /* Public functions ----------------------------------------------------------*/
-uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time_ms) {
+uint16_t max30102_Process_Run(uint16_t* buffer, uint16_t elapsed_time) {
   if (!max30102_Buffer_IsReady()) return 0;
 
   uint16_t bpm = 0;
   if (is_data_clear(buffer, MAX30102_BUFFER_SIZE,THRESHOLD_FLATLINE)) {
     downsample_buffer(buffer, buffer, MAX30102_BUFFER_SIZE);
     find_peaks(buffer, RESAMPLE_SIZE, PEAK_WINDOW_SIZE,DEBOUNCE_SIZE);
-     elapsed_time_ms = elapsed_time_ms * peak_diff / RESAMPLE_SIZE;
+    volatile elapsed_time_ms = elapsed_time * peak_diff / RESAMPLE_SIZE;
     bpm = (peak_count-1) * 60 * 1000 / elapsed_time_ms;
     max30102_Buffer_Reset();
   }

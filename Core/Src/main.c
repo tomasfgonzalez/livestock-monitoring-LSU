@@ -80,6 +80,7 @@ uint32_t mockTimer = 5;
 //   LSU_setChannelMain();
 // }
 #endif
+#include "rtc.h"
 
 int main(void) {
     HAL_Init();
@@ -91,6 +92,11 @@ int main(void) {
     TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim2);
 
+    //RTC_Init();
+    //volatile uint32_t start = RTC_GetTick_ms();
+    //HAL_Delay(100000);
+    //volatile uint32_t stop = RTC_GetTick_ms();
+    //volatile uint32_t elapsed_time = stop-start;
     /* Test code - only executed in debug builds */
 #ifdef DEBUG
     //  run_tests();

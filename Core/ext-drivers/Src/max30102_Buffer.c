@@ -54,6 +54,7 @@ void max30102_Buffer_Reset(void) {
   is_buffer_ready = 0;
 }
 
+volatile uint32_t start,stop;
 
 /**
  * @brief Store red LED sample in buffer and process data when full.
@@ -65,6 +66,7 @@ void max30102_Buffer_Put(uint32_t red_sample) {
   }
 
   if (buffer_index == MAX30102_UNUSED_DATA) {
+	    start = RTC_GetTick_ms();
   }
 
   // Ignore unwanted samples
@@ -82,8 +84,13 @@ void max30102_Buffer_Put(uint32_t red_sample) {
 
   // If buffer is full, execute necessary actions
   if (buffer_pos == MAX30102_BUFFER_SIZE - 1) {
+	stop = RTC_GetTick_ms();
     is_buffer_full = 1;
-    elapsed_time_ms = 7600;
+    if (stop > start){
+    	elapsed_time_ms = stop-start;
+    }else {
+    	elapsed_time_ms = (UINT32_MAX - start) + stop + 1;
+    }
   }
 }
 

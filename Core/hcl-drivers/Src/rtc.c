@@ -77,3 +77,22 @@ void RTC_clearWakeUpTimer(void) {
 }
 
 
+
+uint32_t RTC_GetTick_ms(void) {
+    RTC_TimeTypeDef sTime = {0};
+    RTC_DateTypeDef sDate = {0};
+
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+
+    // Seconds since midnight
+    uint32_t seconds = sTime.Hours * 3600UL + sTime.Minutes * 60UL + sTime.Seconds;
+
+    // Sub-second value: counts down from 255 to 0
+    uint32_t subseconds = sTime.SubSeconds;
+    uint32_t ms = ((255 - subseconds) * 1000) / 256; // Approx 0..999 ms
+
+    return seconds * 1000UL + ms + (rtc_tick_offset * 1000UL);
+}
+
+

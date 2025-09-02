@@ -56,12 +56,14 @@ void RTC_setWakeUpTimer(uint32_t seconds);
   */
 void RTC_clearWakeUpTimer(void);
 
+
+
 /**
   * @brief Get current RTC tick in milliseconds
   * @param None
   * @retval Current tick count in milliseconds
   */
-uint32_t RTC_GetTick(void);
+uint32_t RTC_GetTick_ms(void);
 
 #ifdef __cplusplus
 }
