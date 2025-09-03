@@ -31,7 +31,7 @@
 #include "stdio.h"
 #include <stdint.h>
 
-/* DefineS --------------------------------------------------------------------*/
+/* Defines --------------------------------------------------------------------*/
 #define RESPONSE_TIMEOUT_TIMER 15
 #define CSMA_TIME_MINIMUM 10
 #define CSMA_TIME_WINDOW 10
@@ -100,7 +100,9 @@ void startListeningTimeoutTimer(void) {
   listeningTimeoutTimer = LISTENING_TIMEOUT_TIMER;
 }
 
+static int calls_to_fetch = 0;
 void fetchConfig(void) {
+  calls_to_fetch++;
   LSU_sendSyncRequest(0);
   startResponseTimeoutTimer();
 }
