@@ -18,10 +18,9 @@
 #include "sensor_all.h"
 #include "lsu_comms.h"
 #include "time_config.h"
+#include "lora/lsuPayload.h"
 
-#include "lpuart.h"
-#include "dma.h"
-#include "gpio.h"
+
 
 #define SENSING_INIT_WAIT_IN_SECONDS 5
 #define SENSING_TIMEOUT_IN_SECONDS 10
@@ -36,8 +35,6 @@ static int transmitTimer = 0;
 static int ackTimer = 0;
 
 static bool ackReceived = false;
-
-static LSU_Payload payload;
 
 /* Private functions ----------------------------------------------------------*/
 static void startSensingTimer(void) {
@@ -58,6 +55,7 @@ static void createPayload(void) {
   static uint8_t temperature[2];
   static GPSData gps;
   static uint8_t heartrate;
+  static LSU_Payload payload;
 
   sensor_temperature_read(temperature);
   sensor_gps_read(&gps);
@@ -68,10 +66,16 @@ static void createPayload(void) {
   payload.temperature_livestock = temperature[0];
   payload.temperature_environment = temperature[1];
   payload.heartrate = heartrate;
+  
+  // Store in LSU payload for backup FSM to use
+  lsuPayload_set(&payload);
 }
 
 static void sendPayload(void) {
-  LSU_sendParameters(0, &payload);
+  const LSU_Payload* payload = lsuPayload_get();
+  if (payload != NULL) {
+    LSU_sendParameters(0, payload);
+  }
 }
 
 static void startTransmitTimer(void) {
@@ -84,10 +88,7 @@ static void startAckTimer(void) {
 
 static void startTransmission(void) {
   ackReceived = false;
-  GPIO_Sensors_PowerOn();
-  DMA_Init();
-  LPUART_Init();
-  HAL_Delay(50);
+  LSU_initPeripherals();
   LSU_setChannelMain();
   HAL_Delay(50);
 
@@ -164,9 +165,7 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
       if (ackReceived) {
     	 HAL_Delay(50);
         ackReceived = false;
-        LPUART_DeInit();
-        DMA_Stop();
-        GPIO_Sensors_PowerOff();
+        LSU_deinitPeripherals();
         currentState = TRANSMIT_IDLE;
         sensingTimer = 0;
          transmitTimer = 0;
