@@ -35,11 +35,13 @@
 #define RESPONSE_TIMEOUT_TIMER 15
 #define CSMA_TIME_MINIMUM 10
 #define CSMA_TIME_WINDOW 10
+#define LISTENING_TIMEOUT_TIMER 2
 
 /* Private variables ----------------------------------------------------------*/
-static FSM_Link_State current_state = LINK_IDLE;
+static FSM_Link_State current_state = LINK_LISTENING;
 static uint32_t CSMARandomTimeoutTimer = 0;
 static uint32_t responseTimeoutTimer = 0;
+static uint32_t listeningTimeoutTimer = 0;
 
 /* Private functions ----------------------------------------------------------*/
 bool processPacket(char* data) {
@@ -94,6 +96,10 @@ void startResponseTimeoutTimer(void) {
   responseTimeoutTimer = RESPONSE_TIMEOUT_TIMER;
 }
 
+void startListeningTimeoutTimer(void) {
+  listeningTimeoutTimer = LISTENING_TIMEOUT_TIMER;
+}
+
 void fetchConfig(void) {
   LSU_sendSyncRequest(0);
   startResponseTimeoutTimer();
@@ -107,19 +113,35 @@ void FSM_Link_init(void) {
 
   sensor_heartrate_stop();
 
-  // Start immediately by sending sync request
-  fetchConfig();
-  current_state = LINK_WAITING_RESPONSE;
+  // Start in listening state to check if channel is clear
+  startListeningTimeoutTimer();
+  clear_last_cmd();
+  current_state = LINK_LISTENING;
 }
 
 void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
   switch (current_state) {
+    /* ------------------------- LINK_LISTENING ------------------------- */
+    case LINK_LISTENING:
+      // Check if we received a message during listening period
+      if (LSU_checkChannelBusy()) {
+        // Channel is busy, start CSMA backoff
+        startCSMATimer();
+        current_state = LINK_IDLE;
+      } else if (listeningTimeoutTimer == 0) {
+        // Channel is clear, try to fetch config
+        fetchConfig();
+        current_state = LINK_WAITING_RESPONSE;
+      }
+      break;
+
     /* ------------------------- LINK_IDLE ------------------------- */
     case LINK_IDLE:
       if (CSMARandomTimeoutTimer == 0) {
-        // CSMA backoff completed, try again
-        fetchConfig();
-        current_state = LINK_WAITING_RESPONSE;
+        // CSMA backoff completed, go to listening state
+        startListeningTimeoutTimer();
+        clear_last_cmd();
+        current_state = LINK_LISTENING;
       }
       break;
 
@@ -158,5 +180,8 @@ void FSM_Link_tick_1s(void) {
   }
   if (responseTimeoutTimer > 0) {
     responseTimeoutTimer--;
+  }
+  if (listeningTimeoutTimer > 0) {
+    listeningTimeoutTimer--;
   }
 }

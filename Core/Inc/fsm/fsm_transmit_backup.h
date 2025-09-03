@@ -28,6 +28,7 @@ extern "C" {
 
 /* Public type definitions ----------------------------------------------- */
 typedef enum {
+  TRANSMIT_BACKUP_LISTENING,
   TRANSMIT_BACKUP_IDLE,
   TRANSMIT_BACKUP_WAITING_RESPONSE,
   TRANSMIT_BACKUP_COMPLETE,
