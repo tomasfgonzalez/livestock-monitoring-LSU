@@ -51,14 +51,14 @@ static void stopSensing(void) {
   sensingTimer = 0;
 }
 
-static void createPayload(void) {  
+static void createPayload(void) {
   static LSU_Payload payload;
   payload.latitude = 10;
   payload.longitude = 10;
   payload.temperature_livestock = 10;
   payload.temperature_environment = 10;
   payload.heartrate = 10;
-
+  
   // Store in LSU payload for backup FSM to use
   lsuPayload_set(&payload);
 }
