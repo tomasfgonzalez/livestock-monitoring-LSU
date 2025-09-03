@@ -28,6 +28,7 @@ extern "C" {
 
 /* FSM states --------------------------------------------------------------- */
 typedef enum {
+  LINK_LISTENING,
   LINK_IDLE,
   LINK_WAITING_RESPONSE,
   LINK_ESTABLISHED,

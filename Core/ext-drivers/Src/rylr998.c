@@ -342,6 +342,10 @@ RYLR_RX_command_t getlast_cmd(void){
 	return last_cmd;
 }
 
+void clear_last_cmd(void) {
+	last_cmd = RYLR_NOT_FOUND;
+}
+
 void reset_rx_pointer(void){
 	start_indx=0;
 }

@@ -69,17 +69,10 @@ void LSU_sendSyncRequest(uint16_t destination){
   sprintf(txBuffer, AT"SEND=%u,%u,SYNC"END, destination, data_length);
 
   rylr998_sendCommand(txBuffer);
-  HAL_Delay(SEND_SYNC_DELAY);
-  if(getlast_cmd() != RYLR_OK){
-  		Error_Handler();
-  	}
 }
 
 bool LSU_checkChannelBusy(void) {
-  if (rylr998_GetInterruptFlag()) {
-	  if (getlast_cmd() == RYLR_RCV)    return true;
-  }
-  return false;
+  return getlast_cmd() == RYLR_RCV;
 }
 
 RYLR_RX_data_t* LSU_getData(void){

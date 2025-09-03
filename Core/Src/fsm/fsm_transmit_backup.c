@@ -18,11 +18,13 @@
 /* Define -----------------------------------------------------------------*/
 #define RESPONSE_TIMEOUT_IN_SECONDS 2
 #define CSMA_BACKOFF_MAX 10
+#define LISTENING_TIMEOUT_IN_SECONDS 2
 
 /* Private variables ------------------------------------------------------*/
-static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_IDLE;
+static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_LISTENING;
 static uint32_t responseTimeoutTimer = 0;
 static uint32_t CSMARandomTimeoutTimer = 0;
+static uint32_t listeningTimeoutTimer = 0;
 
 static bool ackReceived = false;
 
@@ -34,6 +36,10 @@ static void startResponseTimeoutTimer(void) {
 static void startCSMATimer(void) {
   uint8_t random_backoff = (HAL_GetTick() % CSMA_BACKOFF_MAX) + 1;
   CSMARandomTimeoutTimer = random_backoff;
+}
+
+static void startListeningTimeoutTimer(void) {
+  listeningTimeoutTimer = LISTENING_TIMEOUT_IN_SECONDS;
 }
 
 static void sendPayload(void) {
@@ -64,21 +70,35 @@ void FSM_TransmitBackup_init(void) {
   LSU_setChannelAux();
   HAL_Delay(50);
 
-  postData();
-  startResponseTimeoutTimer();
+  // Start in listening state to check if channel is clear
+  startListeningTimeoutTimer();
   CSMARandomTimeoutTimer = 0;
   ackReceived = false;
-  current_state = TRANSMIT_BACKUP_WAITING_RESPONSE;
+  current_state = TRANSMIT_BACKUP_LISTENING;
 }
 
 void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete) {
   switch (current_state) {
+    /* ------------------------- TRANSMIT_BACKUP_LISTENING ------------------------- */
+    case TRANSMIT_BACKUP_LISTENING:
+      // Check if we received a message during listening period
+      if (LSU_checkChannelBusy()) {
+        // Channel is busy, start CSMA backoff
+        startCSMATimer();
+        current_state = TRANSMIT_BACKUP_IDLE;
+      } else if (listeningTimeoutTimer == 0) {
+        // Channel is clear, try to send data
+        postData();
+        current_state = TRANSMIT_BACKUP_WAITING_RESPONSE;
+      }
+      break;
+
     /* ------------------------- TRANSMIT_BACKUP_IDLE ------------------------- */
     case TRANSMIT_BACKUP_IDLE:
       if (CSMARandomTimeoutTimer == 0) {
-        // CSMA backoff completed, try again
-        postData();
-        current_state = TRANSMIT_BACKUP_WAITING_RESPONSE;
+        // CSMA backoff completed, go to listening state
+        startListeningTimeoutTimer();
+        current_state = TRANSMIT_BACKUP_LISTENING;
       }
       break;
 
@@ -117,5 +137,8 @@ void FSM_TransmitBackup_tick_1s(void) {
   }
   if (CSMARandomTimeoutTimer > 0) {
     CSMARandomTimeoutTimer--;
+  }
+  if (listeningTimeoutTimer > 0) {
+    listeningTimeoutTimer--;
   }
 }
