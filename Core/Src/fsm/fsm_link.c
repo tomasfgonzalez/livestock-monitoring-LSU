@@ -22,18 +22,26 @@
 #include "gpio.h"
 #include "time_config.h"
 #include "lsu_comms.h"
+#include "usart.h"
 #include "dma.h"
 #include "lpuart.h"
+#include "rylr998.h"
 
 #include "string.h"
 #include "stdio.h"
+#include <stdint.h>
 
-#define CHANNEL_FREE_TIMER 1
+/* DefineS --------------------------------------------------------------------*/
+#define RESPONSE_TIMEOUT_TIMER 15
+#define CSMA_TIME_MINIMUM 10
+#define CSMA_TIME_WINDOW 10
+#define LISTENING_TIMEOUT_TIMER 2
 
 /* Private variables ----------------------------------------------------------*/
-static FSM_Link_State current_state = LINK_IDLE;
-static uint32_t channelFreeTimer = 0;
+static FSM_Link_State current_state = LINK_LISTENING;
 static uint32_t CSMARandomTimeoutTimer = 0;
+static uint32_t responseTimeoutTimer = 0;
+static uint32_t listeningTimeoutTimer = 0;
 
 /* Private functions ----------------------------------------------------------*/
 bool processPacket(char* data) {
@@ -79,29 +87,35 @@ static uint8_t getRandomUint8(void) {
     return (uint8_t)(random_value & 0xFF);
 }
 
-void startChannelFreeTimer(void) {
-  channelFreeTimer = CHANNEL_FREE_TIMER;
+void startCSMATimer(void) {
+  uint8_t random_backoff = (getRandomUint8() % CSMA_TIME_MINIMUM) + CSMA_TIME_WINDOW;
+  CSMARandomTimeoutTimer = random_backoff;
 }
 
-void startCSMATimer(void) {
-  uint8_t random_backoff = (getRandomUint8() % 10) + 1;
-  CSMARandomTimeoutTimer = random_backoff;
+void startResponseTimeoutTimer(void) {
+  responseTimeoutTimer = RESPONSE_TIMEOUT_TIMER;
+}
+
+void startListeningTimeoutTimer(void) {
+  listeningTimeoutTimer = LISTENING_TIMEOUT_TIMER;
+}
+
+void fetchConfig(void) {
+  LSU_sendSyncRequest(0);
+  startResponseTimeoutTimer();
 }
 
 /* Public functions ------------------------------------------------------- */
 void FSM_Link_init(void) {
-  GPIO_Init();
-  GPIO_Sensors_PowerOn();
-
+  LSU_initPeripherals();
+  LSU_setAddress(getRandomUint8());
+  LSU_setChannelAux();
 
   sensor_heartrate_stop();
 
-  DMA_Init();
-  LPUART_Init();
-  LSU_setAddress(getRandomUint8());
-  LSU_setChannelAux();
-  startChannelFreeTimer();
-
+  // Start in listening state to check if channel is clear
+  startListeningTimeoutTimer();
+  clear_last_cmd();
   current_state = LINK_LISTENING;
 }
 
@@ -109,27 +123,30 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
   switch (current_state) {
     /* ------------------------- LINK_LISTENING ------------------------- */
     case LINK_LISTENING:
-      bool isChannelBusy = LSU_checkChannelBusy();
-
-      if (isChannelBusy) {
+      // Check if we received a message during listening period
+      if (LSU_checkChannelBusy()) {
+        // Channel is busy, start CSMA backoff
         startCSMATimer();
         current_state = LINK_IDLE;
-      } else if (channelFreeTimer == 0) {
-        LSU_sendSyncRequest(0);
-        current_state = LINK_FETCH;
+      } else if (listeningTimeoutTimer == 0) {
+        // Channel is clear, try to fetch config
+        fetchConfig();
+        current_state = LINK_WAITING_RESPONSE;
       }
       break;
 
     /* ------------------------- LINK_IDLE ------------------------- */
     case LINK_IDLE:
       if (CSMARandomTimeoutTimer == 0) {
-        startChannelFreeTimer();
+        // CSMA backoff completed, go to listening state
+        startListeningTimeoutTimer();
+        clear_last_cmd();
         current_state = LINK_LISTENING;
       }
       break;
 
-    /* ------------------------- LINK_FETCH ------------------------- */
-    case LINK_FETCH:
+    /* ------------------------- LINK_WAITING_RESPONSE ------------------------- */
+    case LINK_WAITING_RESPONSE:
       RYLR_RX_data_t* rx_data = LSU_getData();
 
       if (rx_data != NULL && rx_data->id == 0x01) {
@@ -137,17 +154,18 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
 
         if (isValid) {
           *isLinkEstablished = true;
-          LPUART_DeInit();
-          DMA_Stop();
+          LSU_deinitPeripherals();
           current_state = LINK_ESTABLISHED;
-          GPIO_Sensors_PowerOff();
         } else {
-          // Invalid response
-          startChannelFreeTimer();
-          current_state = LINK_LISTENING;
+          // Invalid response, try again
+          fetchConfig();
         }
-        break;
+      } else if (responseTimeoutTimer == 0) {
+        // No response received, channel is busy
+        startCSMATimer();
+        current_state = LINK_IDLE;
       }
+      break;
 
     /* ------------------------- LINK_ESTABLISHED ------------------------- */
     case LINK_ESTABLISHED:
@@ -157,10 +175,13 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
 }
 
 void FSM_Link_tick_1s(void) {
-  if (channelFreeTimer > 0) {
-    channelFreeTimer--;
-  }
   if (CSMARandomTimeoutTimer > 0) {
     CSMARandomTimeoutTimer--;
+  }
+  if (responseTimeoutTimer > 0) {
+    responseTimeoutTimer--;
+  }
+  if (listeningTimeoutTimer > 0) {
+    listeningTimeoutTimer--;
   }
 }

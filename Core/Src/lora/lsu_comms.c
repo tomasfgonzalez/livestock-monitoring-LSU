@@ -11,6 +11,9 @@
 #include "lsu_comms.h"
 #include "rylr998.h"
 #include "stm32l0xx_hal.h"
+#include "gpio.h"
+#include "dma.h"
+#include "lpuart.h"
 
 #include <math.h>
 #include <string.h>
@@ -48,7 +51,7 @@ void LSU_setChannelAux(void){
 }
 
 // We need delays to ensure the data is sent before performing the next operation
-#define SEND_DATA_DELAY 500
+#define SEND_DATA_DELAY 100
 void LSU_sendParameters(uint16_t destination, LSU_Payload* payload) {
   parsePayloadString(payload);
 
@@ -57,10 +60,6 @@ void LSU_sendParameters(uint16_t destination, LSU_Payload* payload) {
   sprintf(txBuffer, AT"SEND=%u,%u,%s"END, destination, data_length, payloadString);
 
   rylr998_sendCommand(txBuffer);
-  HAL_Delay(SEND_DATA_DELAY);
-  if(getlast_cmd() !=RYLR_OK){
-  		Error_Handler();
-  	}
 }
 
 #define SEND_SYNC_DELAY 100
@@ -70,22 +69,27 @@ void LSU_sendSyncRequest(uint16_t destination){
   sprintf(txBuffer, AT"SEND=%u,%u,SYNC"END, destination, data_length);
 
   rylr998_sendCommand(txBuffer);
-  HAL_Delay(SEND_SYNC_DELAY);
-  if(getlast_cmd() !=RYLR_OK){
-  		Error_Handler();
-  	}
 }
 
 bool LSU_checkChannelBusy(void) {
-  if (rylr998_GetInterruptFlag()) {
-	  if(getlast_cmd()==RYLR_RCV)    return true;
-  }
-  return false;
+  return getlast_cmd() == RYLR_RCV;
 }
 
 RYLR_RX_data_t* LSU_getData(void){
- /* if (rylr998_GetInterruptFlag()) {
-    return rylr998_getCommand(RYLR_RCV);
-  }*/
   return rylr998_readCurrentPacket();
+}
+
+/* Peripheral management ---------------------------------------------------- */
+void LSU_initPeripherals(void) {
+  GPIO_Init();
+  GPIO_Sensors_PowerOn();
+  HAL_Delay(200);
+  DMA_Init();
+  LPUART_Init();
+}
+
+void LSU_deinitPeripherals(void) {
+  LPUART_DeInit();
+  DMA_Stop();
+  GPIO_Sensors_PowerOff();
 }
