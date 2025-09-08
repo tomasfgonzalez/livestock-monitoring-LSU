@@ -24,7 +24,7 @@ static char payloadString[40];
 
 /* Private functions ---------------------------------------------------------*/
 void parsePayloadString(LSU_Payload* payload) {
-  sprintf(payloadString, "%lu-%lu-%u-%u-%u",
+  sprintf(payloadString, "%ld|%ld|%u|%u|%u",
     payload->latitude,
     payload->longitude,
     payload->temperature_livestock,
