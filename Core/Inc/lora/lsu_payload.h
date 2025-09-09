@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : lsuPayload.h
+  * @file           : lsu_payload.h
   * @brief          : Header for LSU payload management, handles shared payload
   *                   data between main and backup transmission FSMs
   ******************************************************************************

@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : lsuPayload.c
+  * @file           : lsu_payload.c
   * @brief          : Source file for LSU payload management, handles shared payload
   *                   data between main and backup transmission FSMs
   ******************************************************************************
@@ -17,7 +17,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "lsuPayload.h"
+#include "lsu_payload.h"
 
 #include <stddef.h>
 

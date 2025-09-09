@@ -17,8 +17,9 @@
 #include "sensor_heartrate.h"
 #include "sensor_all.h"
 #include "lsu_comms.h"
+#include "lsu_payload.h"
+
 #include "time_config.h"
-#include "lora/lsuPayload.h"
 
 
 

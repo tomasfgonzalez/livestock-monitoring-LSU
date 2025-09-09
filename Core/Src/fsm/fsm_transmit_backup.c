@@ -13,7 +13,7 @@
 #include <string.h>
 
 #include "lsu_comms.h"
-#include "lora/lsuPayload.h"
+#include "lsu_payload.h"
 
 /* Define -----------------------------------------------------------------*/
 #define RESPONSE_TIMEOUT_IN_SECONDS 2
