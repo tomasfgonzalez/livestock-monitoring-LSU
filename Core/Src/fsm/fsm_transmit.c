@@ -53,11 +53,36 @@ static void stopSensing(void) {
 
 static void createPayload(void) {
   static LSU_Payload payload;
-  payload.latitude = 10;
-  payload.longitude = 10;
-  payload.temperature_livestock = 10;
-  payload.temperature_environment = 10;
-  payload.heartrate = 10;
+  
+  // Generate random seed based on system tick for variation
+  uint32_t seed = HAL_GetTick();
+  
+  // Rosario, Argentina coordinates (center) with small random variations
+  // Base coordinates: -32.9468, -60.6393
+  // Convert to integer format (multiply by 1000000 for 6 decimal places)
+  int32_t base_lat = -32946800;  // -32.9468 * 1000000
+  int32_t base_lon = -60639300;  // -60.6393 * 1000000
+  
+  // Add random variation of ±0.01 degrees (±10000 in integer format)
+  int32_t lat_variation = ((seed % 20001) - 10000);  // -10000 to +10000
+  int32_t lon_variation = ((seed * 7) % 20001) - 10000;  // Different variation for longitude
+  
+  payload.latitude = base_lat + lat_variation;
+  payload.longitude = base_lon + lon_variation;
+  
+  // Ambient temperature: 8-21°C (Rosario September average)
+  // Convert to integer format (multiply by 100 for 2 decimal places)
+  uint16_t ambient_temp = 800 + ((seed * 3) % 1301);  // 800 to 2100 (8.00°C to 21.00°C)
+  payload.temperature_environment = ambient_temp / 100;
+  
+  // Livestock body temperature: 36.5-37.5°C (considerably higher than ambient)
+  // Convert to integer format (multiply by 100 for 2 decimal places)
+  uint16_t body_temp = 3650 + ((seed * 5) % 101);  // 3650 to 3750 (36.50°C to 37.50°C)
+  payload.temperature_livestock = body_temp / 100;
+  
+  // Heart rate: 70-100 BPM for livestock (cattle typically 60-80, but can vary)
+  uint8_t heartrate = 70 + ((seed * 11) % 31);  // 70 to 100 BPM
+  payload.heartrate = heartrate;
   
   // Store in LSU payload for backup FSM to use
   lsuPayload_set(&payload);
