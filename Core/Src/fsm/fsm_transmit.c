@@ -21,18 +21,17 @@
 
 #include "time_config.h"
 
-
-
+/* Define -----------------------------------------------------------------*/
 #define SENSING_INIT_WAIT_IN_SECONDS 5
 #define SENSING_TIMEOUT_IN_SECONDS 10
-#define TRANSMIT_TIMEOUT_IN_SECONDS 10
-#define ACK_TIMEOUT_IN_SECONDS 5
+#define MAX_RETRY_COUNT 3
+#define ACK_TIMEOUT_IN_SECONDS 12
 
 /* Private variables ----------------------------------------------------------*/
 static FSM_Transmit_State currentState = TRANSMIT_IDLE;
 
 static int sensingTimer = 0;
-static int transmitTimer = 0;
+static int retryCount = 0;
 static int ackTimer = 0;
 
 static bool ackReceived = false;
@@ -79,10 +78,6 @@ static void sendPayload(void) {
   }
 }
 
-static void startTransmitTimer(void) {
-  transmitTimer = TRANSMIT_TIMEOUT_IN_SECONDS;
-}
-
 static void startAckTimer(void) {
   ackTimer = ACK_TIMEOUT_IN_SECONDS;
 }
@@ -95,8 +90,7 @@ static void startTransmission(void) {
 
   sendPayload();
   startAckTimer();
-  startTransmitTimer();
-
+  retryCount = 1;
 }
 
 static void restartTransmission(void) {
@@ -111,9 +105,8 @@ void FSM_Transmit_init(void) {
   // Clear flags or timers
   ackReceived = false;
   sensingTimer = 0;
-  transmitTimer = 0;
+  retryCount = 0;
   ackTimer = 0;
-
 
   mode_STOP();
 }
@@ -160,23 +153,35 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 
       if (rx_data != NULL) {
         ackReceived = strcmp(rx_data->data, "ACK") == 0;
-        rx_data->data == NULL;
       }
 
       if (ackReceived) {
-    	 HAL_Delay(50);
+        HAL_Delay(50);
         ackReceived = false;
         LSU_deinitPeripherals();
         currentState = TRANSMIT_IDLE;
         sensingTimer = 0;
-         transmitTimer = 0;
-         ackTimer = 0;
+        retryCount = 0;
+        ackTimer = 0;
         mode_STOP();
       } else if (ackTimer <= 0) {
-        //restartTransmission();
-      } else if (transmitTimer <= 0) {
-      //mainChannelFail = true;
+        if (retryCount < MAX_RETRY_COUNT) {
+          retryCount++;
+          restartTransmission();
+        } else {
+          LSU_deinitPeripherals();
+          currentState = TRANSMIT_FAILED;
+          sensingTimer = 0;
+          retryCount = 0;
+          ackTimer = 0;
+        }
       }
+      break;
+
+    /* ------------------------- TRANSMIT_FAILED ------------------------- */
+    case TRANSMIT_FAILED:
+      // Final state - transmission failed after all retries
+      *mainChannelFail = true;
       break;
 
     /* ------------------------- DEFAULT ----------------------------- */
@@ -189,9 +194,6 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
 void FSM_Transmit_tick_1s(void) {
   if (sensingTimer > 0)
     sensingTimer--;
-
-  if (transmitTimer > 0)
-    transmitTimer--;
 
   if (ackTimer > 0)
     ackTimer--;

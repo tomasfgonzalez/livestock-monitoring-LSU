@@ -19,12 +19,14 @@
 #include "fsm_main.h"
 
 #include "sensor_all.h"
+#include "gpio.h"
 
 #define INIT_TIMEOUT 50
 
 /* Private variables ---------------------------------------------------------*/
 static FSM_Main_State currentState = INIT;
 static uint32_t initTimer = 0;
+static uint32_t ledBlinkTimer = 0;
 
 /* Private functions ---------------------------------------------------------*/
 static bool isInitError(void) {
@@ -40,23 +42,12 @@ static bool isInitSuccess(void) {
   return sensor_all_has_started();
 }
 
-static bool isLinkErrorResolved(void) {
-  // TODO: Implement error resolution check
-  return true;
-}
-
-static bool isBackupTransmissionComplete(void) {
-  // TODO: Implement backup completion check
-  return false;
-}
 
 /* Public functions ----------------------------------------------------------*/
 void FSM_Main_init(void) {
   currentState = INIT;
 
   sensor_all_init();
-
-
   sensor_heartrate_stop();
   initTimer = INIT_TIMEOUT;
 }
@@ -86,18 +77,21 @@ void FSM_Main_handle(void) {
       FSM_Link_handle(&isLinkEstablished, &isLinkError);
 
       if (isLinkEstablished) {
+        isLinkEstablished = false;
         FSM_Transmit_init();
         currentState = TRANSMIT;
       } else if (isLinkError) {
+        isLinkError = false;
         currentState = LINK_ERROR;
       }
       break;
 
     /* ------------------------- LINK_ERROR ------------------------- */
     case LINK_ERROR:
-      if (isLinkErrorResolved()) {
-        FSM_Link_init();
-        currentState = LINK;
+      // Blink LED with 2-second period (1 second on, 1 second off)
+      if (ledBlinkTimer == 0) {
+        GPIO_LED_Toggle();
+        ledBlinkTimer = 1; // 1 second intervals
       }
       break;
 
@@ -107,6 +101,7 @@ void FSM_Main_handle(void) {
 
       FSM_Transmit_handle(&hasMainChannelFailed);
       if (hasMainChannelFailed) {
+        hasMainChannelFailed = false;
         currentState = TRANSMIT_BACKUP;
         FSM_TransmitBackup_init();
       }
@@ -114,12 +109,16 @@ void FSM_Main_handle(void) {
 
     /* ------------------------- TRANSMIT_BACKUP ------------------------- */
     case TRANSMIT_BACKUP:
-      static bool hasBackupChannelFailed = false;
+      static bool isBackupTransmissionComplete = false;
+      static bool isBackupTransmissionError = false;
 
-      FSM_TransmitBackup_handle(&hasBackupChannelFailed);
-      if (hasBackupChannelFailed) {
+      FSM_TransmitBackup_handle(&isBackupTransmissionComplete, &isBackupTransmissionError);
+      
+      if (isBackupTransmissionError) {
+        isBackupTransmissionError = false;
         currentState = LINK_ERROR;
-      } else if (isBackupTransmissionComplete()) {
+      } else if (isBackupTransmissionComplete) {
+        isBackupTransmissionComplete = false;
         currentState = TRANSMIT;
         FSM_Transmit_init();
       }
@@ -144,5 +143,13 @@ void FSM_Main_tick_1s(void) {
   }
   if (currentState == LINK) {
     FSM_Link_tick_1s();
+  }
+  if (currentState == TRANSMIT_BACKUP) {
+    FSM_TransmitBackup_tick_1s();
+  }
+  if (currentState == LINK_ERROR) {
+    if (ledBlinkTimer > 0) {
+      ledBlinkTimer--;
+    }
   }
 }
