@@ -32,6 +32,7 @@ typedef enum {
   LINK_IDLE,
   LINK_WAITING_RESPONSE,
   LINK_ESTABLISHED,
+  LINK_FAILED,
 } FSM_Link_State;
 
 /* FSM interface ------------------------------------------------------------ */

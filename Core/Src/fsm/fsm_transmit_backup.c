@@ -19,12 +19,14 @@
 #define RESPONSE_TIMEOUT_IN_SECONDS 2
 #define CSMA_BACKOFF_MAX 10
 #define LISTENING_TIMEOUT_IN_SECONDS 2
+#define MAX_RETRY_ATTEMPTS 3
 
 /* Private variables ------------------------------------------------------*/
 static FSM_TransmitBackup_State current_state = TRANSMIT_BACKUP_LISTENING;
 static uint32_t responseTimeoutTimer = 0;
 static uint32_t CSMARandomTimeoutTimer = 0;
 static uint32_t listeningTimeoutTimer = 0;
+static uint8_t retryAttempts = 0;
 
 static bool ackReceived = false;
 
@@ -74,10 +76,11 @@ void FSM_TransmitBackup_init(void) {
   startListeningTimeoutTimer();
   CSMARandomTimeoutTimer = 0;
   ackReceived = false;
+  retryAttempts = 0;
   current_state = TRANSMIT_BACKUP_LISTENING;
 }
 
-void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete) {
+void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete, bool* isBackupTransmissionError) {
   switch (current_state) {
     /* ------------------------- TRANSMIT_BACKUP_LISTENING ------------------------- */
     case TRANSMIT_BACKUP_LISTENING:
@@ -110,23 +113,46 @@ void FSM_TransmitBackup_handle(bool* isBackupTransmissionComplete) {
         ackReceived = strcmp(rx_data->data, "ACK") == 0;
         if (ackReceived) {
           // Successfully transmitted
-          *isBackupTransmissionComplete = true;
           LSU_deinitPeripherals();
           current_state = TRANSMIT_BACKUP_COMPLETE;
         } else {
           // Invalid response, try again
-          postData();
+          retryAttempts++;
+          if (retryAttempts >= MAX_RETRY_ATTEMPTS) {
+            // Max retries exceeded, signal failure
+            LSU_deinitPeripherals();
+            current_state = TRANSMIT_BACKUP_FAILED;
+          } else {
+            postData();
+          }
         }
       } else if (responseTimeoutTimer == 0) {
-        // No response received, channel is busy
-        startCSMATimer();
-        current_state = TRANSMIT_BACKUP_IDLE;
+        // No response received, increment retry counter
+        retryAttempts++;
+        if (retryAttempts >= MAX_RETRY_ATTEMPTS) {
+          // Max retries exceeded, signal failure
+          LSU_deinitPeripherals();
+          current_state = TRANSMIT_BACKUP_FAILED;
+        } else {
+          // Try again with CSMA backoff
+          startCSMATimer();
+          current_state = TRANSMIT_BACKUP_IDLE;
+        }
       }
       break;
 
     /* ------------------------- TRANSMIT_BACKUP_COMPLETE ------------------------- */
     case TRANSMIT_BACKUP_COMPLETE:
       // Do nothing
+      *isBackupTransmissionComplete = true;
+      *isBackupTransmissionError = false;
+      break;
+
+    /* ------------------------- TRANSMIT_BACKUP_FAILED ------------------------- */
+    case TRANSMIT_BACKUP_FAILED:
+      // Signal failure to main FSM
+      *isBackupTransmissionComplete = false;
+      *isBackupTransmissionError = true;
       break;
   }
 }
