@@ -31,17 +31,19 @@
 #include "stdio.h"
 #include <stdint.h>
 
-/* DefineS --------------------------------------------------------------------*/
+/* Defines --------------------------------------------------------------------*/
 #define RESPONSE_TIMEOUT_TIMER 15
 #define CSMA_TIME_MINIMUM 10
 #define CSMA_TIME_WINDOW 10
 #define LISTENING_TIMEOUT_TIMER 2
+#define MAX_LINK_RETRY_ATTEMPTS 3
 
 /* Private variables ----------------------------------------------------------*/
 static FSM_Link_State current_state = LINK_LISTENING;
 static uint32_t CSMARandomTimeoutTimer = 0;
 static uint32_t responseTimeoutTimer = 0;
 static uint32_t listeningTimeoutTimer = 0;
+static uint8_t retryAttempts = 0;
 
 /* Private functions ----------------------------------------------------------*/
 bool processPacket(char* data) {
@@ -103,6 +105,7 @@ void startListeningTimeoutTimer(void) {
 void fetchConfig(void) {
   LSU_sendSyncRequest(0);
   startResponseTimeoutTimer();
+  retryAttempts++;
 }
 
 /* Public functions ------------------------------------------------------- */
@@ -116,6 +119,7 @@ void FSM_Link_init(void) {
   // Start in listening state to check if channel is clear
   startListeningTimeoutTimer();
   clear_last_cmd();
+  retryAttempts = 0;
   current_state = LINK_LISTENING;
 }
 
@@ -153,23 +157,41 @@ void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError) {
         bool isValid = processPacket(rx_data->data);
 
         if (isValid) {
-          *isLinkEstablished = true;
           LSU_deinitPeripherals();
           current_state = LINK_ESTABLISHED;
         } else {
-          // Invalid response, try again
-          fetchConfig();
+          if (retryAttempts < MAX_LINK_RETRY_ATTEMPTS) {
+            // Invalid response, try again
+            fetchConfig();
+          } else {
+            // Max retries exceeded, signal failure
+            LSU_deinitPeripherals();
+            current_state = LINK_FAILED;
+          }
         }
       } else if (responseTimeoutTimer == 0) {
-        // No response received, channel is busy
-        startCSMATimer();
-        current_state = LINK_IDLE;
+        if (retryAttempts < MAX_LINK_RETRY_ATTEMPTS) {
+          // No response received, try again with CSMA backoff
+          startCSMATimer();
+          current_state = LINK_IDLE;
+        } else {
+          // Max retries exceeded, signal failure
+          LSU_deinitPeripherals();
+          current_state = LINK_FAILED;
+        }
       }
       break;
 
     /* ------------------------- LINK_ESTABLISHED ------------------------- */
     case LINK_ESTABLISHED:
-      // Do nothing
+      *isLinkEstablished = true;
+      *isLinkError = false;
+      break;
+
+    /* ------------------------- LINK_FAILED ------------------------- */
+    case LINK_FAILED:
+      *isLinkEstablished = false;
+      *isLinkError = true;
       break;
   }
 }

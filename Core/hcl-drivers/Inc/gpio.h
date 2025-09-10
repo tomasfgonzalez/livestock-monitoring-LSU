@@ -58,6 +58,16 @@ void GPIO_Sensors_PowerOn(void);
  */
 void GPIO_Sensors_PowerOff(void);
 
+/**
+ * @brief Turns off the board LED.
+ */
+void GPIO_LED_Off(void);
+
+/**
+ * @brief Toggles the board LED.
+ */
+void GPIO_LED_Toggle(void);
+
 #ifdef __cplusplus
 }
 #endif

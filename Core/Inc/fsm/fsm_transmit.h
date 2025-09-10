@@ -36,6 +36,7 @@ typedef enum {
   TRANSMIT_IDLE,
   TRANSMIT_SENSE,
   TRANSMIT_SEND,
+  TRANSMIT_FAILED,
 } FSM_Transmit_State;
 
 /* FSM interface ------------------------------------------------------------ */

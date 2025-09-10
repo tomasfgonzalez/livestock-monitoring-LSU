@@ -1,8 +1,9 @@
 /**
   ******************************************************************************
   * @authors        : Tomas Gonzalez & Brian Morris
-  * @file           : fsm_link.h
-  * @brief          : Header for FSM link file
+  * @file           : lsuPayload.h
+  * @brief          : Header for LSU payload management, handles shared payload
+  *                   data between main and backup transmission FSMs
   ******************************************************************************
   * @attention
   *
@@ -11,37 +12,28 @@
   *
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
-  * 
+  *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __FSM_LINK_H__
-#define __FSM_LINK_H__
+#ifndef __LSU_PAYLOAD_H__
+#define __LSU_PAYLOAD_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ---------------------------------------------------------------*/
-#include <stdbool.h>
+#include "lsu_comms.h"
 
-/* FSM states --------------------------------------------------------------- */
-typedef enum {
-  LINK_LISTENING,
-  LINK_IDLE,
-  LINK_WAITING_RESPONSE,
-  LINK_ESTABLISHED,
-  LINK_FAILED,
-} FSM_Link_State;
-
-/* FSM interface ------------------------------------------------------------ */
-void FSM_Link_init(void);
-void FSM_Link_handle(bool* isLinkEstablished, bool* isLinkError);
-void FSM_Link_tick_1s(void);
+/* Public functions ------------------------------------------------------- */
+void lsuPayload_set(const LSU_Payload* payload);
+const LSU_Payload* lsuPayload_get(void);
+bool lsuPayload_isValid(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* FSM_LINK_H */
+#endif /* LSU_PAYLOAD_H__ */
