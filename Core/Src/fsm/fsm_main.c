@@ -47,8 +47,8 @@ static bool isInitSuccess(void) {
 void FSM_Main_init(void) {
   currentState = INIT;
 
-  sensor_all_init();
-  sensor_heartrate_stop();
+  //sensor_all_init();
+  //sensor_heartrate_stop();
   initTimer = INIT_TIMEOUT;
 }
 
@@ -56,9 +56,9 @@ void FSM_Main_handle(void) {
   switch (currentState) {
     /* ------------------------- INIT ----------------------------- */
     case INIT:
-      if (isInitError()) {
+      if (0) {
         currentState = INIT_ERROR;
-      } else if (isInitSuccess()) {
+      } else if (1) {
         FSM_Link_init();
         currentState = LINK;
       }

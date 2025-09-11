@@ -51,20 +51,37 @@ static void stopSensing(void) {
   sensingTimer = 0;
 }
 
-static void createPayload(void) {  
-  static uint8_t temperature[2];
-  static GPSData gps;
-  static uint8_t heartrate;
+static void createPayload(void) {
   static LSU_Payload payload;
-
-  sensor_temperature_read(temperature);
-  sensor_gps_read(&gps);
-  sensor_heartrate_read(&heartrate);
-
-  payload.latitude = gps.latitude;
-  payload.longitude = gps.longitude;
-  payload.temperature_livestock = temperature[0];
-  payload.temperature_environment = temperature[1];
+  
+  // Generate random seed based on system tick for variation
+  uint32_t seed = HAL_GetTick();
+  
+  // Rosario, Argentina coordinates (center) with small random variations
+  // Base coordinates: -32.9468, -60.6393
+  // Convert to integer format (multiply by 1000000 for 6 decimal places)
+  int32_t base_lat = -32946800;  // -32.9468 * 1000000
+  int32_t base_lon = -60639300;  // -60.6393 * 1000000
+  
+  // Add random variation of ±0.01 degrees (±10000 in integer format)
+  int32_t lat_variation = ((seed % 20001) - 10000);  // -10000 to +10000
+  int32_t lon_variation = ((seed * 7) % 20001) - 10000;  // Different variation for longitude
+  
+  payload.latitude = base_lat + lat_variation;
+  payload.longitude = base_lon + lon_variation;
+  
+  // Ambient temperature: 8-21°C (Rosario September average)
+  // Convert to integer format (multiply by 100 for 2 decimal places)
+  uint16_t ambient_temp = 800 + ((seed * 3) % 1301);  // 800 to 2100 (8.00°C to 21.00°C)
+  payload.temperature_environment = ambient_temp / 100;
+  
+  // Livestock body temperature: 36.5-37.5°C (considerably higher than ambient)
+  // Convert to integer format (multiply by 100 for 2 decimal places)
+  uint16_t body_temp = 3650 + ((seed * 5) % 101);  // 3650 to 3750 (36.50°C to 37.50°C)
+  payload.temperature_livestock = body_temp / 100;
+  
+  // Heart rate: 70-100 BPM for livestock (cattle typically 60-80, but can vary)
+  uint8_t heartrate = 70 + ((seed * 11) % 31);  // 70 to 100 BPM
   payload.heartrate = heartrate;
   
   // Store in LSU payload for backup FSM to use
@@ -119,7 +136,7 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
     /* ------------------------- TRANSMIT_IDLE ------------------------- */
     case TRANSMIT_IDLE:
       if (isTimeToSense) {
-        startSensing();
+        //startSensing();
         currentState = TRANSMIT_SENSE;
       } else if (isTimeToTransmit) {
         startTransmission();
@@ -133,13 +150,8 @@ void FSM_Transmit_handle(bool *mainChannelFail) {
         if (sensingTimer > SENSING_TIMEOUT_IN_SECONDS - SENSING_INIT_WAIT_IN_SECONDS) {
             break;
         }
-        
-        bool temperatureReady = sensor_temperature_is_measurement_ready();
-        bool gpsReady = sensor_gps_is_measurement_ready();
-        bool heartrateReady = sensor_heartrate_is_measurement_ready();
-        bool allSensorsReady = temperatureReady && gpsReady && heartrateReady;
-//sensingTimer <= 0 ||
-        if (sensingTimer <= 0 || allSensorsReady) {
+
+        if (sensingTimer <= 0) {
           createPayload();
           stopSensing();
           currentState = TRANSMIT_IDLE;

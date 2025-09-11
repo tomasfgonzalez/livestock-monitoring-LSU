@@ -23,15 +23,15 @@ void sensor_all_init(void) {
 
 
 
-  sensor_temperature_init();
-  sensor_heartrate_init();
-  sensor_gps_init();
+  //sensor_temperature_init();
+ // sensor_heartrate_init();
+  //sensor_gps_init();
 }
 
 void sensor_all_stop(void) {
-  sensor_temperature_stop();
-  sensor_heartrate_stop();
-  sensor_gps_stop();
+ // sensor_temperature_stop();
+ // sensor_heartrate_stop();
+ // sensor_gps_stop();
 
 
   GPIO_Sensors_PowerOff();
